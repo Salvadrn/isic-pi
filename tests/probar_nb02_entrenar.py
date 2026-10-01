@@ -123,6 +123,28 @@ def micro_test_pesos_con_flags():
           f"en esta versión de Keras el orden de get_weights {'SÍ' if cambio else 'no'} cambia con los flags")
 
 
+def verificar_generador(ns):
+    """Las imágenes que llegan a Keras deben corresponder a sus etiquetas (en validación y en train barajado)."""
+    X, y, idx_val, idx_tr = ns["X"], ns["y"], ns["idx_val"], ns["idx_tr"]
+    # validación: sin barajar, mismo orden y mismos píxeles que el arreglo en disco
+    xs, ys = [], []
+    for a, b in ns["ds_val"]:
+        xs.append(a.numpy()); ys.append(b.numpy())
+    assert np.array_equal(np.concatenate(ys), y[idx_val]) and np.array_equal(np.concatenate(ys), ns["y_val"])
+    assert np.array_equal(np.concatenate(xs), X[idx_val].astype("float32"))
+    # train barajado: cada imagen llega con la etiqueta que le toca (se identifica por una huella de sus píxeles)
+    huella = lambda arr: arr.reshape(len(arr), -1)[:, :256].astype("float64").sum(axis=1)
+    esperado = dict(zip(huella(X[idx_tr]).tolist(), y[idx_tr].tolist()))
+    assert len(esperado) == len(idx_tr), "huellas repetidas: el test no es concluyente"
+    vistos = 0
+    for a, b in ns["ds_tr"]:
+        for f, etiqueta in zip(huella(a.numpy()).tolist(), b.numpy().tolist()):
+            assert esperado[f] == etiqueta, "imagen y etiqueta desalineadas en el generador de train"
+            vistos += 1
+    assert vistos == len(idx_tr), (vistos, len(idx_tr))
+    print(f"  generador OK: {len(idx_val)} imágenes de val en orden y {vistos} de train barajadas, todas con su etiqueta")
+
+
 def verificar_salida(ns, modo_prueba):
     S, T = ns["SALIDA"], ns["TRABAJO"]
     for nombre in ["modelo.keras", "clases.txt", "reporte_val.txt", "curvas.png", "confusion_val.png", "entrenamiento.json"]:
@@ -163,6 +185,7 @@ if __name__ == "__main__":
 
         print("== MODO_PRUEBA (1 época por fase) ==")
         ns, _ = correr02(True)
+        verificar_generador(ns)
         info = verificar_salida(ns, True)
         print(f"  OK — fase elegida {info['fase_elegida']}, recall prom. val {info['recall_promedio_val']:.3f}, "
               f"{len(info['historial'])} épocas")
@@ -177,8 +200,9 @@ if __name__ == "__main__":
         assert msg
         print("  OK:", msg[:60])
 
-        print("== corrida de aprendizaje (datos falsos separables por color), 3+3 épocas ==")
-        ns, _ = correr02(False, reemplazos={"EPOCAS_CABEZA": 3, "EPOCAS_AJUSTE": 3, "BATCH": 32, "CAPAS_A_AJUSTAR": 20})
+        print("== corrida de aprendizaje (datos falsos separables por color), 15+3 épocas ==")
+        ns, _ = correr02(False, reemplazos={"EPOCAS_CABEZA": 15, "EPOCAS_AJUSTE": 3, "PACIENCIA": 15,
+                                            "BATCH": 32, "CAPAS_A_AJUSTAR": 20})
         info = verificar_salida(ns, False)
         for h in info["historial"]:
             print(f"  {h['fase']:7s} loss {h['loss']:.3f} val_loss {h['val_loss']:.3f} "
