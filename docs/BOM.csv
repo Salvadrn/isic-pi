@@ -1,0 +1,12 @@
+﻿id,seccion,componente,cantidad,especificacion,para_que,estado,usd,mxn_aprox,fuente,url,nota
+A1,A Núcleo,Raspberry Pi 5,1,8 GB,Corre el modelo TFLite (inferencia),Tengo,,,,,
+A2,A Núcleo,Fuente oficial USB-C 27 W,1,5.1 V / 5 A,"Alimenta la Pi 5 y lo que le conectes por USB. Con una de 3 A funciona, pero limita la corriente de los puertos USB",Verificar,14.04,254,Adafruit 5814,https://www.adafruit.com/product/5814,Entre $12 y $15 según tienda
+A3,A Núcleo,microSD,1,"≥ 32 GB, clase A2 (recomendada 64 GB)","Raspberry Pi OS 64-bit, el proyecto y las capturas",Verificar,12.79,231,Adafruit 6011,https://www.adafruit.com/product/6011,Agotada en Adafruit; cualquier microSD A2 de marca sirve. Precio de la oficial de 64 GB
+A4,A Núcleo,Caja oficial con ventilador,1,Raspberry Pi Case para Pi 5 (ventilador con control de temperatura),Protege la placa y evita que se caliente bajo carga sostenida,Opcional,12.00,217,Adafruit 5816,https://www.adafruit.com/product/5816,"Alternativa: Active Cooler suelto, $11.95 a $13.50"
+B1,B Cámara,Camera Module 3 (Estándar),1,"12 MP, enfoque automático, 75° diagonal, enfoca desde 10 cm",Captura la lesión para clasificarla en vivo,Comprar,29.25,529,Adafruit 5657,https://www.adafruit.com/product/5657,"Alternativa Wide (120°, enfoca desde 5 cm): $38.50, Adafruit 5658"
+B2,B Cámara,"Cable de cámara para Pi 5, 22 pines → 15 pines",1,"200 mm, FPC 0.5 mm → 1 mm","Conecta el módulo (conector de 15 pines) a la Pi 5, cuyo conector de cámara es más pequeño (22 pines): el cable estándar de 15 pines no entra",Comprar,2.70,49,Adafruit 5818,https://www.adafruit.com/product/5818,
+C1,C Opcional,Lector de microSD (USB-C),1,,Grabar el sistema desde la Mac con Raspberry Pi Imager,Verificar,,,,,Sin precio verificado
+C2,C Opcional,Cable micro-HDMI a HDMI,1,,Solo si conectas monitor. Si trabajas por SSH no hace falta,Opcional,,,,,Sin precio verificado
+C3,C Opcional,Soporte o cono impreso en 3D,1,PLA negro mate,Mantiene la cámara a distancia fija y bloquea la luz ambiente,Opcional,,,,,Lo imprimes tú; diseño pendiente
+C4,C Opcional,Luz difusa constante (anillo LED o lámpara),1,,Sombras y brillos distintos cambian lo que ve el modelo,Opcional,,,,,"Idea, no probada; sin precio verificado"
+C5,C Opcional,Lámina polarizadora lineal,2,,"Polarización cruzada para reducir reflejos, como en la dermatoscopia",Opcional,,,,,"Experimental, no probado; sin precio verificado"
