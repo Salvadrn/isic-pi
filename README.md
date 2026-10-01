@@ -20,7 +20,7 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 
 - [x] **Sesión 1:** repo + `notebooks/01_preparar_datos.ipynb`
 - [x] **Sesión 2:** `notebooks/02_entrenar.ipynb` (MobileNetV2 con transfer learning y pesos por clase)
-- [ ] **Sesión 3:** `03_exportar_tflite.ipynb` (métricas por clase en test y exportación a `.tflite`)
+- [x] **Sesión 3:** `notebooks/03_exportar_tflite.ipynb` (métricas por clase en test y exportación a `.tflite`)
 - [ ] **Sesión 4:** `pi/clasificar.py` (clasificar fotos y tomar fotos con la cámara)
 - [ ] **Sesión 5:** scripts para instalar y enviar todo a la Pi, y este README completo
 
@@ -59,13 +59,32 @@ Deja en `Mi unidad/isic-pi/modelo/`: `modelo.keras`, `clases.txt`, `entrenamient
 
 Si el recall de alguna clase sale muy bajo, las perillas están en la celda de configuración: `POTENCIA_PESOS`, `EPOCAS_AJUSTE` y `CAPAS_A_AJUSTAR` (cada cambio requiere `FORZAR = True`).
 
+## Sesión 3 · Evaluar en test y exportar a TFLite
+
+[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Salvadrn/isic-pi/blob/main/notebooks/03_exportar_tflite.ipynb)
+
+1. Necesita haber corrido los notebooks 01 y 02.
+2. Entorno de ejecución **CPU** (el intérprete de TFLite no usa la GPU).
+3. La primera vez pon `MODO_PRUEBA = True` (usa `datos_prueba/` y `modelo_prueba/`).
+4. Corrida completa con `MODO_PRUEBA = False`.
+
+Qué hace:
+- Mide el modelo **por primera vez en test**: accuracy, recall por clase y su promedio, F1 y matriz de confusión. Esa es la cifra para el reporte.
+- Convierte a `modelo.tflite` (float32, ≈ 9 MB, mismas probabilidades que Keras) y `modelo_ligero.tflite` (pesos en int8, ≈ 2.5 MB).
+- Vuelve a medir los dos `.tflite` en test con `ai-edge-litert`, el mismo intérprete que usará la Pi, y se detiene si el float32 no reproduce a Keras.
+- Recomienda el ligero solo si pierde 1 punto de recall promedio o menos.
+
+Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_pi.npz` (fotos de test con las probabilidades esperadas, para comprobar en la Pi), el reporte, la matriz de confusión, `metricas_test.json` y un `isic_pi_modelo.zip` con todo, que se descarga solo.
+
+**En tu Mac:** descomprime el zip dentro de la carpeta `modelo/` de este repo. Esa carpeta es la que se copiará a la Pi en la sesión 4.
+
 ## Probar los notebooks sin Colab
 
 Las pruebas ejecutan las celdas de cada notebook sobre datos falsos, sin Hugging Face, Drive ni GPU. Probado con Python 3.12:
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
-pip install datasets pandas scikit-learn matplotlib tqdm pillow numpy tensorflow
+pip install datasets pandas scikit-learn matplotlib tqdm pillow numpy tensorflow ai-edge-litert
 ```
 
 ```bash
@@ -76,12 +95,17 @@ python tests/probar_nb01_datos.py
 python tests/probar_nb02_entrenar.py
 ```
 
-La segunda descarga los pesos de ImageNet (≈ 10 MB) y tarda unos minutos en CPU.
+```bash
+python tests/probar_nb03_exportar.py
+```
+
+Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos minutos en CPU.
 
 ## Estado: qué está probado y qué no
 
 - **Notebook 01:** probado en Python 3.12 con un dataset falso del mismo esquema (`image` + `label`), en los dos modos, incluyendo etiquetas desconocidas en test, imágenes no cuadradas, en escala de grises y con canal alfa. **Todavía no lo he corrido en Colab con el dataset real:** la descarga desde Hugging Face, el montaje de Drive, el tiempo y el espacio ocupado son estimados, no medidos.
 - **Notebook 02:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15) con datos falsos que fabrica el propio notebook 01 y con 8 clases de colores sólidos. Verificado: imágenes y etiquetas llegan alineadas a Keras, `class_weight` se aplica con `tf.data`, las guardas fallan con mensaje claro (sin datos del 01, sin GPU, modelo ya entrenado), el modelo guardado reproduce las predicciones, el test no se copia y el modelo exportado no lleva capas de aumento. En colores sólidos aprende (recall promedio 0.91 en validación con la configuración por defecto) y un ajuste fino que destruye el modelo se descarta. **No probado:** GPU, Drive ni ISIC real. El tiempo de entrenamiento y la calidad por clase salen de la corrida en Colab, no de estas pruebas.
+- **Notebook 03:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15, ai-edge-litert 2.2.0), encadenado con el 01 y el 02 sobre datos falsos. Verificado: la conversión directa desde Keras funciona en esta versión de TensorFlow, el float32 reproduce a Keras (diferencia máxima de 7 × 10⁻⁶ en las probabilidades), el `.tflite` leído de disco reproduce las muestras, el zip trae lo mismo que la carpeta y las guardas fallan con mensaje claro (sin 01, sin 02, ya exportado). Con 8 clases de colores sólidos el float32 sacó recall promedio 0.969 en test y el ligero 0.875. **No probado:** Colab, Drive, ISIC real y el intérprete de la Pi, que es ARM (eso lo comprueban las muestras en la sesión 4).
 - **Todo lo demás:** aún sin escribir.
 
 ## Decisiones
@@ -90,6 +114,9 @@ La segunda descarga los pesos de ImageNet (≈ 10 MB) y tarda unos minutos en CP
 - **Preproceso compartido:** entrenamiento y Raspberry reducen las fotos con la misma función (recorte central cuadrado + resize bilineal a 224×224) para que el modelo vea lo mismo en los dos lados.
 - **Datos en Drive, no en git:** los arreglos pesan ≈ 4 GB; el repo solo guarda código (y, más adelante, el modelo ya exportado).
 - **Mejores pesos en archivo, no en memoria:** `get_weights()` / `set_weights()` dependen del orden de las variables, que en otras versiones de Keras cambia al congelar y descongelar capas y mezclaría en silencio los vectores de BatchNorm. En Keras 3.15 el orden no cambia, pero guardar y cargar desde archivo es seguro en cualquier versión.
+
+- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero en la prueba con datos falsos perdió 9 puntos de recall promedio. El notebook 03 lo mide con ISIC real y solo lo recomienda si pierde 1 punto o menos.
+- **Muestras de comprobación:** con el modelo viajan unas fotos de test y las probabilidades que dio en Colab, para que la Pi verifique que su intérprete da lo mismo.
 
 ## Limitaciones conocidas
 
