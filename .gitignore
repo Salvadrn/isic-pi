@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Datos y pesos de entrenamiento: viven en Google Drive, no en git
+*.npy
+*.npz
+*.keras
+*.h5
+datos/
+datos_prueba/
+trabajo/
+isic-pi/
+
+# Fotos tomadas con la cámara de la Pi
+capturas/
+
+# Descargas de Colab
+*.zip
