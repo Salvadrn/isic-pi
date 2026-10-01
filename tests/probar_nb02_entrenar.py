@@ -15,6 +15,7 @@ Uso (Python 3.12 con lo del test 01 + tensorflow):
 import json
 import os
 import re
+import shutil
 import sys
 import tempfile
 import types
@@ -37,6 +38,7 @@ FALSA_GPU = [types.SimpleNamespace(name="/physical_device:GPU:0")]
 
 def correr02(modo_prueba, forzar=False, reemplazos=None, esperar_error=None, gpu=True):
     ns = {"__name__": "__main__"}
+    shutil.rmtree(Path.cwd() / "trabajo", ignore_errors=True)    # runtime nuevo: sin copias locales de corridas previas
     original = tf.config.list_physical_devices
     try:
         for n, fuente in enumerate(celdas_codigo(NOTEBOOK)):
