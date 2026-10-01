@@ -80,6 +80,44 @@ def micro_test_class_weight():
     assert perdidas[1] > perdidas[0] * 5, "class_weight NO se está aplicando con tf.data"
 
 
+def micro_test_pesos_con_flags():
+    """Guardar pesos con las capas congeladas y cargarlos con otras capas descongeladas debe dejar el modelo
+    idéntico. (Por eso el notebook guarda los mejores pesos en archivo y no con get_weights/set_weights.)"""
+    base = keras.applications.MobileNetV2(input_shape=(96, 96, 3), include_top=False, weights=None)
+    base.trainable = False
+    entrada = keras.Input((96, 96, 3))
+    x = base(entrada, training=False)
+    x = keras.layers.GlobalAveragePooling2D()(x)
+    m = keras.Model(entrada, keras.layers.Dense(3, activation="softmax")(x))
+
+    rng = np.random.default_rng(0)
+    for v in m.weights:       # valores distintos en cada vector (gamma, beta, media y varianza de BatchNorm)
+        forma = tuple(v.shape)
+        v.assign(rng.normal(scale=0.05, size=forma) if len(forma) > 1 else rng.uniform(0.5, 1.5, size=forma))
+    imgs = rng.uniform(0, 255, (4, 96, 96, 3)).astype("float32")
+    p0 = m.predict(imgs, verbose=0)
+    assert np.isfinite(p0).all()
+    formas_antes = [tuple(w.shape) for w in m.get_weights()]
+
+    with tempfile.TemporaryDirectory() as d:
+        ruta = str(Path(d) / "a.weights.h5")
+        m.save_weights(ruta)
+        base.trainable = True                                  # lo mismo que hace la fase 2 del notebook
+        for capa in base.layers[:-20]:
+            capa.trainable = False
+        for capa in base.layers:
+            if isinstance(capa, keras.layers.BatchNormalization):
+                capa.trainable = False
+        formas_despues = [tuple(w.shape) for w in m.get_weights()]
+        for v in m.weights:                                    # se destruyen los pesos
+            v.assign(np.zeros(tuple(v.shape), "float32"))
+        m.load_weights(ruta)
+    p1 = m.predict(imgs, verbose=0)
+    assert np.allclose(p0, p1, atol=1e-5), "cargar pesos tras cambiar los flags NO reproduce el modelo"
+    print("  save/load_weights robusto a congelar-descongelar: OK | "
+          f"el orden de get_weights {'NO ' if formas_antes != formas_despues else ''}cambió con los flags")
+
+
 def verificar_salida(ns, modo_prueba):
     S, T = ns["SALIDA"], ns["TRABAJO"]
     for nombre in ["modelo.keras", "clases.txt", "reporte_val.txt", "curvas.png", "confusion_val.png", "entrenamiento.json"]:
@@ -104,6 +142,8 @@ def verificar_salida(ns, modo_prueba):
 if __name__ == "__main__":
     print("== micro-test de class_weight + tf.data ==")
     micro_test_class_weight()
+    print("== micro-test de pesos guardados con flags distintos ==")
+    micro_test_pesos_con_flags()
 
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
