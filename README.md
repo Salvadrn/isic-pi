@@ -26,7 +26,7 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 
 ## Hardware
 
-Lista de materiales con precios de referencia: [docs/BOM.md](docs/BOM.md) (también en [CSV](docs/BOM.csv)). Si ya tienes la Pi 5, la fuente y la microSD, lo único que falta para la demo en vivo es una Camera Module 3 y su cable para Pi 5 (≈ 32 USD de referencia). Nada de eso está probado en físico todavía.
+Lista de materiales comprando la Raspberry, con precios de una tienda en México: [docs/BOM.md](docs/BOM.md) (también en [CSV](docs/BOM.csv)). Lo mínimo para correr el modelo (Pi 5 de 8 GB, fuente y microSD) son $4,874 MXN; con carcasa, cámara y cable, $5,846 MXN. Con la Pi 5 de 4 GB, que alcanza para este proyecto, se ahorran $1,556. Precios del 2026-10-01, sin envío. Nada de eso está probado en físico todavía.
 
 ## Sesión 1 · Preparar datos
 
