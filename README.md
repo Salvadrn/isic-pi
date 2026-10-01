@@ -24,6 +24,10 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 - [ ] **Sesión 4:** `pi/clasificar.py` (clasificar fotos y tomar fotos con la cámara)
 - [ ] **Sesión 5:** scripts para instalar y enviar todo a la Pi, y este README completo
 
+## Hardware
+
+Lista de materiales con precios de referencia: [docs/BOM.md](docs/BOM.md) (también en [CSV](docs/BOM.csv)). Si ya tienes la Pi 5, la fuente y la microSD, lo único que falta para la demo en vivo es una Camera Module 3 y su cable para Pi 5 (≈ 32 USD de referencia). Nada de eso está probado en físico todavía.
+
 ## Sesión 1 · Preparar datos
 
 [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Salvadrn/isic-pi/blob/main/notebooks/01_preparar_datos.ipynb)
