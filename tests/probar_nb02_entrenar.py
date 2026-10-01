@@ -124,6 +124,34 @@ def micro_test_pesos_con_flags():
           f"en esta versión de Keras el orden de get_weights {'SÍ' if cambio else 'no'} cambia con los flags")
 
 
+def fabricar_datos_colores(base, por_clase=40):
+    """Datos con el formato que deja el notebook 01, pero con 8 clases de colores sólidos distintos (más ruido).
+    Un pipeline sano debe aprender esto casi perfecto; si no, hay un bug en el entrenamiento."""
+    import colorsys
+    clases = ["AK", "BCC", "BKL", "DF", "MEL", "NV", "SCC", "VASC"]
+    rng = np.random.default_rng(7)
+    destino = Path(base) / "isic-pi" / "datos"
+    destino.mkdir(parents=True, exist_ok=True)
+
+    def lote(n):
+        x, y = [], []
+        for i, _ in enumerate(clases):
+            color = np.array(colorsys.hsv_to_rgb(i / len(clases), 0.9, 0.9)) * 255
+            ruido = rng.normal(0, 20, (n, 224, 224, 3))
+            x.append(np.clip(color + ruido, 0, 255).astype("uint8")); y += [i] * n
+        return np.concatenate(x), np.array(y, dtype=np.int16)
+
+    xtr, ytr = lote(por_clase)
+    xte, yte = lote(4)
+    idx_val = np.concatenate([np.flatnonzero(ytr == c)[:4] for c in range(len(clases))])
+    idx_tr = np.setdiff1d(np.arange(len(ytr)), idx_val)
+    np.save(destino / "train_x.npy", xtr); np.save(destino / "train_y.npy", ytr)
+    np.save(destino / "test_x.npy", xte); np.save(destino / "test_y.npy", yte)
+    np.savez(destino / "split.npz", idx_tr=idx_tr, idx_val=np.sort(idx_val))
+    (destino / "clases.txt").write_text("\n".join(clases) + "\n")
+    (destino / "meta.json").write_text(json.dumps({"clases": clases, "tamano": 224, "fecha": "prueba-colores"}))
+
+
 def verificar_generador(ns):
     """Las imágenes que llegan a Keras deben corresponder a sus etiquetas (en validación y en train barajado)."""
     X, y, idx_val, idx_tr = ns["X"], ns["y"], ns["idx_val"], ns["idx_tr"]
@@ -146,7 +174,7 @@ def verificar_generador(ns):
     print(f"  generador OK: {len(idx_val)} imágenes de val en orden y {vistos} de train barajadas, todas con su etiqueta")
 
 
-def verificar_salida(ns, modo_prueba):
+def verificar_salida(ns, modo_prueba, desbalanceado=True):
     S, T = ns["SALIDA"], ns["TRABAJO"]
     for nombre in ["modelo.keras", "clases.txt", "reporte_val.txt", "curvas.png", "confusion_val.png", "entrenamiento.json"]:
         assert (S / nombre).exists() and (S / nombre).stat().st_size > 0, f"falta {nombre}"
@@ -162,8 +190,9 @@ def verificar_salida(ns, modo_prueba):
     assert m.input_shape == (None, 224, 224, 3) and m.output_shape == (None, len(ns["CLASES"]))
     p = m.predict(np.full((2, 224, 224, 3), 128, "float32"), verbose=0)
     assert np.allclose(p.sum(axis=1), 1, atol=1e-4)
-    cw = info["pesos_por_clase"]
-    assert cw["DF"] > cw["NV"], cw
+    if desbalanceado:
+        cw = info["pesos_por_clase"]
+        assert cw["DF"] > cw["NV"], cw
     return info
 
 
@@ -201,13 +230,35 @@ if __name__ == "__main__":
         assert msg
         print("  OK:", msg[:60])
 
-        print("== corrida de aprendizaje (datos falsos separables por color), 15+3 épocas ==")
-        ns, _ = correr02(False, reemplazos={"EPOCAS_CABEZA": 15, "EPOCAS_AJUSTE": 3, "PACIENCIA": 15,
-                                            "BATCH": 32, "CAPAS_A_AJUSTAR": 20})
+        print("== corrida larga con los datos falsos del 01 (ruido con tinte; tarea difícil), 15+3 épocas ==")
+        ns, _ = correr02(False, forzar=True, reemplazos={"EPOCAS_CABEZA": 15, "EPOCAS_AJUSTE": 3, "PACIENCIA": 15,
+                                                         "BATCH": 32, "CAPAS_A_AJUSTAR": 20})
         info = verificar_salida(ns, False)
-        for h in info["historial"]:
-            print(f"  {h['fase']:7s} loss {h['loss']:.3f} val_loss {h['val_loss']:.3f} "
-                  f"val_acc {h['val_accuracy']:.2f} val_recall_macro {h['val_recall_macro']:.2f}")
-        print(f"  recall promedio en val: {info['recall_promedio_val']:.3f} (azar con 8 clases = 0.125)")
-        assert info["recall_promedio_val"] > 0.3, "no aprendió nada en datos trivialmente separables"
+        cabeza = [h for h in info["historial"] if h["fase"] == "cabeza"]
+        print(f"  pérdida de train {cabeza[0]['loss']:.2f} → {cabeza[-1]['loss']:.2f} | "
+              f"recall promedio en val {info['recall_promedio_val']:.3f} (azar con 8 clases = 0.125)")
+        assert cabeza[-1]["loss"] < cabeza[0]["loss"], "la pérdida de train no bajó"
+        assert info["recall_promedio_val"] > 0.2, "no supera al azar"
+
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        fabricar_datos_colores(d)
+
+        print("== 8 clases de colores sólidos, configuración por defecto, 8+1 épocas: debe aprender ==")
+        ns, _ = correr02(False, reemplazos={"EPOCAS_CABEZA": 8, "EPOCAS_AJUSTE": 1, "PACIENCIA": 20,
+                                            "BATCH": 32, "CAPAS_A_AJUSTAR": 20})
+        info = verificar_salida(ns, False, desbalanceado=False)
+        print(f"  recall promedio por época: {[round(h['val_recall_macro'], 2) for h in info['historial']]}")
+        assert info["recall_promedio_val"] >= 0.75, f"debía aprender colores sólidos: {info['recall_promedio_val']}"
+
+        print("== ajuste fino que destruye el modelo (lr 1.0) → debe quedarse con la fase 1 ==")
+        ns, _ = correr02(False, forzar=True, reemplazos={"EPOCAS_CABEZA": 6, "LR_CABEZA": 1e-2, "EPOCAS_AJUSTE": 2,
+                                                         "LR_AJUSTE": 1.0, "PACIENCIA": 20, "BATCH": 32,
+                                                         "CAPAS_A_AJUSTAR": 20})
+        info = verificar_salida(ns, False, desbalanceado=False)
+        mejor_cabeza = max(h["val_recall_macro"] for h in info["historial"] if h["fase"] == "cabeza")
+        print(f"  fase elegida: {info['fase_elegida']} | mejor recall fase 1: {mejor_cabeza:.3f} | "
+              f"recall final guardado: {info['recall_promedio_val']:.3f}")
+        assert info["fase_elegida"] == "cabeza", "el ajuste fino destruyó el modelo y aun así se eligió"
+        assert abs(info["recall_promedio_val"] - mejor_cabeza) < 1e-6, "no se restauraron los pesos de la fase 1"
     print("TODO OK")
