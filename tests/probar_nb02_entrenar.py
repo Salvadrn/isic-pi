@@ -38,8 +38,6 @@ FALSA_GPU = [types.SimpleNamespace(name="/physical_device:GPU:0")]
 def correr02(modo_prueba, forzar=False, reemplazos=None, esperar_error=None, gpu=True):
     ns = {"__name__": "__main__"}
     original = tf.config.list_physical_devices
-    if gpu:
-        tf.config.list_physical_devices = lambda *a, **k: FALSA_GPU
     try:
         for n, fuente in enumerate(celdas_codigo(NOTEBOOK)):
             if "MODO_PRUEBA = " in fuente:
@@ -48,12 +46,16 @@ def correr02(modo_prueba, forzar=False, reemplazos=None, esperar_error=None, gpu
                 for k, v in (reemplazos or {}).items():
                     fuente, c = re.subn(rf"^{k} = [^\s#]+", f"{k} = {v}", fuente, flags=re.M)
                     assert c == 1, f"no pude reemplazar {k}"
+            if gpu and "list_physical_devices" in fuente:       # la GPU falsa solo existe para la celda que la revisa
+                tf.config.list_physical_devices = lambda *a, **k: FALSA_GPU
             try:
                 exec(compile(fuente, f"<celda02 {n}>", "exec"), ns)
             except (RuntimeError, FileNotFoundError) as e:
                 if esperar_error and esperar_error in str(e):
                     return ns, str(e)
                 raise
+            finally:
+                tf.config.list_physical_devices = original
     finally:
         tf.config.list_physical_devices = original
     return ns, None
