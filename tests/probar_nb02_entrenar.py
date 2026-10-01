@@ -12,6 +12,7 @@ La falta de GPU de esta máquina se disimula para pasar la guarda del notebook; 
 Uso (Python 3.12 con lo del test 01 + tensorflow):
     python tests/probar_nb02_entrenar.py
 """
+import hashlib
 import json
 import os
 import re
@@ -133,12 +134,12 @@ def verificar_generador(ns):
     assert np.array_equal(np.concatenate(ys), y[idx_val]) and np.array_equal(np.concatenate(ys), ns["y_val"])
     assert np.array_equal(np.concatenate(xs), X[idx_val].astype("float32"))
     # train barajado: cada imagen llega con la etiqueta que le toca (se identifica por una huella de sus píxeles)
-    huella = lambda arr: arr.reshape(len(arr), -1)[:, :256].astype("float64").sum(axis=1)
-    esperado = dict(zip(huella(X[idx_tr]).tolist(), y[idx_tr].tolist()))
+    huella = lambda arr: [hashlib.blake2b(f.astype("uint8").tobytes(), digest_size=8).digest() for f in arr]
+    esperado = dict(zip(huella(X[idx_tr]), y[idx_tr].tolist()))
     assert len(esperado) == len(idx_tr), "huellas repetidas: el test no es concluyente"
     vistos = 0
     for a, b in ns["ds_tr"]:
-        for f, etiqueta in zip(huella(a.numpy()).tolist(), b.numpy().tolist()):
+        for f, etiqueta in zip(huella(a.numpy()), b.numpy().tolist()):
             assert esperado[f] == etiqueta, "imagen y etiqueta desalineadas en el generador de train"
             vistos += 1
     assert vistos == len(idx_tr), (vistos, len(idx_tr))
