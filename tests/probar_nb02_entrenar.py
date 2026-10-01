@@ -101,7 +101,7 @@ def micro_test_pesos_con_flags():
     imgs = rng.uniform(0, 255, (4, 96, 96, 3)).astype("float32")
     p0 = m.predict(imgs, verbose=0)
     assert np.isfinite(p0).all()
-    formas_antes = [tuple(w.shape) for w in m.get_weights()]
+    orden_antes = [getattr(v, "path", v.name) for v in m.weights]
 
     with tempfile.TemporaryDirectory() as d:
         ruta = str(Path(d) / "a.weights.h5")
@@ -112,14 +112,15 @@ def micro_test_pesos_con_flags():
         for capa in base.layers:
             if isinstance(capa, keras.layers.BatchNormalization):
                 capa.trainable = False
-        formas_despues = [tuple(w.shape) for w in m.get_weights()]
+        orden_despues = [getattr(v, "path", v.name) for v in m.weights]
         for v in m.weights:                                    # se destruyen los pesos
             v.assign(np.zeros(tuple(v.shape), "float32"))
         m.load_weights(ruta)
     p1 = m.predict(imgs, verbose=0)
     assert np.allclose(p0, p1, atol=1e-5), "cargar pesos tras cambiar los flags NO reproduce el modelo"
+    cambio = orden_antes != orden_despues
     print("  save/load_weights robusto a congelar-descongelar: OK | "
-          f"el orden de get_weights {'NO ' if formas_antes != formas_despues else ''}cambió con los flags")
+          f"en esta versión de Keras el orden de get_weights {'SÍ' if cambio else 'no'} cambia con los flags")
 
 
 def verificar_salida(ns, modo_prueba):
