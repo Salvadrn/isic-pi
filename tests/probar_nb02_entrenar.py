@@ -124,19 +124,23 @@ def micro_test_pesos_con_flags():
           f"en esta versión de Keras el orden de get_weights {'SÍ' if cambio else 'no'} cambia con los flags")
 
 
-def fabricar_datos_colores(base, por_clase=40):
+def fabricar_datos_colores(base, por_clase=40, colores=None):
     """Datos con el formato que deja el notebook 01, pero con 8 clases de colores sólidos distintos (más ruido).
-    Un pipeline sano debe aprender esto casi perfecto; si no, hay un bug en el entrenamiento."""
+    Un pipeline sano debe aprender esto casi perfecto; si no, hay un bug en el entrenamiento.
+    colores: lista de (nombre, tono en grados). Por defecto, los nombres de ISIC con tonos repartidos."""
     import colorsys
-    clases = ["AK", "BCC", "BKL", "DF", "MEL", "NV", "SCC", "VASC"]
+    if colores is None:
+        nombres = ["AK", "BCC", "BKL", "DF", "MEL", "NV", "SCC", "VASC"]
+        colores = [(n, 360 * i / len(nombres)) for i, n in enumerate(nombres)]
+    clases = [n for n, _ in colores]
     rng = np.random.default_rng(7)
     destino = Path(base) / "isic-pi" / "datos"
     destino.mkdir(parents=True, exist_ok=True)
 
     def lote(n):
         x, y = [], []
-        for i, _ in enumerate(clases):
-            color = np.array(colorsys.hsv_to_rgb(i / len(clases), 0.9, 0.9)) * 255
+        for i, (_, tono) in enumerate(colores):
+            color = np.array(colorsys.hsv_to_rgb(tono / 360, 0.9, 0.9)) * 255
             ruido = rng.normal(0, 20, (n, 224, 224, 3))
             x.append(np.clip(color + ruido, 0, 255).astype("uint8")); y += [i] * n
         return np.concatenate(x), np.array(y, dtype=np.int16)
