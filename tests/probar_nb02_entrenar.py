@@ -124,39 +124,21 @@ def micro_test_pesos_con_flags():
           f"en esta versión de Keras el orden de get_weights {'SÍ' if cambio else 'no'} cambia con los flags")
 
 
-def fabricar_datos_colores(base, por_clase=40, colores=None, variado=False):
+def fabricar_datos_colores(base, por_clase=40):
     """Datos con el formato que deja el notebook 01, pero con 8 clases de colores sólidos distintos (más ruido).
-    Un pipeline sano debe aprender esto casi perfecto; si no, hay un bug en el entrenamiento.
-    colores: lista de (nombre, tono en grados). Por defecto, los nombres de ISIC con tonos repartidos.
-    variado: cada imagen con su propio brillo, saturación, tono (±8°), ruido (0–30) e iluminación desigual.
-    Sin esto el modelo aprende la textura del ruido además del color y falla con fotos lisas (cámara)."""
+    Un pipeline sano debe aprender esto casi perfecto; si no, hay un bug en el entrenamiento."""
     import colorsys
-    if colores is None:
-        nombres = ["AK", "BCC", "BKL", "DF", "MEL", "NV", "SCC", "VASC"]
-        colores = [(n, 360 * i / len(nombres)) for i, n in enumerate(nombres)]
-    clases = [n for n, _ in colores]
+    clases = ["AK", "BCC", "BKL", "DF", "MEL", "NV", "SCC", "VASC"]
     rng = np.random.default_rng(7)
     destino = Path(base) / "isic-pi" / "datos"
     destino.mkdir(parents=True, exist_ok=True)
 
-    def imagen_variada(tono):
-        h = ((tono + rng.uniform(-8, 8)) % 360) / 360
-        color = np.array(colorsys.hsv_to_rgb(h, rng.uniform(0.5, 1.0), rng.uniform(0.45, 1.0))) * 255
-        rampa = np.linspace(rng.uniform(0.8, 1.0), rng.uniform(1.0, 1.2), 224)      # luz que cae de un lado
-        luz = rampa[:, None] if rng.random() < 0.5 else rampa[None, :]
-        img = color[None, None, :] * luz[..., None] + rng.normal(0, rng.uniform(0, 30), (224, 224, 3))
-        return np.clip(img, 0, 255).astype("uint8")
-
     def lote(n):
         x, y = [], []
-        for i, (_, tono) in enumerate(colores):
-            if variado:
-                x.append(np.stack([imagen_variada(tono) for _ in range(n)]))
-            else:
-                color = np.array(colorsys.hsv_to_rgb(tono / 360, 0.9, 0.9)) * 255
-                ruido = rng.normal(0, 20, (n, 224, 224, 3))
-                x.append(np.clip(color + ruido, 0, 255).astype("uint8"))
-            y += [i] * n
+        for i, _ in enumerate(clases):
+            color = np.array(colorsys.hsv_to_rgb(i / len(clases), 0.9, 0.9)) * 255
+            ruido = rng.normal(0, 20, (n, 224, 224, 3))
+            x.append(np.clip(color + ruido, 0, 255).astype("uint8")); y += [i] * n
         return np.concatenate(x), np.array(y, dtype=np.int16)
 
     xtr, ytr = lote(por_clase)
