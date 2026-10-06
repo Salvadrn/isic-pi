@@ -21,7 +21,7 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 - [x] **Sesión 1:** repo + `notebooks/01_preparar_datos.ipynb`
 - [x] **Sesión 2:** `notebooks/02_entrenar.ipynb` (MobileNetV2 con transfer learning y pesos por clase)
 - [x] **Sesión 3:** `notebooks/03_exportar_tflite.ipynb` (métricas por clase en test y exportación a `.tflite`)
-- [ ] **Sesión 4:** `pi/clasificar.py` (clasificar fotos y tomar fotos con la cámara)
+- [x] **Sesión 4:** `pi/clasificar.py` (clasificar fotos, webcam, cámara de la Pi y autoprueba; falta probarlo con una cámara de verdad)
 - [ ] **Sesión 5:** scripts para instalar y enviar todo a la Pi, y este README completo
 
 ## Hardware
@@ -77,6 +77,43 @@ Qué hace:
 Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_pi.npz` (fotos de test con las probabilidades esperadas, para comprobar en la Pi), el reporte, la matriz de confusión, `metricas_test.json` y un `isic_pi_modelo.zip` con todo, que se descarga solo.
 
 **En tu Mac:** descomprime el zip dentro de la carpeta `modelo/` de este repo. Esa carpeta es la que se copiará a la Pi en la sesión 4.
+
+## Sesión 4 · El programa: `pi/clasificar.py`
+
+Clasifica fotos con el modelo exportado. Corre igual en la Pi y en la Mac. Desde la carpeta del repo:
+
+```bash
+.venv/bin/python pi/clasificar.py foto.jpg carpeta/
+```
+
+```bash
+.venv/bin/python pi/clasificar.py --webcam --vivo
+```
+
+```bash
+.venv/bin/python pi/clasificar.py --camara
+```
+
+```bash
+.venv/bin/python pi/clasificar.py --autoprueba
+```
+
+- `--webcam`: una foto con la webcam (la de la Mac o una USB). Con `--vivo` abre una ventana en vivo con un cuadro guía, que es lo que ve el modelo; espacio guarda la foto en `capturas/` y q sale.
+- `--camara`: una foto con la cámara de la Pi (Camera Module 3, con `rpicam-still`).
+- `--autoprueba`: clasifica las fotos de muestra que vienen con el modelo y comprueba que da lo mismo que en Colab.
+- Otras opciones: `--modelo CARPETA`, `--ligero`, `--top N` y `--json`.
+
+**Mientras no exista el modelo real:** `--modelo demo/objetos` usa MobileNetV2 con sus pesos públicos de ImageNet (1,000 objetos comunes; no sabe nada de piel). Sirve para probar la cámara: enséñale una taza y debe decir algo como `coffee_mug`. Se genera con `demo/generar_modelo_objetos.py`.
+
+**En la Mac**, una sola vez:
+
+```bash
+cd ~/Desktop/isic-pi && python3 -m venv .venv && .venv/bin/pip install ai-edge-litert pillow numpy opencv-python
+```
+
+La primera vez, macOS pide permiso de cámara para la Terminal.
+
+**En la Pi** el `.venv` ya tiene lo necesario para fotos, `--autoprueba` y `--camara`. Para una webcam USB en la Pi hace falta OpenCV (`.venv/bin/pip install opencv-python-headless`); `--vivo` además necesita un monitor conectado y `opencv-python`.
 
 ## Instalar en la Pi
 
@@ -135,6 +172,12 @@ python tests/probar_nb02_entrenar.py
 python tests/probar_nb03_exportar.py
 ```
 
+```bash
+python tests/probar_clasificar.py
+```
+
+La última también corre en la Pi (`.venv/bin/python tests/probar_clasificar.py`): solo necesita `ai-edge-litert`, NumPy y Pillow, porque simula la webcam y `rpicam-still`.
+
 Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos minutos en CPU.
 
 ## Estado: qué está probado y qué no
@@ -143,7 +186,8 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 - **Notebook 02:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15) con datos falsos que fabrica el propio notebook 01 y con 8 clases de colores sólidos. Verificado: imágenes y etiquetas llegan alineadas a Keras, `class_weight` se aplica con `tf.data`, las guardas fallan con mensaje claro (sin datos del 01, sin GPU, modelo ya entrenado), el modelo guardado reproduce las predicciones, el test no se copia y el modelo exportado no lleva capas de aumento. En colores sólidos aprende (recall promedio 0.91 en validación con la configuración por defecto) y un ajuste fino que destruye el modelo se descarta. **No probado:** GPU, Drive ni ISIC real. El tiempo de entrenamiento y la calidad por clase salen de la corrida en Colab, no de estas pruebas.
 - **Notebook 03:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15, ai-edge-litert 2.2.0), encadenado con el 01 y el 02 sobre datos falsos. Verificado: la conversión directa desde Keras funciona en esta versión de TensorFlow, el float32 reproduce a Keras (diferencia máxima de 7 × 10⁻⁶ en las probabilidades), el `.tflite` leído de disco reproduce las muestras, el zip trae lo mismo que la carpeta y las guardas fallan con mensaje claro (sin 01, sin 02, ya exportado). Con 8 clases de colores sólidos el float32 sacó recall promedio 0.969 en test y el ligero 0.875. **No probado:** Colab, Drive, ISIC real y el intérprete de la Pi, que es ARM (eso lo comprueban las muestras en la sesión 4).
 - **Raspberry Pi 5 (8 GB, Raspberry Pi OS Trixie, Python 3.13):** entorno instalado el 2026-10-06 en `~/isic-pi/.venv` (`ai-edge-litert` 2.2.0, NumPy 2.5.3, Pillow 12.3.0). **Medido en la Pi** con un modelo de juguete de la misma arquitectura que el real: da las mismas probabilidades que la Mac (diferencia máxima 2.4 × 10⁻⁷, misma clase en 16 de 16 muestras) y tarda 9.8 ms por foto con `modelo.tflite` y 13.0 ms con el ligero (4 hilos, sin contar abrir y reducir la foto). El modelo real todavía no existe.
-- **Programa de la Pi (sesión 4) y scripts (sesión 5):** aún sin escribir.
+- **Programa (`pi/clasificar.py`):** probado en la Mac y en la Pi con `tests/probar_clasificar.py`. El preproceso es idéntico píxel a píxel al del notebook 01 (6 casos, incluida una foto de 12 MP y una con rotación EXIF). La autoprueba coincide: en la Pi, 8 de 8 muestras, diferencia máxima de 8.2 × 10⁻⁷ y 10.1 ms por foto con el modelo de objetos. Cada modo (archivos, webcam, en vivo y cámara de la Pi) da lo mismo que el modelo aplicado directo. **La webcam y la cámara de la Pi están simuladas en la prueba:** con la webcam real de la Mac falta que macOS dé permiso de cámara, y la cámara de la Pi todavía no se compra.
+- **Scripts (sesión 5):** aún sin escribir.
 
 ## Decisiones
 
