@@ -78,6 +78,20 @@ Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_
 
 **En tu Mac:** descomprime el zip dentro de la carpeta `modelo/` de este repo. Esa carpeta es la que se copiará a la Pi en la sesión 4.
 
+## Instalar en la Pi
+
+Así quedó instalada el 2026-10-06, por SSH desde la Mac (`isic-pi` es el alias de la Pi en `~/.ssh/config`). Se copia el repo completo, incluido el historial de git, sin necesidad de entrar a GitHub desde la Pi:
+
+```bash
+rsync -az --exclude .venv --exclude __pycache__ ~/Desktop/isic-pi/ isic-pi:isic-pi/
+```
+
+```bash
+ssh isic-pi 'cd ~/isic-pi && python3 -m venv .venv && .venv/bin/pip install --upgrade pip ai-edge-litert pillow numpy'
+```
+
+Para actualizar la Pi después de un cambio basta con repetir el `rsync`. La sesión 5 convierte esto en scripts.
+
 ## Probar los notebooks sin Colab
 
 Las pruebas ejecutan las celdas de cada notebook sobre datos falsos, sin Hugging Face, Drive ni GPU. Probado con Python 3.12:
@@ -106,7 +120,8 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 - **Notebook 01:** probado en Python 3.12 con un dataset falso del mismo esquema (`image` + `label`), en los dos modos, incluyendo etiquetas desconocidas en test, imágenes no cuadradas, en escala de grises y con canal alfa. **Todavía no lo he corrido en Colab con el dataset real:** la descarga desde Hugging Face, el montaje de Drive, el tiempo y el espacio ocupado son estimados, no medidos.
 - **Notebook 02:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15) con datos falsos que fabrica el propio notebook 01 y con 8 clases de colores sólidos. Verificado: imágenes y etiquetas llegan alineadas a Keras, `class_weight` se aplica con `tf.data`, las guardas fallan con mensaje claro (sin datos del 01, sin GPU, modelo ya entrenado), el modelo guardado reproduce las predicciones, el test no se copia y el modelo exportado no lleva capas de aumento. En colores sólidos aprende (recall promedio 0.91 en validación con la configuración por defecto) y un ajuste fino que destruye el modelo se descarta. **No probado:** GPU, Drive ni ISIC real. El tiempo de entrenamiento y la calidad por clase salen de la corrida en Colab, no de estas pruebas.
 - **Notebook 03:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15, ai-edge-litert 2.2.0), encadenado con el 01 y el 02 sobre datos falsos. Verificado: la conversión directa desde Keras funciona en esta versión de TensorFlow, el float32 reproduce a Keras (diferencia máxima de 7 × 10⁻⁶ en las probabilidades), el `.tflite` leído de disco reproduce las muestras, el zip trae lo mismo que la carpeta y las guardas fallan con mensaje claro (sin 01, sin 02, ya exportado). Con 8 clases de colores sólidos el float32 sacó recall promedio 0.969 en test y el ligero 0.875. **No probado:** Colab, Drive, ISIC real y el intérprete de la Pi, que es ARM (eso lo comprueban las muestras en la sesión 4).
-- **Todo lo demás:** aún sin escribir.
+- **Raspberry Pi 5 (8 GB, Raspberry Pi OS Trixie, Python 3.13):** entorno instalado el 2026-10-06 en `~/isic-pi/.venv` (`ai-edge-litert` 2.2.0, NumPy 2.5.3, Pillow 12.3.0). **Medido en la Pi** con un modelo de juguete de la misma arquitectura que el real: da las mismas probabilidades que la Mac (diferencia máxima 2.4 × 10⁻⁷, misma clase en 16 de 16 muestras) y tarda 9.8 ms por foto con `modelo.tflite` y 13.0 ms con el ligero (4 hilos, sin contar abrir y reducir la foto). El modelo real todavía no existe.
+- **Programa de la Pi (sesión 4) y scripts (sesión 5):** aún sin escribir.
 
 ## Decisiones
 
@@ -115,7 +130,7 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 - **Datos en Drive, no en git:** los arreglos pesan ≈ 4 GB; el repo solo guarda código (y, más adelante, el modelo ya exportado).
 - **Mejores pesos en archivo, no en memoria:** `get_weights()` / `set_weights()` dependen del orden de las variables, que en otras versiones de Keras cambia al congelar y descongelar capas y mezclaría en silencio los vectores de BatchNorm. En Keras 3.15 el orden no cambia, pero guardar y cargar desde archivo es seguro en cualquier versión.
 
-- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero en la prueba con datos falsos perdió 9 puntos de recall promedio. El notebook 03 lo mide con ISIC real y solo lo recomienda si pierde 1 punto o menos.
+- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero en la prueba con datos falsos perdió 9 puntos de recall promedio y en la Pi fue más lento (13.0 ms contra 9.8 ms por foto). El notebook 03 lo mide con ISIC real y solo lo recomienda si pierde 1 punto o menos.
 - **Muestras de comprobación:** con el modelo viajan unas fotos de test y las probabilidades que dio en Colab, para que la Pi verifique que su intérprete da lo mismo.
 
 ## Limitaciones conocidas
