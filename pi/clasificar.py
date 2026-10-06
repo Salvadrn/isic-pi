@@ -9,7 +9,7 @@ Corre igual en la Raspberry Pi y en la Mac. Desde la carpeta del repo:
   python pi/clasificar.py --camara                     # una foto con la cámara de la Pi (rpicam-still)
   python pi/clasificar.py --autoprueba                 # comprueba que da lo mismo que en Colab
 
-Mientras no exista el modelo real, `--modelo demo/colores` usa un modelo de colores para probar la cámara.
+Mientras no exista el modelo real, `--modelo demo/objetos` usa un modelo de objetos comunes (ImageNet) para probar la cámara.
 
 Proyecto escolar: no es un dispositivo médico y no sirve para diagnosticar.
 """
@@ -83,7 +83,7 @@ class Clasificador:
             raise ErrorUsuario(
                 f"No encuentro {self.ruta}.\n"
                 "Corre el notebook 03 en Colab y descomprime isic_pi_modelo.zip en modelo/,\n"
-                "o prueba la cámara con el modelo de colores: --modelo demo/colores")
+                "o prueba la cámara con el modelo de objetos: --modelo demo/objetos")
         ruta_clases = self.carpeta / "clases.txt"
         if not ruta_clases.exists():
             raise ErrorUsuario(f"No encuentro {ruta_clases}.")
@@ -280,7 +280,7 @@ def main(argv=None):
 
     modelo = a.modelo
     if not modelo.is_absolute() and not modelo.exists() and (RAIZ / modelo).exists():
-        modelo = RAIZ / modelo                       # p. ej. --modelo demo/colores desde otra carpeta
+        modelo = RAIZ / modelo                       # p. ej. --modelo demo/objetos desde otra carpeta
     try:
         c = Clasificador(modelo, ligero=a.ligero, hilos=a.hilos)
         if a.autoprueba:
