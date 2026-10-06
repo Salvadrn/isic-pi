@@ -280,7 +280,7 @@ def main(argv=None):
 
     modelo = a.modelo
     if not modelo.is_absolute() and not modelo.exists() and (RAIZ / modelo).exists():
-        modelo = RAIZ / modelo                       # p. ej. --modelo demo/colores desde otra carpeta
+        modelo = RAIZ / modelo                       # p. ej. --modelo demo/objetos desde otra carpeta
     try:
         c = Clasificador(modelo, ligero=a.ligero, hilos=a.hilos)
         if a.autoprueba:
