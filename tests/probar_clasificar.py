@@ -1,10 +1,10 @@
 """Prueba pi/clasificar.py sin cámara ni modelo real. Corre en la Mac y en la Pi: solo necesita ai-edge-litert,
-NumPy y Pillow (OpenCV y rpicam-still se simulan).
+NumPy y Pillow (OpenCV y rpicam-still se simulan). Usa el modelo de objetos de demo/objetos.
 
 Qué comprueba: que preparar_imagen es idéntica píxel a píxel a la del notebook 01 (foto grande de cámara, no
-cuadradas, gris, con alfa y con rotación EXIF); la autoprueba con el modelo de colores; clasificar archivos y
-carpetas; la foto con webcam y la ventana en vivo (webcam simulada); la foto con la cámara de la Pi (rpicam-still
-simulado); y los mensajes de error.
+cuadradas, gris, con alfa y con rotación EXIF); la autoprueba; y que cada modo (archivos y carpetas, foto con
+webcam, ventana en vivo, foto con la cámara de la Pi) da exactamente lo mismo que el modelo aplicado directo a la
+misma imagen. También, que los errores salen con mensaje y código 2.
 
 Qué NO comprueba: una webcam o una cámara de verdad, ni el modelo real de lesiones.
 
@@ -12,7 +12,6 @@ Uso:
     python tests/probar_clasificar.py
 """
 import ast
-import colorsys
 import contextlib
 import importlib.util
 import io
@@ -27,12 +26,13 @@ import numpy as np
 from PIL import Image, ImageOps
 
 RAIZ = Path(__file__).resolve().parent.parent
-DEMO = RAIZ / "demo" / "colores"
+DEMO = RAIZ / "demo" / "objetos"
 
 spec = importlib.util.spec_from_file_location("clasificar", RAIZ / "pi" / "clasificar.py")
 cl = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cl)
 rng = np.random.default_rng(3)
+MODELO = cl.Clasificador(DEMO)
 
 
 def correr(*args):
@@ -46,13 +46,17 @@ def correr(*args):
     return codigo, out.getvalue(), err.getvalue()
 
 
-def color_rgb(tono):
-    return tuple(int(v * 255) for v in colorsys.hsv_to_rgb(tono / 360, 0.9, 0.9))
+def foto_suave(alto, ancho):
+    """Imagen sintética suave (ruido de baja frecuencia), más parecida a una foto que el ruido puro."""
+    chica = rng.integers(0, 256, (6, 8, 3), dtype=np.uint8)
+    return np.asarray(Image.fromarray(chica).resize((ancho, alto), Image.BILINEAR))
 
 
-def imagen_color(tono, alto=480, ancho=640):
-    base = np.array(color_rgb(tono), dtype=np.float64)
-    return np.clip(base + rng.normal(0, 20, (alto, ancho, 3)), 0, 255).astype(np.uint8)
+def esperado(img):
+    """Clase y probabilidad que da el modelo aplicado directo."""
+    p, _ = MODELO.clasificar(img)
+    i = int(p.argmax())
+    return MODELO.clases[i], round(float(p[i]), 4)
 
 
 def preparar_del_notebook():
@@ -89,11 +93,12 @@ def probar_paridad():
     print(f"  preparar_imagen idéntica al notebook 01 en {len(fotos)} casos: {', '.join(fotos)}")
 
 
-def falso_cv2(tono, teclas=()):
-    """Un cv2 mínimo: una webcam que entrega cuadros de un color, y ventanas que no se dibujan."""
+def falso_cv2(cuadro_rgb, teclas=()):
+    """Un cv2 mínimo: una webcam que siempre entrega el mismo cuadro, y ventanas que no se dibujan."""
     m = types.ModuleType("cv2")
     m.CAP_PROP_FRAME_WIDTH, m.CAP_PROP_FRAME_HEIGHT, m.FONT_HERSHEY_SIMPLEX, m.LINE_AA = 3, 4, 0, 16
     m.textos, m.mostrados, m.teclas = [], 0, list(teclas)
+    bgr = np.ascontiguousarray(cuadro_rgb[:, :, ::-1])
 
     class Cam:
         def isOpened(self):
@@ -103,7 +108,7 @@ def falso_cv2(tono, teclas=()):
             return True
 
         def read(self):
-            return True, np.ascontiguousarray(imagen_color(tono, 720, 1280)[:, :, ::-1])    # BGR
+            return True, bgr.copy()
 
         def release(self):
             pass
@@ -129,7 +134,7 @@ if __name__ == "__main__":
         print("== preproceso ==")
         probar_paridad()
 
-        print("== autoprueba con el modelo de colores ==")
+        print("== autoprueba con el modelo de objetos ==")
         codigo, out, _ = correr("--autoprueba", "--modelo", DEMO)
         assert codigo == 0, out
         print("  " + out.strip().splitlines()[1].strip())
@@ -137,31 +142,39 @@ if __name__ == "__main__":
         print("== archivos y carpetas ==")
         fotos = d / "fotos"
         (fotos / "sub").mkdir(parents=True)
-        Image.fromarray(imagen_color(0)).save(fotos / "rojo.png")
-        Image.fromarray(imagen_color(225)).save(fotos / "azul.jpg", quality=95)
-        Image.fromarray(imagen_color(120, 640, 480)).save(fotos / "sub" / "verde.png")
+        Image.fromarray(foto_suave(480, 640)).save(fotos / "a.png")
+        Image.fromarray(foto_suave(720, 1280)).save(fotos / "b.jpg", quality=95)
+        Image.fromarray(foto_suave(640, 480)).save(fotos / "sub" / "c.png")
         codigo, out, _ = correr(fotos, "--modelo", DEMO, "--json")
         assert codigo == 0
-        top = {Path(r["origen"]).stem: r["top"][0]["clase"] for r in json.loads(out)}
-        assert top == {"rojo": "rojo", "azul": "azul", "verde": "verde"}, top
-        print(f"  3 fotos (una en subcarpeta) → {top}")
-        codigo, out, _ = correr(fotos / "rojo.png", "--modelo", DEMO)
-        assert codigo == 0 and "rojo" in out and "ms" in out
+        resultados = json.loads(out)
+        assert len(resultados) == 3, resultados
+        for r in resultados:
+            with Image.open(r["origen"]) as img:
+                clase, prob = esperado(img)
+            assert (r["top"][0]["clase"], r["top"][0]["prob"]) == (clase, prob), (r, clase, prob)
+            assert len(r["top"]) == 3 and r["top"][0]["prob"] >= r["top"][1]["prob"] >= r["top"][2]["prob"]
+        print(f"  3 fotos (una en subcarpeta): mismo resultado que el modelo directo ({', '.join(r['top'][0]['clase'] for r in resultados)})")
+        codigo, out, _ = correr(fotos / "a.png", "--modelo", DEMO)
+        assert codigo == 0 and "ms" in out and " %" in out
         print("  salida de texto OK")
 
         print("== webcam simulada ==")
-        sys.modules["cv2"] = falso_cv2(225)
+        cuadro = foto_suave(720, 1280)
+        clase_cuadro, _ = esperado(Image.fromarray(cuadro))
+        sys.modules["cv2"] = falso_cv2(cuadro)
         codigo, out, err = correr("--webcam", "--modelo", DEMO, "--json")
         assert codigo == 0, err
         r = json.loads(out)[0]
-        assert r["top"][0]["clase"] == "azul" and Path(r["origen"]).exists(), r
-        print(f"  una foto: {r['top'][0]['clase']} {100 * r['top'][0]['prob']:.0f} %, guardada en capturas/")
-        cv2 = falso_cv2(0, teclas=[ord(" ")])
+        assert r["top"][0]["clase"] == clase_cuadro and Path(r["origen"]).exists(), (r, clase_cuadro)
+        print(f"  una foto: {r['top'][0]['clase']} (igual que el modelo directo), guardada en capturas/")
+        cv2 = falso_cv2(cuadro, teclas=[ord(" ")])
         sys.modules["cv2"] = cv2
         codigo, out, err = correr("--webcam", "--vivo", "--max-cuadros", 5, "--modelo", DEMO)
         assert codigo == 0, err
-        assert cv2.mostrados == 5 and any(t.startswith("rojo") for t in cv2.textos), cv2.textos
-        assert "MODELO DE PRUEBA" in cv2.textos and "rojo" in out
+        assert cv2.mostrados == 5, cv2.mostrados
+        assert any(t.startswith(cl.sin_acentos(clase_cuadro)) for t in cv2.textos), cv2.textos
+        assert "MODELO DE PRUEBA" in cv2.textos and clase_cuadro in out
         print(f"  en vivo: {cv2.mostrados} cuadros, texto «{cv2.textos[0]}», espacio guardó una foto")
         sys.modules["cv2"] = None                         # como si OpenCV no estuviera instalado
         codigo, _, err = correr("--webcam", "--modelo", DEMO)
@@ -172,12 +185,13 @@ if __name__ == "__main__":
         print("== cámara de la Pi simulada (rpicam-still falso) ==")
         bin_falso = d / "bin"
         bin_falso.mkdir()
+        np.save(d / "cuadro_pi.npy", foto_suave(1296, 2304))
         rpicam = bin_falso / "rpicam-still"
         rpicam.write_text(
             f"#!{sys.executable}\n"
             "import sys, numpy as np\nfrom PIL import Image\n"
             "salida = sys.argv[sys.argv.index('-o') + 1]\n"
-            f"Image.fromarray(np.full((1296, 2304, 3), {color_rgb(0)}, np.uint8)).save(salida)\n")
+            f"Image.fromarray(np.load({str(d / 'cuadro_pi.npy')!r})).save(salida)\n")
         rpicam.chmod(0o755)
         path_original = os.environ["PATH"]
         os.environ["PATH"] = f"{bin_falso}{os.pathsep}{path_original}"
@@ -186,19 +200,23 @@ if __name__ == "__main__":
         finally:
             os.environ["PATH"] = path_original
         assert codigo == 0, err
-        assert json.loads(out)[0]["top"][0]["clase"] == "rojo", out
-        print("  foto con rpicam-still → rojo")
+        r = json.loads(out)[0]
+        with Image.open(r["origen"]) as img:
+            assert r["top"][0]["clase"] == esperado(img)[0], r
+        print(f"  foto con rpicam-still → {r['top'][0]['clase']} (igual que el modelo directo)")
 
         print("== errores ==")
+        vacia = d / "vacia"
+        vacia.mkdir()
         casos = [
-            (("--autoprueba", "--modelo", d / "no-existe"), "No encuentro"),
-            ((d / "capturas" / "vacia",), None),
-            (("--autoprueba", "--ligero", "--modelo", DEMO), "modelo_ligero.tflite"),
-            (("--webcam", "--camara", "--modelo", DEMO), None),
+            (["--autoprueba", "--modelo", d / "no-existe"], "No encuentro"),
+            ([vacia, "--modelo", DEMO], "No encontré imágenes"),
+            (["--autoprueba", "--ligero", "--modelo", DEMO], "modelo_ligero.tflite"),
+            (["--webcam", "--camara", "--modelo", DEMO], None),
+            (["--vivo", "--modelo", DEMO], None),
         ]
-        (d / "capturas" / "vacia").mkdir()
         for args, texto in casos:
-            codigo, _, err = correr(*(list(args) + (["--modelo", DEMO] if args[0] == d / "capturas" / "vacia" else [])))
+            codigo, _, err = correr(*args)
             assert codigo == 2, (args, codigo, err)
             assert texto is None or texto in err, (args, err)
         print(f"  {len(casos)} casos devuelven código 2 con mensaje")
