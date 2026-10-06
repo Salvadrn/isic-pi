@@ -30,8 +30,8 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
         t2.fabricar_datos_colores(d, por_clase=80, colores=COLORES, variado=True)
-        t2.correr02(False, reemplazos={"EPOCAS_CABEZA": 6, "LR_CABEZA": 1e-2, "EPOCAS_AJUSTE": 1,
-                                       "PACIENCIA": 20, "BATCH": 32, "CAPAS_A_AJUSTAR": 20})
+        t2.correr02(False, reemplazos={"EPOCAS_CABEZA": 8, "LR_CABEZA": 1e-2, "EPOCAS_AJUSTE": 8,
+                                       "LR_AJUSTE": 5e-4, "PACIENCIA": 20, "BATCH": 32, "CAPAS_A_AJUSTAR": 60})
         ns, _ = t3.correr03(False, reemplazos={"EXPORTAR_LIGERO": False})
         for nombre in ["modelo.tflite", "clases.txt", "muestras_pi.npz", "metricas_test.json"]:
             shutil.copy2(ns["SALIDA"] / nombre, DESTINO / nombre)
