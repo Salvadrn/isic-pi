@@ -25,3 +25,4 @@ capturas/
 
 # El modelo exportado sí va al repo, con sus muestras de comprobación para la Pi
 !modelo/muestras_pi.npz
+!demo/colores/muestras_pi.npz
