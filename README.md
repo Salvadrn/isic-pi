@@ -80,17 +80,39 @@ Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_
 
 ## Instalar en la Pi
 
-Así quedó instalada el 2026-10-06, por SSH desde la Mac (`isic-pi` es el alias de la Pi en `~/.ssh/config`). Se copia el repo completo, incluido el historial de git, sin necesidad de entrar a GitHub desde la Pi:
+La Pi tiene su propia copia del repo en `~/isic-pi`, conectada a GitHub con la sesión de `gh` de Adrián (desde el 2026-10-06). Los cambios se hacen en la Mac, se suben a GitHub y la Pi los baja:
+
+```
+Mac (editamos) ──push──▶ GitHub ──git pull──▶ Pi
+```
+
+Desde la Mac (`isic-pi` es el alias de la Pi en `~/.ssh/config`):
 
 ```bash
-rsync -az --exclude .venv --exclude __pycache__ ~/Desktop/isic-pi/ isic-pi:isic-pi/
+ssh isic-pi 'cd ~/isic-pi && git pull'
+```
+
+O en la terminal de la Pi:
+
+```bash
+cd ~/isic-pi && git pull
+```
+
+**En una Pi nueva** (Raspberry Pi OS 64-bit). La nuestra se instaló copiando el repo desde la Mac y después se conectó a GitHub; estos pasos son el equivalente desde cero, sin probar tal cual:
+
+```bash
+sudo apt update && sudo apt install -y git gh python3-venv
 ```
 
 ```bash
-ssh isic-pi 'cd ~/isic-pi && python3 -m venv .venv && .venv/bin/pip install --upgrade pip ai-edge-litert pillow numpy'
+gh auth login
 ```
 
-Para actualizar la Pi después de un cambio basta con repetir el `rsync`. La sesión 5 convierte esto en scripts.
+```bash
+gh repo clone Salvadrn/isic-pi ~/isic-pi && cd ~/isic-pi && python3 -m venv .venv && .venv/bin/pip install --upgrade pip ai-edge-litert pillow numpy
+```
+
+La sesión 5 convierte esto en scripts.
 
 ## Probar los notebooks sin Colab
 
