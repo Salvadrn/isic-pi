@@ -1,0 +1,77 @@
+{
+  "fecha": "2026-10-06 13:43",
+  "modo_prueba": false,
+  "clases": [
+    "rojo",
+    "naranja",
+    "amarillo",
+    "verde",
+    "cian",
+    "azul",
+    "morado",
+    "rosa"
+  ],
+  "tamano": 224,
+  "n_test": 32,
+  "preprocesado": null,
+  "entrada": "float32 (1, tamano, tamano, 3) con píxeles 0-255; el escalado va dentro del modelo",
+  "entrenamiento": {
+    "fecha": "2026-10-06 13:43",
+    "fase_elegida": "cabeza",
+    "recall_promedio_val": 0.96875,
+    "recall_por_clase_val": {
+      "rojo": 1.0,
+      "naranja": 1.0,
+      "amarillo": 1.0,
+      "verde": 0.75,
+      "cian": 1.0,
+      "azul": 1.0,
+      "morado": 1.0,
+      "rosa": 1.0
+    }
+  },
+  "modelos": {
+    "keras": {
+      "mb": null,
+      "ms": 14.32619403112767,
+      "accuracy": 1.0,
+      "recall_promedio": 1.0,
+      "f1_macro": 1.0,
+      "recall_por_clase": {
+        "rojo": 1.0,
+        "naranja": 1.0,
+        "amarillo": 1.0,
+        "verde": 1.0,
+        "cian": 1.0,
+        "azul": 1.0,
+        "morado": 1.0,
+        "rosa": 1.0
+      },
+      "coincide_con_keras": 1.0,
+      "dif_max_prob": 0.0
+    },
+    "float32": {
+      "mb": 8.929104,
+      "ms": 1.5900260314083425,
+      "accuracy": 1.0,
+      "recall_promedio": 1.0,
+      "f1_macro": 1.0,
+      "recall_por_clase": {
+        "rojo": 1.0,
+        "naranja": 1.0,
+        "amarillo": 1.0,
+        "verde": 1.0,
+        "cian": 1.0,
+        "azul": 1.0,
+        "morado": 1.0,
+        "rosa": 1.0
+      },
+      "coincide_con_keras": 1.0,
+      "dif_max_prob": 5.0067901611328125e-06
+    }
+  },
+  "intérprete": "ai_edge_litert",
+  "tensorflow": "2.21.0",
+  "keras": "3.15.1",
+  "pillow": "12.3.0"
+}
