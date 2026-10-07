@@ -147,14 +147,34 @@ if __name__ == "__main__":
         for nombre in ("modelo.tflite", "modelo_ligero.tflite"):
             shutil.copy(DEMO / "modelo.tflite", tol / nombre)
         mu = np.load(DEMO / "muestras_pi.npz")
-        for desvio, pasa_float32, pasa_ligero in [(0.02, False, True), (0.08, False, False)]:
-            prob = mu["prob_float32"].copy()
-            prob[np.arange(len(prob)), prob.argmax(axis=1)] += desvio   # misma clase, probabilidad corrida
-            np.savez(tol / "muestras_pi.npz", x=mu["x"], prob_float32=prob, prob_ligero=prob)
+        base = mu["prob_float32"]
+        filas, top = np.arange(len(base)), base.argmax(axis=1)
+
+        def corrida(desvio):
+            prob = base.copy()
+            prob[filas, top] += desvio                    # misma clase, probabilidad corrida
+            return prob
+
+        orden = np.sort(base, axis=1)
+        i = int(np.argmin(orden[:, -1] - orden[:, -2]))
+        assert orden[i, -1] - orden[i, -2] < 0.03, "las muestras de demo ya no traen una casi empatada"
+        empate = base.copy()
+        segunda = int(np.argsort(base[i])[-2])
+        empate[i, [top[i], segunda]] = empate[i, [segunda, top[i]]]   # al exportar ganaba la segunda, por poco
+        casos = [  # (float32 esperado, ligero esperado, pasa el float32, pasa el ligero)
+            (corrida(0.02), corrida(0.02), False, True),
+            (corrida(0.08), corrida(0.08), False, False),
+            (base, corrida(0.08), True, False),           # cada modelo se compara con sus propias probabilidades
+            (base, empate, True, True),                   # una casi empatada que cambia de clase no es error
+        ]
+        for p32, plig, pasa_float32, pasa_ligero in casos:
+            np.savez(tol / "muestras_pi.npz", x=mu["x"], prob_float32=p32, prob_ligero=plig)
             for extra, pasa in [((), pasa_float32), (("--ligero",), pasa_ligero)]:
                 codigo, out, _ = correr("--autoprueba", "--modelo", tol, *extra)
-                assert codigo == (0 if pasa else 1), (desvio, extra, out)
-        print("  desvío de 0.02: el float32 falla y el ligero pasa; desvío de 0.08: los dos fallan")
+                assert codigo == (0 if pasa else 1), (extra, out)
+        assert "casi empatadas" in out, out
+        print("  desvío de 0.02: el float32 falla y el ligero pasa; de 0.08: los dos fallan; "
+              "un casi empate que cambia de clase pasa")
 
         print("== archivos y carpetas ==")
         fotos = d / "fotos"
