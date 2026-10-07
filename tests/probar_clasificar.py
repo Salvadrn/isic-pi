@@ -2,7 +2,7 @@
 NumPy y Pillow (OpenCV y rpicam-still se simulan). Usa el modelo de objetos de demo/objetos.
 
 Qué comprueba: que preparar_imagen es idéntica píxel a píxel a la del notebook 01 (foto grande de cámara, no
-cuadradas, gris, con alfa y con rotación EXIF); la autoprueba; y que cada modo (archivos y carpetas, foto con
+cuadradas, gris, con alfa y con rotación EXIF); la autoprueba y su tolerancia (más holgada para el ligero); y que cada modo (archivos y carpetas, foto con
 webcam, ventana en vivo, foto con la cámara de la Pi) da exactamente lo mismo que el modelo aplicado directo a la
 misma imagen. También, que los errores salen con mensaje y código 2.
 
@@ -17,6 +17,7 @@ import importlib.util
 import io
 import json
 import os
+import shutil
 import sys
 import tempfile
 import types
@@ -138,6 +139,22 @@ if __name__ == "__main__":
         codigo, out, _ = correr("--autoprueba", "--modelo", DEMO)
         assert codigo == 0, out
         print("  " + out.strip().splitlines()[1].strip())
+
+        print("== tolerancia de la autoprueba ==")
+        tol = d / "modelo_tolerancia"                    # el modelo de objetos hace de float32 y de ligero
+        tol.mkdir()
+        shutil.copy(DEMO / "clases.txt", tol / "clases.txt")
+        for nombre in ("modelo.tflite", "modelo_ligero.tflite"):
+            shutil.copy(DEMO / "modelo.tflite", tol / nombre)
+        mu = np.load(DEMO / "muestras_pi.npz")
+        for desvio, pasa_float32, pasa_ligero in [(0.02, False, True), (0.08, False, False)]:
+            prob = mu["prob_float32"].copy()
+            prob[np.arange(len(prob)), prob.argmax(axis=1)] += desvio   # misma clase, probabilidad corrida
+            np.savez(tol / "muestras_pi.npz", x=mu["x"], prob_float32=prob, prob_ligero=prob)
+            for extra, pasa in [((), pasa_float32), (("--ligero",), pasa_ligero)]:
+                codigo, out, _ = correr("--autoprueba", "--modelo", tol, *extra)
+                assert codigo == (0 if pasa else 1), (desvio, extra, out)
+        print("  desvío de 0.02: el float32 falla y el ligero pasa; desvío de 0.08: los dos fallan")
 
         print("== archivos y carpetas ==")
         fotos = d / "fotos"
