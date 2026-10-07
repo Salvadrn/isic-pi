@@ -27,12 +27,12 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 
 ## Resultados del primer modelo (2026-10-07)
 
-Entrenado en la Mac (Apple M4, sin GPU, 45 min) con todo ISIC 2019: 18,237 fotos para entrenar y 2,027 para validar. Medido en las **5,067 fotos de test**, que el modelo no vio al entrenar ni al elegir la mejor época:
+Entrenado en la Mac (Apple M4, en CPU porque TensorFlow no usa su GPU, 45 min) con todo ISIC 2019: 18,237 fotos para entrenar y 2,027 para validar. Medido en las **5,067 fotos de test**, que el modelo no vio al entrenar ni al elegir la mejor época:
 
 | Clase | Fotos en test | Recall | Precisión |
 |---|---:|---:|---:|
-| AK · queratosis actínica | 182 | 0.45 | 0.43 |
-| BCC · carcinoma basocelular | 606 | 0.79 | 0.67 |
+| AK · queratosis actínica | 182 | 0.45 | 0.42 |
+| BCC · carcinoma basocelular | 606 | 0.79 | 0.66 |
 | BKL · queratosis benigna | 507 | 0.62 | 0.48 |
 | DF · dermatofibroma | 42 | 0.60 | 0.23 |
 | **MEL · melanoma** | 949 | **0.47** | 0.76 |
@@ -43,8 +43,8 @@ Entrenado en la Mac (Apple M4, sin GPU, 45 min) con todo ISIC 2019: 18,237 fotos
 - **Recall promedio por clase: 0.632** (en validación había dado 0.670). El accuracy es 0.725, pero lo infla NV, que es la mitad del test.
 - **Melanoma, la debilidad principal:** encuentra 447 de 949. De los 502 que se le escapan, 298 los toma por lunar (NV) y 111 por queratosis benigna (BKL).
 - Si se juntan las tres malignas (MEL, BCC y SCC) contra el resto, detecta el 66 % de las malignas y acierta el 90 % de las benignas.
-- **El ligero** pierde 1.4 puntos de recall promedio (0.619) y en la Pi es más lento, así que la Pi usa `modelo.tflite`.
-- En validación el recall seguía subiendo al final (mejor época: la 13 de 14 del ajuste), así que más épocas de ajuste probablemente mejoran el modelo.
+- **El ligero** pierde 1.4 puntos de recall promedio en la Mac que lo exportó (0.619) y 1.0 con los cálculos que hace la Pi (0.623, medido en la Mac con `ai-edge-litert` 2.2.0, que da lo mismo que la Pi). Como además en la Pi es más lento (11.0 ms contra 9.6 ms), la Pi usa `modelo.tflite`.
+- La mejor época en validación fue la 13 de 14 del ajuste (la 14 bajó de 0.670 a 0.652): el entrenamiento terminó por el límite de épocas, no porque dejara de mejorar. Más épocas de ajuste podrían mejorar el modelo; no está probado.
 - **Medido en la Pi:** la autoprueba da la misma clase que al exportar en 16 de 16 fotos, con diferencia máxima de 2.9 × 10⁻⁶ en las probabilidades, y tarda 9.6 ms por foto (11.0 ms el ligero).
 
 Matriz de confusión: [modelo/confusion_test.png](modelo/confusion_test.png). Todas las cifras: [modelo/metricas_test.json](modelo/metricas_test.json) y [modelo/reporte_test.txt](modelo/reporte_test.txt).
@@ -96,7 +96,7 @@ Si el recall de alguna clase sale muy bajo, las perillas están en la celda de c
 Qué hace:
 - Mide el modelo **por primera vez en test**: accuracy, recall por clase y su promedio, F1 y matriz de confusión. Esa es la cifra para el reporte.
 - Convierte a `modelo.tflite` (float32, ≈ 9 MB, mismas probabilidades que Keras) y `modelo_ligero.tflite` (pesos en int8, ≈ 2.5 MB).
-- Vuelve a medir los dos `.tflite` en test con `ai-edge-litert`, el mismo intérprete que usará la Pi, y se detiene si el float32 no reproduce a Keras.
+- Vuelve a medir los dos `.tflite` en test con `ai-edge-litert`, el mismo intérprete que usa la Pi, y se detiene si el float32 no reproduce a Keras. Las cifras del float32 valen en cualquier máquina; las del ligero pueden cambiar un poco según el procesador (ver [Decisiones](#decisiones)).
 - Recomienda el ligero solo si pierde 1 punto de recall promedio o menos.
 
 Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_pi.npz` (fotos de test con las probabilidades esperadas, para comprobar en la Pi), el reporte, la matriz de confusión, `metricas_test.json` y un `isic_pi_modelo.zip` con todo, que se descarga solo.
@@ -105,10 +105,14 @@ Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_
 
 ## Entrenar en la Mac, sin Colab
 
-Así se entrenó el primer modelo: es lo mismo que los notebooks 01 a 03, pero los datos quedan en `~/isic-pi-datos` en vez de Drive. Hace falta Python 3.12 con los mismos paquetes que [Probar los notebooks sin Colab](#probar-los-notebooks-sin-colab), en un entorno fuera del Escritorio (iCloud puede vaciar los archivos de un entorno que esté ahí):
+Así se entrenó el primer modelo: es lo mismo que los notebooks 01 a 03, pero los datos quedan en `~/isic-pi-datos` en vez de Drive. Hace falta Python 3.12 con los mismos paquetes que [Probar los notebooks sin Colab](#probar-los-notebooks-sin-colab), en un entorno fuera del Escritorio (iCloud puede vaciar los archivos de un entorno que esté ahí). Homebrew trae Python 3.14; [uv](https://docs.astral.sh/uv/) baja su propio 3.12:
 
 ```bash
-python3.12 -m venv ~/isic-pi-datos/venv && ~/isic-pi-datos/venv/bin/python -m pip install datasets pandas scikit-learn matplotlib tqdm pillow numpy tensorflow ai-edge-litert
+brew install uv
+```
+
+```bash
+uv venv --python 3.12 ~/isic-pi-datos/venv && uv pip install --python ~/isic-pi-datos/venv/bin/python datasets pandas scikit-learn matplotlib tqdm pillow numpy tensorflow ai-edge-litert
 ```
 
 ```bash
@@ -125,7 +129,7 @@ cd ~/isic-pi-datos && venv/bin/python ~/Desktop/isic-pi/local/correr_notebook.py
 
 - `local/preparar_datos.py` reemplaza al notebook 01: baja los 20 archivos parquet del dataset uno por uno, reduce cada foto con la misma función que usa la Pi y borra el parquet. Así no necesita los ≈ 20 GB de la caché de Hugging Face. Si se corta, retoma desde el último archivo terminado.
 - `local/correr_notebook.py` corre las celdas de un notebook fuera de Colab. `PERMITIR_CPU=True` deja entrenar sin GPU.
-- Tiempos medidos en una MacBook con M4 y 16 GB: cada parquet tardó de 45 s a 3.5 min en bajar según la red, entrenar 45 min y exportar 1 min. Al final quedan ≈ 7 GB en `~/isic-pi-datos` (los datos y una copia de trabajo).
+- Tiempos medidos en una MacBook con M4 y 16 GB: cada parquet tardó de 40 s a 3.4 min en bajar según la red, entrenar 45 min y exportar 1.4 min. Al final quedan ≈ 9.5 GB en `~/isic-pi-datos`: 3.9 GB de datos, 3.9 GB de copia de trabajo (`trabajo/`) y 1.8 GB del entorno.
 - El resultado queda en `~/isic-pi-datos/isic-pi/exportado/isic_pi_modelo.zip`, que se descomprime en `modelo/` igual que el de Colab.
 - La Mac tiene que estar conectada a la corriente, con la tapa abierta. Para que no se duerma, conviene correrlo con `caffeinate -i -s` antes del comando.
 
@@ -151,7 +155,7 @@ Clasifica fotos con el modelo exportado. Corre igual en la Pi y en la Mac. Desde
 
 - `--webcam`: una foto con la webcam (la de la Mac o una USB). Con `--vivo` abre una ventana en vivo con un cuadro guía, que es lo que ve el modelo; espacio guarda la foto en `capturas/` y q sale.
 - `--camara`: una foto con la cámara de la Pi (Camera Module 3, con `rpicam-still`).
-- `--autoprueba`: clasifica las fotos de muestra que vienen con el modelo y comprueba que da lo mismo que al exportar: la misma clase en todas y hasta 0.001 de diferencia en las probabilidades (0.05 con `--ligero`, ver [Decisiones](#decisiones)).
+- `--autoprueba`: clasifica las fotos de muestra que vienen con el modelo y comprueba que da lo mismo que al exportar: la misma clase (salvo casi empates) y hasta 0.001 de diferencia en las probabilidades (0.05 con `--ligero`, ver [Decisiones](#decisiones)).
 - Otras opciones: `--modelo CARPETA`, `--ligero`, `--top N` y `--json`.
 
 Sin `--modelo` usa el modelo de piel de `modelo/`.
@@ -164,7 +168,7 @@ Sin `--modelo` usa el modelo de piel de `modelo/`.
 cd ~/Desktop/isic-pi && python3 -m venv .venv && .venv/bin/pip install ai-edge-litert pillow numpy opencv-python
 ```
 
-La primera vez, macOS pide permiso de cámara para la Terminal.
+La primera vez, macOS pide permiso de cámara para la Terminal. Si el Escritorio se sincroniza con iCloud, el primer arranque puede tardar minutos mientras iCloud vuelve a bajar los archivos del `.venv`.
 
 **En la Pi** el `.venv` ya tiene lo necesario para fotos, `--autoprueba` y `--camara`. Para una webcam USB en la Pi hace falta OpenCV (`.venv/bin/pip install opencv-python-headless`); `--vivo` además necesita un monitor conectado y `opencv-python`.
 
@@ -244,14 +248,14 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 
 ## Decisiones
 
-- **MobileNetV2 + TFLite:** el modelo se entrena en Colab y a la Pi solo llega un archivo `.tflite` de unos pocos MB. La Pi 5 no entrena.
+- **MobileNetV2 + TFLite:** el modelo se entrena en Colab o en la Mac y a la Pi solo llega un archivo `.tflite` de unos pocos MB. La Pi 5 no entrena.
 - **Preproceso compartido:** entrenamiento y Raspberry reducen las fotos con la misma función (recorte central cuadrado + resize bilineal a 224×224) para que el modelo vea lo mismo en los dos lados.
-- **Datos en Drive, no en git:** los arreglos pesan ≈ 4 GB; el repo solo guarda código y el modelo exportado (≈ 13 MB en `modelo/`).
+- **Datos fuera de git:** los arreglos pesan ≈ 4 GB y viven en Drive (con Colab) o en `~/isic-pi-datos` (con la Mac); el repo solo guarda código y el modelo exportado (≈ 13 MB en `modelo/`).
 - **Mejores pesos en archivo, no en memoria:** `get_weights()` / `set_weights()` dependen del orden de las variables, que en otras versiones de Keras cambia al congelar y descongelar capas y mezclaría en silencio los vectores de BatchNorm. En Keras 3.15 el orden no cambia, pero guardar y cargar desde archivo es seguro en cualquier versión.
 
-- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero con ISIC real pierde 1.4 puntos de recall promedio (0.632 → 0.619) y en la Pi es más lento (11.0 ms contra 9.6 ms por foto). El notebook 03 solo lo recomienda si pierde 1 punto o menos.
-- **Autoprueba más holgada para el ligero:** el ligero convierte a int8 los cálculos intermedios al vuelo, y cada procesador y versión del intérprete redondea a su manera. Medido: la Pi (con `ai-edge-litert` 2.2.0 y 2.3.0) y la Mac con 2.2.0 dan lo mismo entre sí, pero difieren hasta 1.5 × 10⁻² de la Mac M4 con 2.3.0 que exportó, siempre con la misma clase. El float32 coincide hasta 3 × 10⁻⁶ en todos. Por eso el ligero se acepta hasta 0.05, pero la clase tiene que coincidir en todas las muestras.
-- **Muestras de comprobación:** con el modelo viajan unas fotos de test y las probabilidades que dio en Colab, para que la Pi verifique que su intérprete da lo mismo.
+- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero con ISIC real pierde recall promedio (1.4 puntos en la Mac que lo exportó, 0.632 → 0.619; 1.0 con los cálculos de la Pi, 0.632 → 0.623) y en la Pi es más lento (11.0 ms contra 9.6 ms por foto). El notebook 03 lo recomienda si pierde 1 punto o menos; con los cálculos de la Pi queda justo en el límite, así que decide la velocidad.
+- **Autoprueba más holgada para el ligero:** el ligero convierte a int8 los cálculos intermedios al vuelo, y no todas las combinaciones de procesador y versión del intérprete usan las mismas rutinas para eso. Medido: la Pi (con `ai-edge-litert` 2.2.0 y 2.3.0) y la Mac con 2.2.0 dan lo mismo entre sí, pero en las 16 muestras difieren hasta 1.5 × 10⁻² de la Mac M4 con 2.3.0 que exportó, con la misma clase en todas; en todo el test sí cambia la clase de algunas fotos (por eso 0.619 contra 0.623). El float32 coincide hasta 3 × 10⁻⁶ en todos. Por eso el ligero se acepta hasta 0.05 de diferencia. La clase tiene que coincidir, salvo en las muestras que al exportar estaban casi empatadas (las dos primeras a menos del doble de la tolerancia).
+- **Muestras de comprobación:** con el modelo viajan unas fotos de test y las probabilidades que dio al exportar (en Colab o en la Mac), para que la Pi verifique que su intérprete da lo mismo.
 
 ## Limitaciones conocidas
 
