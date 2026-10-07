@@ -1,7 +1,7 @@
 """Genera demo/objetos/: MobileNetV2 preentrenada en ImageNet (1000 objetos comunes: taza, teclado, plátano…)
 con la misma entrada que el modelo del proyecto: píxeles 0–255, y el escalado a [-1, 1] dentro del modelo.
 
-Sirve para probar la cámara y el programa mientras no existe el modelo real: le enseñas una taza a la webcam
+Sirve para probar la cámara y el programa sin el modelo de piel: le enseñas una taza a la webcam
 y debe decir algo como «coffee_mug». No sabe nada de piel. No se entrena: usa los pesos públicos de ImageNet.
 
 Necesita el entorno de las pruebas (Python 3.12 con TensorFlow y ai-edge-litert; ver el README):
