@@ -7,9 +7,9 @@ Corre igual en la Raspberry Pi y en la Mac. Desde la carpeta del repo:
   python pi/clasificar.py --webcam                     # una foto con la webcam (la de la Mac o una USB)
   python pi/clasificar.py --webcam --vivo              # ventana en vivo: espacio guarda la foto, q sale
   python pi/clasificar.py --camara                     # una foto con la cámara de la Pi (rpicam-still)
-  python pi/clasificar.py --autoprueba                 # comprueba que da lo mismo que en Colab
+  python pi/clasificar.py --autoprueba                 # comprueba que da lo mismo que al exportar
 
-Mientras no exista el modelo real, `--modelo demo/objetos` usa un modelo de objetos comunes (ImageNet) para probar la cámara.
+`--modelo demo/objetos` usa un modelo de objetos comunes (ImageNet) para probar la cámara sin el modelo de piel.
 
 Proyecto escolar: no es un dispositivo médico y no sirve para diagnosticar.
 """
@@ -233,6 +233,11 @@ def en_vivo(c, indice, max_cuadros=None):
         cv2.destroyAllWindows()
 
 
+# El float32 da lo mismo en cualquier CPU. El ligero cuantiza las activaciones a int8 al vuelo y cada CPU y versión
+# del intérprete redondea a su manera: entre la Mac M4 que exportó (ai-edge-litert 2.3.0) y la Pi midió 1.5e-2.
+TOLERANCIA = {"prob_float32": 1e-3, "prob_ligero": 5e-2}
+
+
 def autoprueba(c):
     ruta = c.carpeta / "muestras_pi.npz"
     if not ruta.exists():
@@ -247,12 +252,13 @@ def autoprueba(c):
         difs.append(float(np.abs(p - esperado).max()))
         iguales += int(p.argmax() == esperado.argmax())
         tiempos.append(ms)
-    ok = max(difs) < 1e-3 and iguales == len(difs)
+    ok = max(difs) < TOLERANCIA[clave] and iguales == len(difs)
     print(f"Autoprueba de {c.ruta} con {len(difs)} fotos de muestra ({c.runtime}):")
-    print(f"  misma clase que en Colab: {iguales}/{len(difs)} · diferencia máxima en probabilidad: {max(difs):.1e}"
+    print(f"  misma clase que al exportar: {iguales}/{len(difs)} · diferencia máxima en probabilidad: {max(difs):.1e}"
           f" · {np.median(tiempos):.1f} ms por foto")
-    print("  ✓ Da lo mismo que en Colab." if ok else
-          "  ✗ NO coincide con Colab: revisa que el modelo y las muestras vengan del mismo zip.")
+    print(f"  ✓ Da lo mismo que al exportar (tolerancia {TOLERANCIA[clave]:.0e})." if ok else
+          f"  ✗ NO coincide con lo exportado (tolerancia {TOLERANCIA[clave]:.0e}): revisa que el modelo y las muestras"
+          " vengan del mismo zip.")
     return 0 if ok else 1
 
 
@@ -265,7 +271,7 @@ def main(argv=None):
     p.add_argument("--indice", type=int, default=0, help="qué webcam usar (0 = la primera)")
     p.add_argument("--vivo", action="store_true", help="con --webcam: ventana en vivo")
     p.add_argument("--camara", action="store_true", help="tomar la foto con la cámara de la Pi")
-    p.add_argument("--autoprueba", action="store_true", help="comparar con las muestras de Colab")
+    p.add_argument("--autoprueba", action="store_true", help="comparar con las muestras del notebook 03")
     p.add_argument("--modelo", type=Path, default=MODELO_DEFECTO, help="carpeta con modelo.tflite y clases.txt")
     p.add_argument("--ligero", action="store_true", help="usar modelo_ligero.tflite")
     p.add_argument("--top", type=int, default=3, help="cuántas clases mostrar")
