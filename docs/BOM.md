@@ -1,6 +1,6 @@
 # BOM · isic-pi (comprando la Raspberry Pi)
 
-Lista de materiales para correr el clasificador de lesiones de piel en una **Raspberry Pi 5**, comprando todo nuevo. Entrenar no requiere hardware: se hace en Google Colab.
+Lista de materiales para correr el clasificador de lesiones de piel en una **Raspberry Pi 5**, comprando todo nuevo. Entrenar no requiere comprar hardware: se hace en Google Colab o en una Mac (el primer modelo se entrenó en una Mac con M4, en CPU, en 45 min).
 
 > Proyecto escolar, no es un dispositivo médico. **Nada de esto se ha probado en físico**: la elección de cámara y de distancia de enfoque sale de hojas de datos y de las fichas de la tienda, no de pruebas con la Pi ni con lesiones.
 
@@ -58,7 +58,7 @@ Para este proyecto **alcanza la Pi 5 de 4 GB** y ahorras **$1,556**. El modelo p
 | Qué | Para qué | Costo |
 |---|---|---|
 | Raspberry Pi OS 64-bit y Raspberry Pi Imager | Sistema de la Pi y grabarlo en la microSD | Gratis |
-| Google Colab | Entrenar el modelo (GPU T4 con la cuota gratuita; no está garantizada) | Gratis |
+| Google Colab o una Mac | Entrenar el modelo (Colab: GPU T4 con la cuota gratuita, no está garantizada; Mac: en CPU, ≈ 45 min con un M4) | Gratis |
 | Google Drive | Relevo entre notebooks: el proyecto usa ≈ 4 GB de los 15 GB gratuitos | Gratis |
 | Dataset `Atoany/ISIC2019` en Hugging Face | Imágenes de entrenamiento (≈ 9.8 GB de descarga) | Gratis |
 | `ai-edge-litert`, Pillow, NumPy (y OpenCV si usas cámara USB) | Correr el modelo y leer imágenes en la Pi | Gratis |
