@@ -55,7 +55,7 @@ Lista de materiales comprando la Raspberry, con precios de una tienda en México
 
 **Corriente y calor (medido el 2026-10-07 con la Pi 5 de 8 GB, sin ventilador, clasificando el test completo):**
 
-- **Conectada al USB-C de una laptop** (la Pi detecta 3 A) se apagó en cuanto usó los 4 núcleos: el 5 V bajó de 5.05 a 4.69 V, el kernel anotó `Undervoltage detected!` y 2 segundos después quedó apagada con el foco rojo. Con 1 y 2 núcleos aguantó. Así se explican sus dos caídas anteriores.
+- **Conectada al USB-C de una laptop** (la Pi detecta 3 A) se apagó en cuanto usó los 4 núcleos: el 5 V bajó de 5.05 a 4.69 V, el kernel anotó `Undervoltage detected!` y 2 segundos después quedó apagada con el foco rojo. Con 1 y 2 núcleos aguantó. Eso explica la caída de ese mismo día a las 15:52, que también fue clasificando con 4 núcleos; la del 2026-10-06 fue sin carga y sigue sin explicación.
 - **Con un cargador de pared UGREEN Nexode de 65 W** (también 3 A a 5 V) aguantó 4 minutos seguidos con los 4 núcleos, pero con 7 avisos breves de bajo voltaje (el 5 V bajó hasta 4.76 V). Funciona, pero va justo.
 - **Sin ventilador** llega a 87 °C y se frena sola a 1.5 GHz: la misma clasificación pasa de 9.7 a 11.9 ms por foto.
 - Para la presentación conviene la fuente oficial de 27 W (5 A) y el Active Cooler o la carcasa con ventilador (ver el BOM). Mientras tanto, `--hilos 2` gasta menos corriente y sigue siendo rápido (12.7 ms por foto).
