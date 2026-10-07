@@ -1,17 +1,17 @@
 # isic-pi
 
-Clasificador de lesiones de piel (dataset **ISIC 2019**, 8 clases) que se **entrena en Google Colab** y se **ejecuta en una Raspberry Pi 5**.
+Clasificador de lesiones de piel (dataset **ISIC 2019**, 8 clases) que se **entrena en Google Colab o en una Mac** y se **ejecuta en una Raspberry Pi 5**.
 
 > Proyecto escolar. No es un dispositivo médico y no sirve para diagnosticar nada.
 
 ## Cómo encaja
 
 ```
-         Google Colab                                         Raspberry Pi 5
-         ────────────                                         ──────────────
- 01 preparar datos ─▶ Drive: arreglos 224×224
- 02 entrenar       ─▶ Drive: modelo.keras (MobileNetV2)
- 03 exportar       ─▶ modelo.tflite ──── rsync ────▶  pi/clasificar.py ◀── cámara o fotos
+   Google Colab o la Mac                                            Raspberry Pi 5
+   ─────────────────────                                            ──────────────
+ 01 preparar datos ─▶ arreglos 224×224
+ 02 entrenar       ─▶ modelo.keras (MobileNetV2)
+ 03 exportar       ─▶ modelo/ del repo ── GitHub ── git pull ──▶  pi/clasificar.py ◀── cámara o fotos
 ```
 
 ## Plan por sesiones
@@ -22,7 +22,32 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 - [x] **Sesión 2:** `notebooks/02_entrenar.ipynb` (MobileNetV2 con transfer learning y pesos por clase)
 - [x] **Sesión 3:** `notebooks/03_exportar_tflite.ipynb` (métricas por clase en test y exportación a `.tflite`)
 - [x] **Sesión 4:** `pi/clasificar.py` (clasificar fotos, webcam, cámara de la Pi y autoprueba; falta probarlo con una cámara de verdad)
+- [x] **Primer modelo real (2026-10-07):** entrenado en la Mac con los notebooks 02 y 03; está en `modelo/` y ya corre en la Pi
 - [ ] **Sesión 5:** scripts para instalar y enviar todo a la Pi, y este README completo
+
+## Resultados del primer modelo (2026-10-07)
+
+Entrenado en la Mac (Apple M4, sin GPU, 45 min) con todo ISIC 2019: 18,237 fotos para entrenar y 2,027 para validar. Medido en las **5,067 fotos de test**, que el modelo no vio al entrenar ni al elegir la mejor época:
+
+| Clase | Fotos en test | Recall | Precisión |
+|---|---:|---:|---:|
+| AK · queratosis actínica | 182 | 0.45 | 0.43 |
+| BCC · carcinoma basocelular | 606 | 0.79 | 0.67 |
+| BKL · queratosis benigna | 507 | 0.62 | 0.48 |
+| DF · dermatofibroma | 42 | 0.60 | 0.23 |
+| **MEL · melanoma** | 949 | **0.47** | 0.76 |
+| NV · nevo melanocítico (lunar) | 2,606 | 0.85 | 0.85 |
+| SCC · carcinoma escamoso | 117 | 0.42 | 0.42 |
+| VASC · lesión vascular | 58 | 0.86 | 0.67 |
+
+- **Recall promedio por clase: 0.632** (en validación había dado 0.670). El accuracy es 0.725, pero lo infla NV, que es la mitad del test.
+- **Melanoma, la debilidad principal:** encuentra 447 de 949. De los 502 que se le escapan, 298 los toma por lunar (NV) y 111 por queratosis benigna (BKL).
+- Si se juntan las tres malignas (MEL, BCC y SCC) contra el resto, detecta el 66 % de las malignas y acierta el 90 % de las benignas.
+- **El ligero** pierde 1.4 puntos de recall promedio (0.619) y en la Pi es más lento, así que la Pi usa `modelo.tflite`.
+- En validación el recall seguía subiendo al final (mejor época: la 13 de 14 del ajuste), así que más épocas de ajuste probablemente mejoran el modelo.
+- **Medido en la Pi:** la autoprueba da la misma clase que al exportar en 16 de 16 fotos, con diferencia máxima de 2.9 × 10⁻⁶ en las probabilidades, y tarda 9.6 ms por foto (11.0 ms el ligero).
+
+Matriz de confusión: [modelo/confusion_test.png](modelo/confusion_test.png). Todas las cifras: [modelo/metricas_test.json](modelo/metricas_test.json) y [modelo/reporte_test.txt](modelo/reporte_test.txt).
 
 ## Hardware
 
@@ -76,7 +101,33 @@ Qué hace:
 
 Deja en `Mi unidad/isic-pi/exportado/` los dos modelos, `clases.txt`, `muestras_pi.npz` (fotos de test con las probabilidades esperadas, para comprobar en la Pi), el reporte, la matriz de confusión, `metricas_test.json` y un `isic_pi_modelo.zip` con todo, que se descarga solo.
 
-**En tu Mac:** descomprime el zip dentro de la carpeta `modelo/` de este repo. Esa carpeta es la que se copiará a la Pi en la sesión 4.
+**En tu Mac:** descomprime el zip dentro de la carpeta `modelo/` de este repo y súbelo a GitHub. La Pi lo baja con `git pull` (ver [Instalar en la Pi](#instalar-en-la-pi)).
+
+## Entrenar en la Mac, sin Colab
+
+Así se entrenó el primer modelo: es lo mismo que los notebooks 01 a 03, pero los datos quedan en `~/isic-pi-datos` en vez de Drive. Hace falta Python 3.12 con los mismos paquetes que [Probar los notebooks sin Colab](#probar-los-notebooks-sin-colab), en un entorno fuera del Escritorio (iCloud puede vaciar los archivos de un entorno que esté ahí):
+
+```bash
+python3.12 -m venv ~/isic-pi-datos/venv && ~/isic-pi-datos/venv/bin/python -m pip install datasets pandas scikit-learn matplotlib tqdm pillow numpy tensorflow ai-edge-litert
+```
+
+```bash
+cd ~/isic-pi-datos && venv/bin/python ~/Desktop/isic-pi/local/preparar_datos.py --destino ~/isic-pi-datos
+```
+
+```bash
+cd ~/isic-pi-datos && venv/bin/python ~/Desktop/isic-pi/local/correr_notebook.py ~/Desktop/isic-pi/notebooks/02_entrenar.ipynb PERMITIR_CPU=True
+```
+
+```bash
+cd ~/isic-pi-datos && venv/bin/python ~/Desktop/isic-pi/local/correr_notebook.py ~/Desktop/isic-pi/notebooks/03_exportar_tflite.ipynb
+```
+
+- `local/preparar_datos.py` reemplaza al notebook 01: baja los 20 archivos parquet del dataset uno por uno, reduce cada foto con la misma función que usa la Pi y borra el parquet. Así no necesita los ≈ 20 GB de la caché de Hugging Face. Si se corta, retoma desde el último archivo terminado.
+- `local/correr_notebook.py` corre las celdas de un notebook fuera de Colab. `PERMITIR_CPU=True` deja entrenar sin GPU.
+- Tiempos medidos en una MacBook con M4 y 16 GB: cada parquet tardó de 45 s a 3.5 min en bajar según la red, entrenar 45 min y exportar 1 min. Al final quedan ≈ 7 GB en `~/isic-pi-datos` (los datos y una copia de trabajo).
+- El resultado queda en `~/isic-pi-datos/isic-pi/exportado/isic_pi_modelo.zip`, que se descomprime en `modelo/` igual que el de Colab.
+- La Mac tiene que estar conectada a la corriente, con la tapa abierta. Para que no se duerma, conviene correrlo con `caffeinate -i -s` antes del comando.
 
 ## Sesión 4 · El programa: `pi/clasificar.py`
 
@@ -100,10 +151,12 @@ Clasifica fotos con el modelo exportado. Corre igual en la Pi y en la Mac. Desde
 
 - `--webcam`: una foto con la webcam (la de la Mac o una USB). Con `--vivo` abre una ventana en vivo con un cuadro guía, que es lo que ve el modelo; espacio guarda la foto en `capturas/` y q sale.
 - `--camara`: una foto con la cámara de la Pi (Camera Module 3, con `rpicam-still`).
-- `--autoprueba`: clasifica las fotos de muestra que vienen con el modelo y comprueba que da lo mismo que en Colab.
+- `--autoprueba`: clasifica las fotos de muestra que vienen con el modelo y comprueba que da lo mismo que al exportar: la misma clase en todas y hasta 0.001 de diferencia en las probabilidades (0.05 con `--ligero`, ver [Decisiones](#decisiones)).
 - Otras opciones: `--modelo CARPETA`, `--ligero`, `--top N` y `--json`.
 
-**Mientras no exista el modelo real:** `--modelo demo/objetos` usa MobileNetV2 con sus pesos públicos de ImageNet (1,000 objetos comunes; no sabe nada de piel). Sirve para probar la cámara: enséñale una taza y debe decir algo como `coffee_mug`. Se genera con `demo/generar_modelo_objetos.py`.
+Sin `--modelo` usa el modelo de piel de `modelo/`.
+
+**Modelo de objetos:** `--modelo demo/objetos` usa MobileNetV2 con sus pesos públicos de ImageNet (1,000 objetos comunes; no sabe nada de piel). Sirve para probar una cámara sin el modelo de piel: enséñale una taza y debe decir algo como `coffee_mug`. Se genera con `demo/generar_modelo_objetos.py`.
 
 **En la Mac**, una sola vez:
 
@@ -182,10 +235,10 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 
 ## Estado: qué está probado y qué no
 
-- **Notebook 01:** probado en Python 3.12 con un dataset falso del mismo esquema (`image` + `label`), en los dos modos, incluyendo etiquetas desconocidas en test, imágenes no cuadradas, en escala de grises y con canal alfa. **Todavía no lo he corrido en Colab con el dataset real:** la descarga desde Hugging Face, el montaje de Drive, el tiempo y el espacio ocupado son estimados, no medidos.
-- **Notebook 02:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15) con datos falsos que fabrica el propio notebook 01 y con 8 clases de colores sólidos. Verificado: imágenes y etiquetas llegan alineadas a Keras, `class_weight` se aplica con `tf.data`, las guardas fallan con mensaje claro (sin datos del 01, sin GPU, modelo ya entrenado), el modelo guardado reproduce las predicciones, el test no se copia y el modelo exportado no lleva capas de aumento. En colores sólidos aprende (recall promedio 0.91 en validación con la configuración por defecto) y un ajuste fino que destruye el modelo se descarta. **No probado:** GPU, Drive ni ISIC real. El tiempo de entrenamiento y la calidad por clase salen de la corrida en Colab, no de estas pruebas.
-- **Notebook 03:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15, ai-edge-litert 2.2.0), encadenado con el 01 y el 02 sobre datos falsos. Verificado: la conversión directa desde Keras funciona en esta versión de TensorFlow, el float32 reproduce a Keras (diferencia máxima de 7 × 10⁻⁶ en las probabilidades), el `.tflite` leído de disco reproduce las muestras, el zip trae lo mismo que la carpeta y las guardas fallan con mensaje claro (sin 01, sin 02, ya exportado). Con 8 clases de colores sólidos el float32 sacó recall promedio 0.969 en test y el ligero 0.875. **No probado:** Colab, Drive, ISIC real y el intérprete de la Pi, que es ARM (eso lo comprueban las muestras en la sesión 4).
-- **Raspberry Pi 5 (8 GB, Raspberry Pi OS Trixie, Python 3.13):** entorno instalado el 2026-10-06 en `~/isic-pi/.venv` (`ai-edge-litert` 2.2.0, NumPy 2.5.3, Pillow 12.3.0). **Medido en la Pi** con un modelo de juguete de la misma arquitectura que el real: da las mismas probabilidades que la Mac (diferencia máxima 2.4 × 10⁻⁷, misma clase en 16 de 16 muestras) y tarda 9.8 ms por foto con `modelo.tflite` y 13.0 ms con el ligero (4 hilos, sin contar abrir y reducir la foto). El modelo real todavía no existe.
+- **Notebook 01:** probado en Python 3.12 con un dataset falso del mismo esquema (`image` + `label`), en los dos modos, incluyendo etiquetas desconocidas en test, imágenes no cuadradas, en escala de grises y con canal alfa. **Con el dataset real** lo reemplazó `local/preparar_datos.py` en la Mac (2026-10-07), con la misma función de preproceso: 20,264 fotos de train y 5,067 de test. **El notebook 01 en sí no se ha corrido en Colab con el dataset real:** el montaje de Drive, el tiempo y el espacio en Colab son estimados.
+- **Notebook 02:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15) con datos falsos que fabrica el propio notebook 01 y con 8 clases de colores sólidos. Verificado: imágenes y etiquetas llegan alineadas a Keras, `class_weight` se aplica con `tf.data`, las guardas fallan con mensaje claro (sin datos del 01, sin GPU, modelo ya entrenado), el modelo guardado reproduce las predicciones, el test no se copia y el modelo exportado no lleva capas de aumento. En colores sólidos aprende (recall promedio 0.91 en validación con la configuración por defecto) y un ajuste fino que destruye el modelo se descarta. **Corrido con ISIC real** el 2026-10-07 en la Mac, en CPU, con `local/correr_notebook.py` (45 min, recall promedio 0.670 en validación). **No probado:** GPU, Colab ni Drive.
+- **Notebook 03:** probado en CPU (Python 3.12, TensorFlow 2.21, Keras 3.15, ai-edge-litert 2.2.0), encadenado con el 01 y el 02 sobre datos falsos. Verificado: la conversión directa desde Keras funciona en esta versión de TensorFlow, el float32 reproduce a Keras (diferencia máxima de 7 × 10⁻⁶ en las probabilidades), el `.tflite` leído de disco reproduce las muestras, el zip trae lo mismo que la carpeta y las guardas fallan con mensaje claro (sin 01, sin 02, ya exportado). Con 8 clases de colores sólidos el float32 sacó recall promedio 0.969 en test y el ligero 0.875. **Corrido con ISIC real** el 2026-10-07 en la Mac (ver [Resultados](#resultados-del-primer-modelo-2026-10-07)). **No probado:** Colab ni Drive.
+- **Raspberry Pi 5 (8 GB, Raspberry Pi OS Trixie, Python 3.13):** entorno instalado el 2026-10-06 en `~/isic-pi/.venv` (`ai-edge-litert` 2.2.0, NumPy 2.5.3, Pillow 12.3.0). **Medido en la Pi** con un modelo de juguete de la misma arquitectura que el real: da las mismas probabilidades que la Mac (diferencia máxima 2.4 × 10⁻⁷, misma clase en 16 de 16 muestras) y tarda 9.8 ms por foto con `modelo.tflite` y 13.0 ms con el ligero (4 hilos, sin contar abrir y reducir la foto). **Con el modelo real** (2026-10-07, bajado con `git pull`): misma clase que al exportar en 16 de 16 muestras, con diferencia máxima de 2.9 × 10⁻⁶; 9.6 ms por foto con `modelo.tflite` y 11.0 ms con el ligero, que difiere hasta 1.5 × 10⁻² (ver [Decisiones](#decisiones)).
 - **Programa (`pi/clasificar.py`):** probado en la Mac y en la Pi con `tests/probar_clasificar.py`. El preproceso es idéntico píxel a píxel al del notebook 01 (6 casos, incluida una foto de 12 MP y una con rotación EXIF). La autoprueba coincide: en la Pi, 8 de 8 muestras, diferencia máxima de 8.2 × 10⁻⁷ y 10.1 ms por foto con el modelo de objetos. Cada modo (archivos, webcam, en vivo y cámara de la Pi) da lo mismo que el modelo aplicado directo. **La webcam y la cámara de la Pi están simuladas en la prueba:** con la webcam real de la Mac la ventana en vivo sí abre (2026-10-06, con permiso de cámara para la Terminal; desde la línea de comandos de Claude macOS no da la cámara), y la cámara de la Pi todavía no se compra.
 - **Scripts (sesión 5):** aún sin escribir.
 
@@ -193,13 +246,15 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 
 - **MobileNetV2 + TFLite:** el modelo se entrena en Colab y a la Pi solo llega un archivo `.tflite` de unos pocos MB. La Pi 5 no entrena.
 - **Preproceso compartido:** entrenamiento y Raspberry reducen las fotos con la misma función (recorte central cuadrado + resize bilineal a 224×224) para que el modelo vea lo mismo en los dos lados.
-- **Datos en Drive, no en git:** los arreglos pesan ≈ 4 GB; el repo solo guarda código (y, más adelante, el modelo ya exportado).
+- **Datos en Drive, no en git:** los arreglos pesan ≈ 4 GB; el repo solo guarda código y el modelo exportado (≈ 13 MB en `modelo/`).
 - **Mejores pesos en archivo, no en memoria:** `get_weights()` / `set_weights()` dependen del orden de las variables, que en otras versiones de Keras cambia al congelar y descongelar capas y mezclaría en silencio los vectores de BatchNorm. En Keras 3.15 el orden no cambia, pero guardar y cargar desde archivo es seguro en cualquier versión.
 
-- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero en la prueba con datos falsos perdió 9 puntos de recall promedio y en la Pi fue más lento (13.0 ms contra 9.8 ms por foto). El notebook 03 lo mide con ISIC real y solo lo recomienda si pierde 1 punto o menos.
+- **float32 por defecto en la Pi:** el ligero pesa ≈ 2.5 MB en vez de ≈ 9 MB, pero con ISIC real pierde 1.4 puntos de recall promedio (0.632 → 0.619) y en la Pi es más lento (11.0 ms contra 9.6 ms por foto). El notebook 03 solo lo recomienda si pierde 1 punto o menos.
+- **Autoprueba más holgada para el ligero:** el ligero convierte a int8 los cálculos intermedios al vuelo, y cada procesador y versión del intérprete redondea a su manera. Medido: la Pi (con `ai-edge-litert` 2.2.0 y 2.3.0) y la Mac con 2.2.0 dan lo mismo entre sí, pero difieren hasta 1.5 × 10⁻² de la Mac M4 con 2.3.0 que exportó, siempre con la misma clase. El float32 coincide hasta 3 × 10⁻⁶ en todos. Por eso el ligero se acepta hasta 0.05, pero la clase tiene que coincidir en todas las muestras.
 - **Muestras de comprobación:** con el modelo viajan unas fotos de test y las probabilidades que dio en Colab, para que la Pi verifique que su intérprete da lo mismo.
 
 ## Limitaciones conocidas
 
 - Las fotos del dataset son **dermatoscópicas** (lupa con luz polarizada). Con una cámara normal la precisión baja bastante.
+- **Se le escapa más de la mitad de los melanomas** (recall 0.47 en test). Sirve para mostrar cómo funciona el flujo completo, no para opinar sobre una lesión real.
 - La partición train/test viene hecha en Hugging Face. Si fotos de la misma lesión quedaron en ambos lados, las métricas saldrán más optimistas de lo real; no pude verificar cómo se hizo.
