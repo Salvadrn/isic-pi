@@ -82,8 +82,8 @@ class Clasificador:
         if not self.ruta.exists():
             raise ErrorUsuario(
                 f"No encuentro {self.ruta}.\n"
-                "Corre el notebook 03 en Colab y descomprime isic_pi_modelo.zip en modelo/,\n"
-                "o prueba la cámara con el modelo de objetos: --modelo demo/objetos")
+                "El modelo de piel viene en modelo/ del repo: bájalo con git pull (o descomprime ahí el\n"
+                "isic_pi_modelo.zip del notebook 03), o prueba la cámara con el modelo de objetos: --modelo demo/objetos")
         ruta_clases = self.carpeta / "clases.txt"
         if not ruta_clases.exists():
             raise ErrorUsuario(f"No encuentro {ruta_clases}.")
@@ -233,31 +233,39 @@ def en_vivo(c, indice, max_cuadros=None):
         cv2.destroyAllWindows()
 
 
-# El float32 da lo mismo en cualquier CPU. El ligero cuantiza las activaciones a int8 al vuelo y cada CPU y versión
-# del intérprete redondea a su manera: entre la Mac M4 que exportó (ai-edge-litert 2.3.0) y la Pi midió 1.5e-2.
+# El float32 da lo mismo en cualquier CPU (medido hasta 3e-6). El ligero cuantiza las activaciones a int8 al vuelo, y no
+# todas las combinaciones de CPU y versión del intérprete usan las mismas rutinas: la Pi (litert 2.2.0 y 2.3.0) y la Mac
+# con 2.2.0 coinciden entre sí, pero la Mac M4 que exportó el primer modelo (2.3.0) difiere de ellas hasta 1.5e-2.
 TOLERANCIA = {"prob_float32": 1e-3, "prob_ligero": 5e-2}
 
 
 def autoprueba(c):
     ruta = c.carpeta / "muestras_pi.npz"
     if not ruta.exists():
-        raise ErrorUsuario(f"No encuentro {ruta}; viene en el zip que descarga el notebook 03.")
+        raise ErrorUsuario(f"No encuentro {ruta}; viene con el modelo en modelo/ del repo (git pull) "
+                           "o en el isic_pi_modelo.zip del notebook 03.")
     mu = np.load(ruta)
     clave = "prob_ligero" if c.ligero else "prob_float32"
     if clave not in mu.files:
         raise ErrorUsuario(f"{ruta.name} no trae {clave}.")
-    difs, iguales, tiempos = [], 0, []
+    tol = TOLERANCIA[clave]
+    difs, iguales, fallas, tiempos = [], 0, 0, []
     for x, esperado in zip(mu["x"], mu[clave]):
         p, ms = c.probabilidades(x)
         difs.append(float(np.abs(p - esperado).max()))
-        iguales += int(p.argmax() == esperado.argmax())
+        igual = p.argmax() == esperado.argmax()
+        segunda, primera = np.sort(esperado)[-2:]
+        iguales += int(igual)
+        fallas += int(not igual and primera - segunda > 2 * tol)   # casi empatada: se voltea sin pasarse de tol
         tiempos.append(ms)
-    ok = max(difs) < TOLERANCIA[clave] and iguales == len(difs)
+    ok = max(difs) < tol and fallas == 0
     print(f"Autoprueba de {c.ruta} con {len(difs)} fotos de muestra ({c.runtime}):")
     print(f"  misma clase que al exportar: {iguales}/{len(difs)} · diferencia máxima en probabilidad: {max(difs):.1e}"
           f" · {np.median(tiempos):.1f} ms por foto")
-    print(f"  ✓ Da lo mismo que al exportar (tolerancia {TOLERANCIA[clave]:.0e})." if ok else
-          f"  ✗ NO coincide con lo exportado (tolerancia {TOLERANCIA[clave]:.0e}): revisa que el modelo y las muestras"
+    if iguales < len(difs) and not fallas:
+        print("  (las que cambian de clase estaban casi empatadas al exportar: no cuentan como error)")
+    print(f"  ✓ Da lo mismo que al exportar (tolerancia {tol:.0e})." if ok else
+          f"  ✗ NO coincide con lo exportado (tolerancia {tol:.0e}): revisa que el modelo y las muestras"
           " vengan del mismo zip.")
     return 0 if ok else 1
 
