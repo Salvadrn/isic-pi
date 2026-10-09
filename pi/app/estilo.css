@@ -1,0 +1,108 @@
+/* Estilo «Ocular»: instrumento óptico sobre negro puro. El color solo marca estados (verde = cámara bien,
+   ámbar = revisar, rojo = error). Todo se diseña para un escenario de 1024×600 que app.js escala a la pantalla. */
+
+@font-face { font-family: "Barlow Condensed"; src: url("/fuentes/barlow-condensed-400.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Barlow Condensed"; src: url("/fuentes/barlow-condensed-500.woff2") format("woff2"); font-weight: 500; font-display: block; }
+@font-face { font-family: "Azeret Mono"; src: url("/fuentes/azeret-mono.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+
+:root {
+  --texto: #F0F0F0; --sec: #9A9A9A; --ter: #666666; --filete: #262626;
+  --ambar: #D6A24A; --rojo: #D65C57; --verde: #6FB583;
+  --curva: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
+body {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif; color: var(--texto);
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none;
+}
+body.kiosco, body.kiosco * { cursor: none; }
+.num { font-family: "Azeret Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; transition: transform 0.12s var(--curva); }
+button:active { transform: scale(0.96); }
+[hidden] { display: none !important; }
+
+#escenario { position: absolute; left: 0; top: 0; width: 1024px; height: 600px; transform-origin: 0 0; overflow: hidden; background: #000; }
+.pantalla { position: absolute; inset: 0; opacity: 0; visibility: hidden; transform: scale(0.985);
+  transition: opacity 0.24s var(--curva), transform 0.24s var(--curva), visibility 0s linear 0.24s; }
+.pantalla.activa { opacity: 1; visibility: visible; transform: none; transition: opacity 0.24s var(--curva), transform 0.24s var(--curva); }
+
+/* ---------- Cámara ---------- */
+#video { position: absolute; left: 112px; top: 0; width: 800px; height: 600px; background: #111; }
+#capas { position: absolute; left: 0; top: 0; pointer-events: none; }
+#destello { transition: opacity 0.35s var(--curva); }
+.rotulo { position: absolute; left: 0; width: 1024px; font-size: 28px; line-height: 34px; color: var(--sec); text-align: center; white-space: nowrap; pointer-events: none; }
+#instruccion { top: 14px; }
+#pie-guia { top: 552px; }
+#sin-imagen { top: 283px; color: var(--texto); }
+
+#lecturas { position: absolute; left: 36px; top: 26px; width: 210px; height: 548px; }
+#estado-camara { display: flex; align-items: center; gap: 12px; height: 60px; padding-right: 16px; font-size: 32px; line-height: 40px; color: var(--texto); }
+#lecturas dl { position: absolute; left: 0; width: 210px; }
+#lectura-modelo { top: 108px; }
+#lectura-entrada { top: 318px; }
+#lectura-inferencia { top: 438px; }
+#lecturas dt { font-size: 24px; line-height: 30px; color: var(--ter); }
+#lecturas dd { font-size: 26px; line-height: 34px; color: var(--sec); }
+#lecturas dd.num { font-size: 22px; color: var(--texto); }
+#inferencia.num { font-size: 34px; line-height: 46px; }
+
+.punto { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--ter); }
+.punto.ok { background: var(--verde); }
+.punto.alerta { background: var(--ambar); }
+.punto.error { background: var(--rojo); }
+
+#tomar { position: absolute; left: 812px; top: 210px; width: 180px; height: 180px; border-radius: 50%; }
+#tomar svg { position: absolute; left: 0; top: 0; }
+#tomar .disco { position: absolute; left: 20px; top: 20px; width: 140px; height: 140px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; background: var(--texto); color: #000; font-size: 40px; font-weight: 500; }
+#tomar.ocupado .disco { background: var(--sec); }
+
+/* ---------- Resultado ---------- */
+#foto { position: absolute; left: 32px; top: 32px; width: 420px; height: 420px; background: #111; }
+#foto img { position: absolute; left: 0; top: 0; width: 420px; height: 420px; object-fit: cover; }
+#foto svg { position: absolute; left: 0; top: 0; }
+
+#lectura { position: absolute; left: 484px; top: 26px; width: 508px; }
+#encabezado { display: flex; justify-content: space-between; align-items: baseline; font-size: 24px; line-height: 30px; color: var(--ter); }
+#encabezado .num { font-size: 22px; }
+#clase { margin-top: 2px; font-size: 60px; line-height: 66px; font-weight: 500; color: var(--texto); white-space: nowrap; }
+#comun { font-size: 32px; line-height: 38px; color: var(--sec); min-height: 38px; }
+#medida { display: flex; align-items: flex-end; gap: 18px; margin-top: 8px; height: 112px; }
+#cifra { display: flex; align-items: baseline; flex: none; height: 104px; }
+#porcentaje { font-size: 96px; line-height: 104px; letter-spacing: -3px; color: var(--texto); }
+#unidad { margin-left: 6px; font-size: 34px; color: var(--sec); }
+#escala { flex: 1; min-width: 0; height: 112px; }
+#otras { list-style: none; margin-top: 14px; }
+#otras li { display: flex; align-items: baseline; height: 46px; }
+#otras .rango { width: 36px; font-size: 24px; color: var(--ter); }
+#otras .nombre { flex: 1; font-size: 32px; color: var(--sec); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#otras .prob { font-size: 26px; color: var(--sec); }
+.nota { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 26px; line-height: 32px; color: var(--sec); }
+#revisar { color: var(--ambar); }
+
+#resultado::after { content: ""; position: absolute; left: 32px; right: 32px; top: 472px; border-top: 1px solid var(--filete); }
+#descargo { position: absolute; left: 32px; top: 494px; width: 420px; font-size: 28px; line-height: 34px; color: var(--sec); }
+#guardar, #otra { position: absolute; top: 490px; height: 92px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+#guardar { left: 484px; width: 222px; border: 2px solid var(--ter); font-size: 36px; color: var(--texto); }
+#guardar .icono { color: var(--sec); }
+#guardar .hecho { display: none; }
+#guardar.guardada { border-color: var(--filete); color: var(--sec); }
+#guardar.guardada .icono { display: none; }
+#guardar.guardada .hecho { display: block; color: var(--verde); }
+#otra { left: 724px; width: 268px; background: var(--texto); color: #000; font-size: 40px; font-weight: 500; }
+
+/* ---------- Avisos y salir ---------- */
+#aviso { position: absolute; left: 50%; top: 16px; max-width: 760px; transform: translateX(-50%); padding: 10px 22px;
+  background: #000; border: 1px solid var(--filete); border-radius: 8px; font-size: 26px; line-height: 32px; color: var(--texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#aviso.error { color: var(--rojo); }
+#dialogo-salir { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.82); display: flex; align-items: center; justify-content: center; }
+#dialogo-salir .panel { width: 560px; padding: 36px; background: #000; border: 1px solid var(--filete); border-radius: 12px; }
+#salir-titulo { font-size: 44px; line-height: 52px; font-weight: 500; }
+#dialogo-salir .botones { display: flex; gap: 16px; margin-top: 32px; }
+#dialogo-salir button { flex: 1; height: 88px; border-radius: 8px; font-size: 36px; }
+#salir-no { background: var(--texto); color: #000; font-weight: 500; }
+#salir-si { border: 2px solid var(--ter); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
