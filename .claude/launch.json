@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "app-prueba",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["pi/app.py", "--camara", "prueba", "--puerto", "8765"],
+      "port": 8765
+    }
+  ]
+}
