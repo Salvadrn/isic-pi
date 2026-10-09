@@ -9,12 +9,14 @@
 
 RAIZ="$(cd "$(dirname "$0")/.." && pwd)"
 MENU="$HOME/.local/share/applications/isic-pi.desktop"
-ESCRITORIO="$HOME/Desktop/isic-pi.desktop"
+CARPETA_ESCRITORIO="$(xdg-user-dir DESKTOP 2> /dev/null)"          # en español suele ser ~/Escritorio
+[ -n "$CARPETA_ESCRITORIO" ] || CARPETA_ESCRITORIO="$HOME/Desktop"
+ESCRITORIO="$CARPETA_ESCRITORIO/isic-pi.desktop"
 AUTOSTART="$HOME/.config/labwc/autostart"
 MARCA="# isic-pi: app de pantalla táctil"
 
 if [ "$1" = "--quitar" ]; then
-  rm -f "$MENU" "$ESCRITORIO"
+  rm -f "$MENU" "$ESCRITORIO" "$HOME/Desktop/isic-pi.desktop"
   [ -f "$AUTOSTART" ] && sed -i "\|$MARCA|d" "$AUTOSTART"
   echo "Listo: quité el ícono y el arranque automático."
   exit 0
@@ -36,11 +38,13 @@ Icon=camera-photo
 Terminal=false
 Categories=Education;Science;
 EOF
-if [ -d "$HOME/Desktop" ]; then
+DONDE="en el menú (Educación)"
+if [ -d "$CARPETA_ESCRITORIO" ]; then
   cp "$MENU" "$ESCRITORIO"
   chmod +x "$ESCRITORIO"
+  DONDE="$DONDE y en el escritorio"
 fi
-echo "Listo: «Clasificador de piel» está en el menú (Educación) y en el escritorio."
+echo "Listo: «Clasificador de piel» está $DONDE."
 
 if [ "$1" = "--al-encender" ]; then
   mkdir -p "$(dirname "$AUTOSTART")"
