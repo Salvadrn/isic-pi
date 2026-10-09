@@ -4,8 +4,8 @@
     {
       "name": "app-prueba",
       "runtimeExecutable": ".venv/bin/python",
-      "runtimeArgs": ["pi/app.py", "--camara", "prueba", "--puerto", "8765"],
-      "port": 8765
+      "runtimeArgs": ["pi/app.py", "--camara", "prueba", "--puerto", "8770"],
+      "port": 8770
     }
   ]
 }
