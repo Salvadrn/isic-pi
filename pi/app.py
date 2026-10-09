@@ -29,6 +29,7 @@ import subprocess
 import sys
 import threading
 import time
+import traceback
 from collections import OrderedDict
 from datetime import datetime
 from http import HTTPStatus
@@ -45,6 +46,8 @@ WEB = Path(__file__).resolve().parent / "app"
 GUIA = 0.8                       # lado del cuadro guía / lado corto de la imagen
 FPS = 15
 RIESGO = {"MEL", "BCC", "SCC", "AK"}
+UMBRAL_RIESGO = 0.25              # se sugiere revisar si una de estas clases llega a 25 % entre las 3 primeras
+VIEJA = 2.0                       # s: una imagen más vieja que esto ya no es «la que se ve»
 COMUN = {
     "AK": "Lesión precancerosa", "BCC": "Tipo de cáncer de piel", "BKL": "Lesión benigna",
     "DF": "Lesión benigna", "MEL": "Tipo de cáncer de piel", "NV": "Lunar",
@@ -61,12 +64,13 @@ class Fotograma:
     def __init__(self):
         self.cond = threading.Condition()
         self.jpeg = None
-        self.n = 0
+        self.n = 0                                   # 0 = todavía no llega ninguna imagen
+        self.t = 0.0                                 # time.monotonic() de la última imagen
         self.error = None
 
     def poner(self, jpeg):
         with self.cond:
-            self.jpeg, self.n, self.error = jpeg, self.n + 1, None
+            self.jpeg, self.n, self.t, self.error = jpeg, self.n + 1, time.monotonic(), None
             self.cond.notify_all()
 
     def fallar(self, mensaje):
@@ -80,6 +84,11 @@ class Fotograma:
             self.cond.wait_for(lambda: self.n != ultimo, timeout=segundos)
             return self.n, self.jpeg
 
+    def actual(self):
+        """(jpeg, error, segundos desde la última imagen), leídos juntos."""
+        with self.cond:
+            return self.jpeg, self.error, time.monotonic() - self.t
+
 
 class Camara(threading.Thread):
     nombre = "Cámara"
@@ -92,6 +101,8 @@ class Camara(threading.Thread):
     def run(self):
         try:
             self.bucle()
+        except clasificar.ErrorUsuario as e:
+            self.salida.fallar(str(e))
         except Exception as e:                       # el hilo no puede tumbar la app: la pantalla muestra el error
             self.salida.fallar(f"{type(e).__name__}: {e}")
 
@@ -100,7 +111,8 @@ class Camara(threading.Thread):
 
 
 class CamaraPi(Camara):
-    """Camera Module de la Pi con rpicam-vid, que manda JPEGs uno tras otro por la salida estándar."""
+    """Camera Module de la Pi con rpicam-vid, que manda JPEGs uno tras otro por la salida estándar.
+    Si rpicam-vid se cae (cable flojo, cámara ocupada), lo vuelve a abrir cada 2 s y mientras tanto avisa."""
     nombre = "Cámara de la Pi"
 
     def __init__(self, ancho=1280, alto=960):
@@ -110,26 +122,30 @@ class CamaraPi(Camara):
         self.ultimo_error = ""
 
     def comando(self, enfoque):
-        cmd = ["rpicam-vid", "-t", "0", "-n", "--codec", "mjpeg", "--width", str(self.ancho),
+        cmd = ["rpicam-vid", "-t", "0", "-n", "--codec", "mjpeg", "--quality", "90", "--width", str(self.ancho),
                "--height", str(self.alto), "--framerate", str(FPS), "-o", "-"]
         return cmd + (["--autofocus-mode", "continuous"] if enfoque else [])
 
     def bucle(self):
-        for enfoque in (True, False):              # sin enfoque automático si la cámara no lo tiene
-            t0, imagenes = time.time(), self.leer(self.comando(enfoque))
-            if self.parar.is_set() or imagenes or time.time() - t0 > 5:
-                break
-        if not self.parar.is_set():
-            self.salida.fallar("La cámara de la Pi dejó de mandar imagen. " + self.ultimo_error)
+        while not self.parar.is_set():
+            for enfoque in (True, False):          # sin enfoque automático si la cámara no lo tiene
+                t0, imagenes = time.time(), self.leer(self.comando(enfoque))
+                if self.parar.is_set() or imagenes or time.time() - t0 > 5:
+                    break
+            if self.parar.is_set():
+                return
+            self.salida.fallar("La cámara de la Pi no manda imagen; reintentando. " + self.ultimo_error)
+            self.parar.wait(2)
 
     def leer(self, cmd):
-        self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         errores = []
-        threading.Thread(target=lambda: errores.extend(self.proc.stderr.read().decode(errors="replace").splitlines()),
-                         daemon=True).start()
+        lector = threading.Thread(target=lambda: errores.extend(proc.stderr.read().decode(errors="replace").splitlines()),
+                                  daemon=True)
+        lector.start()
         buf, imagenes = b"", 0
         while not self.parar.is_set():
-            datos = self.proc.stdout.read1(1 << 16)
+            datos = proc.stdout.read1(1 << 16)
             if not datos:
                 break
             buf += datos
@@ -146,6 +162,7 @@ class CamaraPi(Camara):
                 imagenes += 1
                 buf = buf[j + 2:]
         self.terminar()
+        lector.join(timeout=1)
         self.ultimo_error = " ".join(errores[-2:])
         return imagenes
 
@@ -163,7 +180,7 @@ class CamaraPi(Camara):
 
 
 class CamaraUSB(Camara):
-    """Webcam USB (o la de la Mac) con OpenCV."""
+    """Webcam USB (o la de la Mac) con OpenCV. Si deja de mandar imagen, la vuelve a abrir cada 2 s."""
     nombre = "Webcam"
 
     def __init__(self, indice=0):
@@ -175,17 +192,32 @@ class CamaraUSB(Camara):
             import cv2
         except ImportError:
             raise clasificar.ErrorUsuario("Para una webcam USB hace falta OpenCV: .venv/bin/pip install opencv-python-headless") from None
+        while not self.parar.is_set():
+            self.leer(cv2)
+            if not self.parar.is_set():
+                self.parar.wait(2)
+
+    def leer(self, cv2):
         cam = cv2.VideoCapture(self.indice)
         try:
             if not cam.isOpened():
-                raise clasificar.ErrorUsuario(f"No pude abrir la webcam {self.indice}.")
+                self.salida.fallar(f"No pude abrir la webcam {self.indice}; reintentando.")
+                return
+            cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))   # sin esto, 720p va a 5-10 fps en USB 2.0
             cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+            cam.set(cv2.CAP_PROP_FPS, FPS)
+            fallas = 0
             while not self.parar.is_set():
                 t0 = time.time()
                 ok, cuadro = cam.read()
                 if not ok:
-                    raise clasificar.ErrorUsuario("La webcam dejó de mandar imagen.")
+                    fallas += 1
+                    if fallas >= 10:
+                        self.salida.fallar("La webcam dejó de mandar imagen; reintentando.")
+                        return
+                    continue
+                fallas = 0
                 ok, jpg = cv2.imencode(".jpg", cuadro, [cv2.IMWRITE_JPEG_QUALITY, 90])
                 if ok:
                     self.salida.poner(jpg.tobytes())
@@ -225,9 +257,17 @@ class CamaraPrueba(Camara):
             k += 1
 
 
+def abrir_foto(ruta):
+    try:
+        with Image.open(ruta) as im:
+            return im.convert("RGB")
+    except OSError as e:
+        raise clasificar.ErrorUsuario(f"No pude leer {ruta}: {e}") from None
+
+
 def fotos_de_prueba(carpeta_modelo, carpeta_fotos=None):
     if carpeta_fotos:
-        return [Image.open(p) for p in clasificar.expandir([carpeta_fotos])]
+        return [abrir_foto(p) for p in clasificar.expandir([carpeta_fotos])[:200]]
     ruta = Path(carpeta_modelo) / "muestras_pi.npz"
     if not ruta.exists():
         return []
@@ -285,9 +325,11 @@ class App:
         }
 
     def tomar(self):
-        jpeg = self.camara.salida.jpeg
-        if jpeg is None:
-            raise clasificar.ErrorUsuario(self.camara.salida.error or "La cámara todavía no manda imagen.")
+        jpeg, error, edad = self.camara.salida.actual()
+        if error or jpeg is None:
+            raise clasificar.ErrorUsuario(error or "La cámara todavía no manda imagen.")
+        if edad > VIEJA:
+            raise clasificar.ErrorUsuario("La cámara no está mandando imagen nueva; espera un momento.")
         img = Image.open(io.BytesIO(jpeg)).convert("RGB")
         w, h = img.size
         lado = max(1, round(min(w, h) * GUIA))
@@ -303,7 +345,7 @@ class App:
                 "prob": round(float(prob[i]), 4)} for i in orden[:3]]
         ident = datetime.now().strftime("%Y%m%d-%H%M%S-%f")[:-3]
         r = {"id": ident, "ms": round(ms, 1), "top": top, "isic": self.c.es_isic,
-             "revisar": self.c.es_isic and top[0]["codigo"] in RIESGO,
+             "revisar": self.c.es_isic and any(t["codigo"] in RIESGO and t["prob"] >= UMBRAL_RIESGO for t in top),
              "seguro": top[0]["prob"] >= clasificar.UMBRAL_CONFIANZA,
              "todas": {self.c.clases[i]: round(float(prob[i]), 4) for i in orden}}
         out = io.BytesIO()
@@ -369,10 +411,12 @@ def crear_manejador(app, archivos, servidor_ref):
 
         def do_POST(self):
             ruta = self.path.split("?", 1)[0]
-            largo = min(int(self.headers.get("Content-Length") or 0), 10_000)
             try:
+                largo = max(0, min(int(self.headers.get("Content-Length") or 0), 10_000))
                 cuerpo = json.loads(self.rfile.read(largo) or b"{}")
             except ValueError:
+                cuerpo = {}
+            if not isinstance(cuerpo, dict):
                 cuerpo = {}
             try:
                 if ruta == "/tomar":
@@ -387,6 +431,9 @@ def crear_manejador(app, archivos, servidor_ref):
                     return None
             except clasificar.ErrorUsuario as e:
                 return self.json({"error": str(e)}, HTTPStatus.SERVICE_UNAVAILABLE)
+            except Exception as e:                   # SD llena, sin permiso, imagen dañada: que la pantalla lo diga
+                traceback.print_exc()
+                return self.json({"error": f"Error interno ({type(e).__name__}): {e}"}, HTTPStatus.INTERNAL_SERVER_ERROR)
             self.json({"error": "No existe."}, HTTPStatus.NOT_FOUND)
 
         def video(self):
@@ -395,7 +442,7 @@ def crear_manejador(app, archivos, servidor_ref):
             self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=cuadro")
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
-            ultimo = -1
+            ultimo = 0                               # la imagen 0 es «todavía no hay»: espera la primera de verdad
             try:
                 while not app.camara.parar.is_set():
                     n, jpeg = app.camara.salida.esperar(ultimo, 2.0)
