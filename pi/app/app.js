@@ -15,13 +15,14 @@ function escalar() {
 // El cuadro guía es exactamente lo que se clasifica: el cuadrado central de lado `guia` × el lado corto de la imagen.
 function acomodar() {
   const v = $("video");
-  const w = v.naturalWidth, h = v.naturalHeight;
-  if (!w || !h) return;
+  const w = v.naturalWidth || 4, h = v.naturalHeight || 3;   // sin imagen todavía: se acomoda como 4:3
   const s = Math.min(ANCHO / w, ALTO / h);
   const bw = w * s, bh = h * s, bx = (ANCHO - bw) / 2, by = (ALTO - bh) / 2;
   Object.assign(v.style, { left: `${bx}px`, top: `${by}px`, width: `${bw}px`, height: `${bh}px` });
   const lado = guia * Math.min(bw, bh), gx = (ANCHO - lado) / 2, gy = (ALTO - lado) / 2;
   $("sombra").setAttribute("d", `M0 0H${ANCHO}V${ALTO}H0Z M${gx} ${gy}V${gy + lado}H${gx + lado}V${gy}Z`);
+  const a = Math.max(0, gx - 16), b = Math.min(ANCHO, gx + lado + 16);   // costados más oscuros: ahí van los datos y el botón
+  $("bandas").setAttribute("d", `M0 0H${a}V${ALTO}H0Z M${b} 0H${ANCHO}V${ALTO}H${b}Z`);
   $("reticula").setAttribute("transform", `translate(${gx} ${gy}) scale(${lado / 480})`);
   const d = $("destello");
   d.setAttribute("x", gx); d.setAttribute("y", gy); d.setAttribute("width", lado); d.setAttribute("height", lado);
@@ -56,6 +57,7 @@ async function leerEstado() {
     $("modelo-clases").textContent = d.modelo.clases.toLocaleString("es-MX");
     $("modelo-entrada").textContent = `${d.modelo.entrada} × ${d.modelo.entrada}`;
     if (d.ms != null) $("inferencia").textContent = `${d.ms.toFixed(1)} ms`;
+    acomodar();
   } catch {
     $("punto-camara").className = "punto error";
   }
@@ -89,7 +91,9 @@ async function tomar() {
 
 function pct(p) {
   const v = Math.round(p * 100);
-  return v === 0 && p > 0 ? "<1" : String(v);
+  if (v === 0 && p > 0) return "<1";
+  if (v === 100 && p < 1) return ">99";
+  return String(v);
 }
 
 function ajustar(el, maximo, minimo) {
@@ -119,12 +123,19 @@ function dibujarEscala(top) {
   for (const [p, txt] of [[0, "0"], [0.5, "50"], [1, "100"]]) {
     s += `<text x="${X(p)}" y="104" text-anchor="middle" class="num" fill="#666666" font-size="20">${txt}</text>`;
   }
-  // Etiquetas 1, 2, 3 sin encimarse: se separan al menos 22 unidades, de izquierda a derecha.
+  // La etiqueta 1 va justo sobre su aguja (más arriba); la 2 y la 3 comparten renglón y se separan si se enciman.
   const agujas = top.map((o, i) => ({ i, x: X(Math.min(1, Math.max(0, o.prob))) }));
-  const etiquetas = [...agujas].sort((a, b) => a.x - b.x);
-  etiquetas.forEach((e, k) => { e.lx = k === 0 ? e.x : Math.max(e.x, etiquetas[k - 1].lx + 22); });
-  const exceso = Math.max(0, etiquetas[etiquetas.length - 1].lx - (x1 + 8));
-  etiquetas.forEach((e) => { e.lx -= exceso; });
+  agujas.forEach((a) => { a.lx = a.x; });
+  const [, b, c] = agujas;
+  if (b && c && Math.abs(b.x - c.x) < 22) {
+    const m = (b.x + c.x) / 2, lado = b.x <= c.x ? -1 : 1;
+    b.lx = m + 11 * lado;
+    c.lx = m - 11 * lado;
+  }
+  for (const g of [b, c]) {                       // una etiqueta gris no tapa la aguja blanca
+    if (g && Math.abs(g.lx - agujas[0].x) < 12) g.lx = agujas[0].x + (g.lx >= agujas[0].x ? 12 : -12);
+  }
+  agujas.forEach((a) => { a.lx = Math.min(x1, Math.max(x0, a.lx)); });
   for (const a of agujas.sort((p, q) => q.i - p.i)) {
     const primera = a.i === 0, color = primera ? "#F0F0F0" : "#9A9A9A";
     s += `<line x1="${a.x}" y1="${primera ? 26 : 38}" x2="${a.x}" y2="${base + (primera ? 10 : 0)}" stroke="${color}" stroke-width="${primera ? 3 : 2}"/>`;
@@ -189,7 +200,10 @@ function avisar(texto, error = false) {
 }
 
 // ---------- Salir (mantén presionado el estado de la cámara, o Esc con teclado) ----------
-function abrirSalir() { $("dialogo-salir").hidden = false; }
+function abrirSalir() {
+  $("dialogo-salir").hidden = false;
+  $("salir-no").focus();
+}
 
 async function salir() {
   $("dialogo-salir").hidden = true;
@@ -220,9 +234,15 @@ const estado = $("estado-camara");
 estado.addEventListener("pointerdown", () => { presion = setTimeout(abrirSalir, 1200); });
 for (const ev of ["pointerup", "pointerleave", "pointercancel"]) estado.addEventListener(ev, () => clearTimeout(presion));
 document.addEventListener("keydown", (e) => {
+  const dialogo = $("dialogo-salir");
+  if (!dialogo.hidden) {                        // con el diálogo abierto, el teclado solo sirve para el diálogo
+    if (e.key === "Escape") dialogo.hidden = true;
+    return;
+  }
   if (e.key === "Escape") abrirSalir();
   else if (e.key === " " && $("camara").classList.contains("activa")) { e.preventDefault(); tomar(); }
 });
+acomodar();
 leerEstado();
 setInterval(leerEstado, 2000);
 encenderVideo();
