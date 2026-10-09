@@ -38,7 +38,7 @@ button:active { transform: scale(0.96); }
 #sin-imagen { top: 266px; left: 272px; width: 480px; white-space: normal; color: var(--texto); }
 
 #lecturas { position: absolute; left: 36px; top: 26px; width: 210px; height: 548px; }
-#estado-camara { display: flex; align-items: center; gap: 12px; height: 60px; padding-right: 16px; font-size: 32px; line-height: 40px; color: var(--texto); }
+#estado-camara { display: flex; align-items: center; gap: 12px; height: 60px; padding-right: 16px; font-size: 30px; line-height: 40px; color: var(--texto); white-space: nowrap; }
 #lecturas dl { position: absolute; left: 0; width: 210px; }
 #lectura-modelo { top: 108px; }
 #lectura-entrada { top: 318px; }
