@@ -6,13 +6,15 @@ Qué comprueba:
 - el estado, la imagen en vivo (MJPEG) y que «Tomar» clasifica exactamente el cuadro guía: el cuadrado central
   de GUIA × el lado corto, con el mismo resultado que el modelo aplicado directo a ese recorte;
 - que solo se guarda en capturas/ lo que se pide con «Guardar», y que «Salir» solo funciona desde la propia Pi;
-- la cámara de la Pi con un rpicam-vid falso (también cuando no acepta --autofocus-mode), la detección con un
-  rpicam-hello falso y la webcam con un cv2 falso;
-- los errores: sin imagen todavía y con el modelo de objetos (no es de piel, no pide revisar).
+- la cámara de la Pi con un rpicam-vid falso (también cuando no acepta --autofocus-mode, y que se vuelve a abrir
+  si rpicam-vid se cierra), la detección con un rpicam-hello falso y la webcam con un cv2 falso;
+- los errores: sin imagen todavía, imagen vieja o cámara caída (no clasifica una imagen congelada), cuerpos
+  raros, una carpeta sin permiso para guardar, y el modelo de objetos (no es de piel, no pide revisar).
 
 Uso:
     python tests/probar_app.py
 """
+import contextlib
 import importlib.util
 import io
 import json
@@ -22,6 +24,7 @@ import tempfile
 import threading
 import time
 import types
+import http.client
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -119,7 +122,8 @@ def probar_servidor(capturas):
         orden = np.argsort(prob)[::-1]
         assert [t["codigo"] for t in r["top"]] == [c.clases[i] for i in orden[:3]], r["top"]
         assert all(abs(t["prob"] - round(float(prob[i]), 4)) < 1e-9 for t, i in zip(r["top"], orden)), r["top"]
-        assert r["revisar"] == (r["top"][0]["codigo"] in app_mod.RIESGO) and r["isic"], r
+        assert r["isic"] and r["revisar"] == any(t["codigo"] in app_mod.RIESGO and t["prob"] >= app_mod.UMBRAL_RIESGO
+                                                 for t in r["top"]), r
         assert r["top"][0]["nombre"] == cl.NOMBRES[r["top"][0]["codigo"]] and r["top"][0]["comun"], r["top"][0]
         recorte = Image.open(io.BytesIO(pedir(base, f"/recorte/{r['id']}.jpg")[2]))
         assert recorte.size == (lado, lado), recorte.size
@@ -136,6 +140,45 @@ def probar_servidor(capturas):
             assert codigo == 503 and "toma otra" in json.loads(cuerpo)["error"], (malo, cuerpo)
         assert pedir(base, "/recorte/20990101-000000-000.jpg")[0] == 404
         print("  guardar: solo cuando se pide, con la foto y el resultado; identificadores raros se rechazan")
+
+        for cuerpo in (b"[]", b"null", b"no es json"):
+            con = http.client.HTTPConnection("127.0.0.1", servidor.server_address[1], timeout=10)
+            con.request("POST", "/guardar", body=cuerpo, headers={"Content-Type": "application/json"})
+            resp = con.getresponse()
+            assert resp.status == 503 and "error" in json.loads(resp.read()), cuerpo
+            con.close()
+        con = http.client.HTTPConnection("127.0.0.1", servidor.server_address[1], timeout=10)
+        con.putrequest("POST", "/tomar")
+        con.putheader("Content-Length", "abc")
+        con.endheaders()
+        resp = con.getresponse()
+        assert resp.status == 200 and "top" in json.loads(resp.read()), resp.status
+        con.close()
+        capturas.chmod(0o500)
+        try:
+            ident = json.loads(pedir(base, "/tomar", {})[2])["id"]
+            with contextlib.redirect_stderr(io.StringIO()):       # el servidor deja el traceback en su registro
+                codigo, _, cuerpo = pedir(base, "/guardar", {"id": ident})
+            if os.geteuid() != 0:                    # root sí puede escribir
+                assert codigo == 500 and "PermissionError" in json.loads(cuerpo)["error"], cuerpo
+        finally:
+            capturas.chmod(0o700)
+        print("  cuerpos raros y una carpeta sin permiso dan un error en JSON, no una conexión cortada")
+
+        cam.detener()
+        cam.join(5)
+        vieja = app_mod.VIEJA
+        app_mod.VIEJA = 0.05
+        try:
+            time.sleep(0.2)
+            codigo, _, cuerpo = pedir(base, "/tomar", {})
+            assert codigo == 503 and "imagen nueva" in json.loads(cuerpo)["error"], cuerpo
+        finally:
+            app_mod.VIEJA = vieja
+        cam.salida.fallar("La cámara de la Pi no manda imagen; reintentando.")
+        codigo, _, cuerpo = pedir(base, "/tomar", {})
+        assert codigo == 503 and "reintentando" in json.loads(cuerpo)["error"], cuerpo
+        print("  con la imagen vieja o la cámara caída, «Tomar» avisa en vez de clasificar una imagen congelada")
 
         assert pedir(base, "/salir", {})[0] == 200
         hilo.join(5)
@@ -176,6 +219,8 @@ def probar_camara_pi(d):
         "if '--autofocus-mode' in sys.argv and open(sys.argv[0] + '.af').read() == 'no':\n"
         "    sys.stderr.write('ERROR: autofocus not supported\\n'); sys.exit(1)\n"
         f"sys.stdout.buffer.write(open({str(d / 'cuadros.bin')!r}, 'rb').read()); sys.stdout.flush()\n"
+        "if open(sys.argv[0] + '.cierra').read() == 'si':\n"
+        "    sys.stderr.write('ERROR: camera frontend has timed out\\n'); sys.exit(1)\n"
         "time.sleep(30)\n")
     vid.chmod(0o755)
     hello = bin_falso / "rpicam-hello"
@@ -183,6 +228,7 @@ def probar_camara_pi(d):
     hello.chmod(0o755)
     path_original = os.environ["PATH"]
     os.environ["PATH"] = f"{bin_falso}{os.pathsep}{path_original}"
+    (bin_falso / "rpicam-vid.cierra").write_text("no")
     try:
         for af in ("si", "no"):
             (bin_falso / "rpicam-vid.af").write_text(af)
@@ -196,6 +242,18 @@ def probar_camara_pi(d):
                 cam.join(5)
             assert cam.proc.poll() is not None, "rpicam-vid sigue corriendo después de detener"
         print("  9 cuadros JPEG separados bien del flujo, con y sin enfoque automático; al detener se cierra rpicam-vid")
+        (bin_falso / "rpicam-vid.af").write_text("si")
+        (bin_falso / "rpicam-vid.cierra").write_text("si")
+        cam = app_mod.CamaraPi()
+        cam.start()
+        try:
+            assert esperar(lambda: cam.salida.error is not None, 5), "no avisó que rpicam-vid se cerró"
+            assert "reintentando" in cam.salida.error and "timed out" in cam.salida.error, cam.salida.error
+            assert esperar(lambda: cam.salida.n >= 18, 10), cam.salida.n
+        finally:
+            cam.detener()
+            cam.join(5)
+        print("  si rpicam-vid se cierra, avisa con su motivo y lo vuelve a abrir")
         (bin_falso / "rpicam-hello.salida").write_text("Available cameras\n-----------------\n0 : imx708 [4608x2592 10-bit RGGB]\n")
         assert app_mod.hay_camara_pi()
         (bin_falso / "rpicam-hello.salida").write_text("No cameras available!\n")
@@ -211,12 +269,16 @@ def probar_webcam():
     cuadro_bgr[:, :, 2] = 200                                       # rojo en BGR
     m = types.ModuleType("cv2")
     m.CAP_PROP_FRAME_WIDTH, m.CAP_PROP_FRAME_HEIGHT, m.IMWRITE_JPEG_QUALITY = 3, 4, 1
+    m.CAP_PROP_FOURCC, m.CAP_PROP_FPS = 6, 5
+    m.VideoWriter_fourcc = lambda *c: 1196444237
+    puestas = []
 
     class Cam:
         def isOpened(self):
             return True
 
         def set(self, *a):
+            puestas.append(a)
             return True
 
         def read(self):
@@ -235,14 +297,15 @@ def probar_webcam():
             assert esperar(lambda: cam.salida.n >= 3), cam.salida.error
             pixel = np.asarray(Image.open(io.BytesIO(cam.salida.jpeg)).convert("RGB"))[36, 48]
             assert pixel[0] > 150 and pixel[2] < 60, pixel
+            assert (m.CAP_PROP_FOURCC, 1196444237) in puestas, puestas
         finally:
             cam.detener()
-        print("  manda cuadros y respeta los colores (BGR → RGB)")
+        print("  pide MJPG, manda cuadros y respeta los colores (BGR → RGB)")
         sys.modules["cv2"] = None
         cam = app_mod.CamaraUSB(0)
         cam.start()
         cam.join(5)
-        assert "OpenCV" in (cam.salida.error or ""), cam.salida.error
+        assert "OpenCV" in (cam.salida.error or "") and "ErrorUsuario" not in cam.salida.error, cam.salida.error
         print("  sin OpenCV → error claro en la pantalla")
     finally:
         sys.modules.pop("cv2", None)
