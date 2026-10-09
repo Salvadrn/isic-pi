@@ -73,7 +73,7 @@ button:active { transform: scale(0.96); }
 #cifra { display: flex; align-items: baseline; flex: none; height: 104px; }
 #porcentaje { font-size: 96px; line-height: 104px; letter-spacing: -3px; color: var(--texto); }
 #unidad { margin-left: 6px; font-size: 34px; color: var(--sec); }
-#escala { flex: 1; min-width: 0; height: 112px; }
+#escala { flex: 1; min-width: 0; height: 112px; overflow: visible; }
 #otras { list-style: none; margin-top: 14px; }
 #otras li { display: flex; align-items: baseline; height: 46px; }
 #otras .rango { width: 36px; font-size: 24px; color: var(--ter); }
