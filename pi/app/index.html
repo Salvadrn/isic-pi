@@ -13,6 +13,7 @@
     <img id="video" alt="Imagen en vivo de la cámara">
     <svg id="capas" width="1024" height="600" viewBox="0 0 1024 600" aria-hidden="true">
       <path id="sombra" fill="#000" fill-opacity="0.62" fill-rule="evenodd" d=""/>
+      <path id="bandas" fill="#000" fill-opacity="0.8" d=""/>
       <g id="reticula">
         <rect x="0.5" y="0.5" width="479" height="479" fill="none" stroke="#666666" stroke-width="1.5"/>
         <path d="M2 46V2H46M434 2H478V46M478 434V478H434M46 478H2V434" fill="none" stroke="#F0F0F0" stroke-width="3"/>
@@ -94,7 +95,7 @@
   <p id="aviso" role="status" hidden></p>
 
   <div id="dialogo-salir" hidden>
-    <div class="panel" role="dialog" aria-labelledby="salir-titulo">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="salir-titulo">
       <p id="salir-titulo">¿Salir de la app?</p>
       <div class="botones">
         <button id="salir-no" type="button">Seguir</button>
