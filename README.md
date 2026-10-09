@@ -23,6 +23,7 @@ Una pieza por sesión, cada una se prueba antes de seguir.
 - [x] **Sesión 3:** `notebooks/03_exportar_tflite.ipynb` (métricas por clase en test y exportación a `.tflite`)
 - [x] **Sesión 4:** `pi/clasificar.py` (clasificar fotos, webcam, cámara de la Pi y autoprueba; falta probarlo con una cámara de verdad)
 - [x] **Primer modelo real (2026-10-07):** entrenado en la Mac con los notebooks 02 y 03; está en `modelo/` y ya corre en la Pi
+- [x] **App de pantalla táctil (2026-10-09):** `pi/app.py` con la interfaz «Ocular» para una pantalla de 7" (ver [La app de pantalla táctil](#la-app-de-pantalla-táctil))
 - [ ] **Sesión 5:** scripts para instalar y enviar todo a la Pi, y este README completo
 
 ## Resultados del primer modelo (2026-10-07)
@@ -169,15 +170,44 @@ Sin `--modelo` usa el modelo de piel de `modelo/`.
 
 **Modelo de objetos:** `--modelo demo/objetos` usa MobileNetV2 con sus pesos públicos de ImageNet (1,000 objetos comunes; no sabe nada de piel). Sirve para probar una cámara sin el modelo de piel: enséñale una taza y debe decir algo como `coffee_mug`. Se genera con `demo/generar_modelo_objetos.py`.
 
-**En la Mac**, una sola vez:
+**En la Mac**, una sola vez. El entorno va fuera del Escritorio, porque iCloud vacía sus archivos y luego tarda minutos en arrancar, y `.venv` del repo apunta a él:
 
 ```bash
-cd ~/Desktop/isic-pi && python3 -m venv .venv && .venv/bin/pip install ai-edge-litert pillow numpy opencv-python
+python3 -m venv ~/isic-pi-venv && ~/isic-pi-venv/bin/pip install ai-edge-litert pillow numpy opencv-python && ln -s ~/isic-pi-venv ~/Desktop/isic-pi/.venv
 ```
 
-La primera vez, macOS pide permiso de cámara para la Terminal. Si el Escritorio se sincroniza con iCloud, el primer arranque puede tardar minutos mientras iCloud vuelve a bajar los archivos del `.venv`.
+La primera vez, macOS pide permiso de cámara para la Terminal.
 
 **En la Pi** el `.venv` ya tiene lo necesario para fotos, `--autoprueba` y `--camara`. Para una webcam USB en la Pi hace falta OpenCV (`.venv/bin/pip install opencv-python-headless`); `--vivo` además necesita un monitor conectado y `opencv-python`.
+
+## La app de pantalla táctil
+
+Para usar la Pi con una pantalla táctil de 7" (pensada para una HDMI de 1024×600; se adapta a otras): muestra la cámara en vivo con un cuadro guía; tocas «Tomar» y enseña la clase más probable con su porcentaje, una escala de 0 a 100 y las otras dos clases más probables. Estilo «Ocular»: negro, grises y color solo para estados (verde = cámara bien, ámbar = conviene revisar con un dermatólogo, rojo = error).
+
+En la Pi, a pantalla completa (arranca la app y Chromium en modo kiosco):
+
+```bash
+pi/app_kiosco.sh
+```
+
+Para tenerla en el menú y en el escritorio de la Pi como «Clasificador de piel» (con `--al-encender` también se abre sola al prender la Pi; `--quitar` lo deshace):
+
+```bash
+pi/instalar_app.sh --al-encender
+```
+
+Sin pantalla completa, en la Pi o en la Mac (luego abre http://127.0.0.1:8000):
+
+```bash
+.venv/bin/python pi/app.py --camara prueba
+```
+
+- **Cámara:** `--camara pi` (Camera Module, con `rpicam-vid`), `usb` (webcam; en la Pi necesita `.venv/bin/pip install opencv-python-headless`) o `prueba` (pasa fotos de test de ISIC, sin cámara). Sin `--camara` la busca en ese orden.
+- **Lo que se clasifica es exactamente el cuadro guía:** el cuadrado central que mide el 80 % del lado corto de la imagen. `clasificar.py --camara`, en cambio, usa el cuadrado completo.
+- **Fotos:** solo se guardan en `capturas/` si tocas «Guardar» (la foto y el resultado en JSON).
+- **Para salir:** mantén presionado «Cámara», arriba a la izquierda, y toca «Salir».
+- Solo acepta conexiones de la propia Pi. Con `--publico` también se abre desde otra compu de la red, sin contraseña.
+- El registro queda en `~/.cache/isic-pi/app.log`.
 
 ## Instalar en la Pi
 
@@ -240,7 +270,11 @@ python tests/probar_nb03_exportar.py
 python tests/probar_clasificar.py
 ```
 
-La última también corre en la Pi (`.venv/bin/python tests/probar_clasificar.py`): solo necesita `ai-edge-litert`, NumPy y Pillow, porque simula la webcam y `rpicam-still`.
+```bash
+python tests/probar_app.py
+```
+
+Las dos últimas también corren en la Pi (`.venv/bin/python tests/...`): solo necesitan `ai-edge-litert`, NumPy y Pillow, porque simulan la webcam, `rpicam-still` y `rpicam-vid`.
 
 Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos minutos en CPU.
 
@@ -252,6 +286,7 @@ Las pruebas 02 y 03 descargan los pesos de ImageNet (≈ 10 MB) y tardan unos mi
 - **Raspberry Pi 5 (8 GB, Raspberry Pi OS Trixie, Python 3.13):** entorno instalado el 2026-10-06 en `~/isic-pi/.venv` (`ai-edge-litert` 2.2.0, NumPy 2.5.3, Pillow 12.3.0). **Medido en la Pi** con un modelo de juguete de la misma arquitectura que el real: da las mismas probabilidades que la Mac (diferencia máxima 2.4 × 10⁻⁷, misma clase en 16 de 16 muestras) y tarda 9.8 ms por foto con `modelo.tflite` y 13.0 ms con el ligero (4 hilos, sin contar abrir y reducir la foto). **Con el modelo real** (2026-10-07, bajado con `git pull`): misma clase que al exportar en 16 de 16 muestras, con diferencia máxima de 2.9 × 10⁻⁶ (el ligero difiere hasta 1.5 × 10⁻², ver [Decisiones](#decisiones)). En las 5,067 fotos de test da la misma clase que la Mac en todas, con los dos modelos: recall promedio 0.632 el float32 y 0.623 el ligero. Con alimentación de laptop se apaga al usar los 4 núcleos (ver [Hardware](#hardware)).
 - **Programa (`pi/clasificar.py`):** probado en la Mac y en la Pi con `tests/probar_clasificar.py`. El preproceso es idéntico píxel a píxel al del notebook 01 (6 casos, incluida una foto de 12 MP y una con rotación EXIF). La autoprueba coincide: en la Pi, 8 de 8 muestras, diferencia máxima de 8.2 × 10⁻⁷ y 10.1 ms por foto con el modelo de objetos. Cada modo (archivos, webcam, en vivo y cámara de la Pi) da lo mismo que el modelo aplicado directo. **La webcam y la cámara de la Pi están simuladas en la prueba:** con la webcam real de la Mac la ventana en vivo sí abre (2026-10-06, con permiso de cámara para la Terminal; desde la línea de comandos de Claude macOS no da la cámara), y la cámara de la Pi todavía no se compra.
 - **Scripts (sesión 5):** aún sin escribir.
+- **App de pantalla táctil (`pi/app.py`):** probada en la Mac con fotos de prueba, en el navegador a 1024×600: tomar, guardar y otra foto, sin errores en la consola. También con `tests/probar_app.py`: el servidor, la imagen en vivo, que «Tomar» clasifique exactamente el cuadro guía (igual que el modelo aplicado directo), que solo guarde cuando se pide, y la cámara de la Pi, `rpicam-hello` y la webcam simulados. **No probada todavía en la Pi, ni con la pantalla táctil ni con una cámara de verdad.**
 
 ## Decisiones
 
