@@ -110,7 +110,7 @@ function fila(rango, o) {
 
 // Escala de 0 a 100 con una aguja por cada una de las 3 clases más probables (la 1 blanca y más larga).
 function dibujarEscala(top) {
-  const x0 = 14, x1 = 346, base = 74, X = (p) => x0 + (x1 - x0) * p;
+  const x0 = 16, x1 = 332, base = 74, X = (p) => x0 + (x1 - x0) * p;
   let s = `<line x1="${x0}" y1="${base}" x2="${x1}" y2="${base}" stroke="#666666" stroke-width="1.5"/>`;
   for (let k = 0; k <= 10; k++) {
     const mayor = k % 5 === 0, x = X(k / 10);
