@@ -204,10 +204,12 @@ Sin pantalla completa, en la Pi o en la Mac (luego abre http://127.0.0.1:8000):
 
 - **Cámara:** `--camara pi` (Camera Module, con `rpicam-vid`), `usb` (webcam; en la Pi necesita `.venv/bin/pip install opencv-python-headless`) o `prueba` (pasa fotos de test de ISIC, sin cámara). Sin `--camara` la busca en ese orden.
 - **Lo que se clasifica es exactamente el cuadro guía:** el cuadrado central que mide el 80 % del lado corto de la imagen. `clasificar.py --camara`, en cambio, usa el cuadrado completo.
+- **Aviso ámbar:** si melanoma, carcinoma basocelular, carcinoma escamoso o queratosis actínica llega a 25 % entre las tres clases más probables, sale «Conviene revisarla con un dermatólogo», aunque no sea la primera.
+- **Si la cámara se desconecta** o deja de mandar imagen, la app lo dice y la vuelve a abrir sola; mientras tanto «Tomar» no clasifica una imagen congelada.
 - **Fotos:** solo se guardan en `capturas/` si tocas «Guardar» (la foto y el resultado en JSON).
 - **Para salir:** mantén presionado «Cámara», arriba a la izquierda, y toca «Salir».
 - Solo acepta conexiones de la propia Pi. Con `--publico` también se abre desde otra compu de la red, sin contraseña.
-- El registro queda en `~/.cache/isic-pi/app.log`.
+- Los registros quedan en `~/.cache/isic-pi/` (`app.log` y `chromium.log`). Otro puerto: `ISIC_PUERTO=8001 pi/app_kiosco.sh`.
 
 ## Instalar en la Pi
 
