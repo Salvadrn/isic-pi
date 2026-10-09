@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Clasificador de lesiones de piel · isic-pi</title>
+<link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<div id="escenario">
+
+  <section id="camara" class="pantalla activa" aria-label="Cámara">
+    <img id="video" alt="Imagen en vivo de la cámara">
+    <svg id="capas" width="1024" height="600" viewBox="0 0 1024 600" aria-hidden="true">
+      <path id="sombra" fill="#000" fill-opacity="0.62" fill-rule="evenodd" d=""/>
+      <g id="reticula">
+        <rect x="0.5" y="0.5" width="479" height="479" fill="none" stroke="#666666" stroke-width="1.5"/>
+        <path d="M2 46V2H46M434 2H478V46M478 434V478H434M46 478H2V434" fill="none" stroke="#F0F0F0" stroke-width="3"/>
+        <circle cx="240" cy="240" r="228" fill="none" stroke="#666666" stroke-width="10" stroke-dasharray="2 17.9" stroke-dashoffset="1"/>
+        <circle cx="240" cy="240" r="225" fill="none" stroke="#F0F0F0" stroke-width="16" stroke-dasharray="4.5 348.9" stroke-dashoffset="2.25"/>
+        <circle cx="240" cy="240" r="213" fill="none" stroke="#9A9A9A" stroke-width="1.5"/>
+        <path d="M240 202V222M240 258V278M202 240H222M258 240H278" fill="none" stroke="#F0F0F0" stroke-width="2"/>
+      </g>
+      <rect id="destello" x="0" y="0" width="0" height="0" fill="#F0F0F0" opacity="0"/>
+    </svg>
+    <p id="instruccion" class="rotulo">Centra la lesión en el círculo</p>
+    <p id="pie-guia" class="rotulo">Lo que ve el modelo</p>
+    <p id="sin-imagen" class="rotulo" hidden>Esperando la imagen de la cámara…</p>
+
+    <aside id="lecturas">
+      <button id="estado-camara" type="button" aria-label="Estado de la cámara (mantén presionado para salir)">
+        <span id="punto-camara" class="punto"></span><span id="nombre-camara">Cámara</span>
+      </button>
+      <dl id="lectura-modelo">
+        <dt>Modelo</dt>
+        <dd class="num" id="modelo-nombre">ISIC 2019</dd>
+        <dd><span class="num" id="modelo-clases">8</span> clases</dd>
+      </dl>
+      <dl id="lectura-entrada">
+        <dt>Entrada</dt>
+        <dd class="num" id="modelo-entrada">224 × 224</dd>
+      </dl>
+      <dl id="lectura-inferencia">
+        <dt>Inferencia</dt>
+        <dd class="num" id="inferencia">—</dd>
+      </dl>
+    </aside>
+
+    <button id="tomar" type="button" aria-label="Tomar foto">
+      <svg width="180" height="180" viewBox="0 0 180 180" aria-hidden="true">
+        <circle cx="90" cy="90" r="88" fill="none" stroke="#666666" stroke-width="1.5"/>
+        <circle cx="90" cy="90" r="80" fill="none" stroke="#9A9A9A" stroke-width="8" stroke-dasharray="1.6 5.38"/>
+      </svg>
+      <span class="disco">Tomar</span>
+    </button>
+  </section>
+
+  <section id="resultado" class="pantalla" aria-label="Resultado">
+    <figure id="foto">
+      <img id="recorte" alt="La foto que vio el modelo">
+      <svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true">
+        <path d="M2 40V2H40M380 2H418V40M418 380V418H380M40 418H2V380" fill="none" stroke="#F0F0F0" stroke-width="3"/>
+        <circle cx="210" cy="210" r="199" fill="none" stroke="#666666" stroke-width="9" stroke-dasharray="1.8 15.65" stroke-dashoffset="0.9"/>
+        <circle cx="210" cy="210" r="188" fill="none" stroke="#666666" stroke-width="1.5"/>
+      </svg>
+    </figure>
+
+    <div id="lectura">
+      <p id="encabezado"><span>Clase más probable</span><span class="num" id="codigo"></span></p>
+      <h1 id="clase"></h1>
+      <p id="comun"></p>
+      <div id="medida">
+        <p id="cifra"><span class="num" id="porcentaje"></span><span class="num" id="unidad">%</span></p>
+        <svg id="escala" width="360" height="112" viewBox="0 0 360 112" aria-hidden="true"></svg>
+      </div>
+      <ol id="otras"></ol>
+      <p id="revisar" class="nota" hidden><span class="punto alerta"></span>Conviene revisarla con un dermatólogo</p>
+      <p id="poco-seguro" class="nota" hidden>Resultado poco seguro: prueba con mejor luz y más cerca</p>
+      <p id="de-prueba" class="nota" hidden>Modelo de prueba: reconoce objetos, no lesiones de piel</p>
+    </div>
+
+    <p id="descargo">No es un diagnóstico médico.<br>Consulta a un dermatólogo.</p>
+    <button id="guardar" type="button">
+      <svg class="icono" width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z M8 3v5h7V3 M7 21v-7h10v7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <svg class="icono hecho" width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="guardar-texto">Guardar</span>
+    </button>
+    <button id="otra" type="button">
+      <svg class="icono" width="38" height="38" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span>Otra foto</span>
+    </button>
+  </section>
+
+  <p id="aviso" role="status" hidden></p>
+
+  <div id="dialogo-salir" hidden>
+    <div class="panel" role="dialog" aria-labelledby="salir-titulo">
+      <p id="salir-titulo">¿Salir de la app?</p>
+      <div class="botones">
+        <button id="salir-no" type="button">Seguir</button>
+        <button id="salir-si" type="button">Salir</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
