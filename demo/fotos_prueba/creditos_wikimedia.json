@@ -1,0 +1,354 @@
+{
+ "AK-wikimedia-1.jpg": {
+  "clase": "AK",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:SolarAcanthosis.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:SolarAcanthosis.jpg",
+  "autor": "James Heilman, MD",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Queratosis actinica hiperqueratosica con costra amarillenta en el dorso de la mano, sobre piel con dano solar",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   396,
+   396
+  ],
+  "credito": "James Heilman, MD · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "AK-wikimedia-2.jpg": {
+  "clase": "AK",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:AktinischeKeratose.JPG",
+  "pagina": "https://commons.wikimedia.org/wiki/File:AktinischeKeratose.JPG",
+  "autor": "Krizu",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Queratosis actinica con costra rojiza y halo rosado en el cuero cabelludo, en la zona de calvicie (Commons: 'Aktinische Keratose auf dem Kopf im Bereich einer Glatze'). La descripcion original menciona una segunda zona tenue de 6 mm hacia las 5 en punto; el recorte 412,237,562,387 queda centrado en la lesion principal y es correcto tal como esta.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   600,
+   600
+  ],
+  "credito": "Krizu · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "BCC-wikimedia-1.jpg": {
+  "clase": "BCC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Superfizielles Basalzellkarzinom, WIKIDERM®.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Superfizielles_Basalzellkarzinom,_WIKIDERM%C2%AE.jpg",
+  "autor": "Dr. Thomas Brinkmeier",
+  "licencia": "CC BY 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by/4.0",
+  "descripcion": "Carcinoma basocelular superficial: placa rosada y escamosa con costra en el centro, sobre piel lisa del cuerpo (probablemente el tronco; el sitio exacto no viene en la descripción).",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "Dr. Thomas Brinkmeier · CC BY 4.0 · Wikimedia Commons"
+ },
+ "BCC-wikimedia-2.jpg": {
+  "clase": "BCC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Basal cell carcinoma (2).jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Basal_cell_carcinoma_(2).jpg",
+  "autor": "National Cancer Institute",
+  "licencia": "Dominio público",
+  "licencia_url": "",
+  "descripcion": "Carcinoma basocelular nodular: pápula roja y brillante en la línea media de la espalda baja, rodeada de vello.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   731,
+   731
+  ],
+  "credito": "National Cancer Institute · Dominio público · Wikimedia Commons"
+ },
+ "BCC-wikimedia-3.jpg": {
+  "clase": "BCC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Noduläres Basalzellkarzinom, WIKIDERM®.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Nodul%C3%A4res_Basalzellkarzinom,_WIKIDERM%C2%AE.jpg",
+  "autor": "Dr. Thomas Brinkmeier",
+  "licencia": "CC BY 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by/4.0",
+  "descripcion": "Carcinoma basocelular nodular: nódulo perlado rosado con vasitos visibles (telangiectasias) en el ala de la nariz; en la foto no salen ojos ni cara completa.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "Dr. Thomas Brinkmeier · CC BY 4.0 · Wikimedia Commons"
+ },
+ "BKL-wikimedia-1.jpg": {
+  "clase": "BKL",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Seborrheic keratosis closup.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Seborrheic_keratosis_closup.jpg",
+  "autor": "Assafn",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Primer plano de una queratosis seborreica café claro, ovalada y de superficie verrugosa, sobre piel clara (la ficha no dice en qué parte del cuerpo está).",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   544,
+   543
+  ],
+  "credito": "Assafn · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "BKL-wikimedia-2.jpg": {
+  "clase": "BKL",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Queratose seborreica 1.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Queratose_seborreica_1.jpg",
+  "autor": "Lmbuga",
+  "licencia": "Dominio público",
+  "licencia_url": "https://commons.wikimedia.org/wiki/Template:PD-self",
+  "descripcion": "Queratosis seborreica muy pigmentada, café oscura a negra, gruesa y con aspecto de estar pegada sobre la piel (la ficha no dice en qué parte del cuerpo está).",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   555,
+   555
+  ],
+  "credito": "Lmbuga · Dominio público · Wikimedia Commons"
+ },
+ "BKL-wikimedia-3.jpg": {
+  "clase": "BKL",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Liver spot on left forearm.JPG",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Liver_spot_on_left_forearm.JPG",
+  "autor": "Invertzoo",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Léntigo solar (mancha de la edad) plano, café claro, de unos 10 mm en el antebrazo izquierdo de una mujer de 66 años.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   161,
+   162
+  ],
+  "credito": "Invertzoo · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "DF-wikimedia-1.jpg": {
+  "clase": "DF",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Pigmented and tenderness dermatofibroma.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Pigmented_and_tenderness_dermatofibroma.jpg",
+  "autor": "Jmarchn",
+  "licencia": "CC BY-SA 3.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "descripcion": "Dermatofibroma pigmentado y doloroso en la pierna de un hombre de 34 años: placa café rojiza con centro gris violáceo, sobre piel con vello.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   620,
+   620
+  ],
+  "credito": "Jmarchn · CC BY-SA 3.0 · Wikimedia Commons"
+ },
+ "DF-wikimedia-2.jpg": {
+  "clase": "DF",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Dermatofibroma new image to help in diagnosis.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Dermatofibroma_new_image_to_help_in_diagnosis.jpg",
+  "autor": "Mohammad2018",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Dermatofibroma: nódulo redondo gris azulado bajo la piel en una zona con vello; Commons no dice en qué parte del cuerpo está (descripción genérica en francés, categoría Benign fibrous histiocytoma). Foto algo borrosa, pero no se ve nada que identifique a la persona ni zona íntima.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   400,
+   400
+  ],
+  "credito": "Mohammad2018 · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "MEL-wikimedia-1.jpg": {
+  "clase": "MEL",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Melanoma (2).jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Melanoma_(2).jpg",
+  "autor": "National Cancer Institute",
+  "licencia": "Dominio público",
+  "licencia_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+  "descripcion": "Melanoma de extensión superficial clásico: placa café asimétrica con bordes irregulares y varios tonos; la fuente no dice en qué parte del cuerpo está.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "National Cancer Institute · Dominio público · Wikimedia Commons"
+ },
+ "MEL-wikimedia-2.jpg": {
+  "clase": "MEL",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Melanoma (5).jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Melanoma_(5).jpg",
+  "autor": "National Cancer Institute",
+  "licencia": "Dominio público",
+  "licencia_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+  "descripcion": "Melanoma avanzado: placa negra de extensión superficial junto a un nódulo rojizo-rosado invasivo; la fuente no dice en qué parte del cuerpo está.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   460,
+   460
+  ],
+  "credito": "National Cancer Institute · Dominio público · Wikimedia Commons"
+ },
+ "MEL-wikimedia-3.jpg": {
+  "clase": "MEL",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Amelanotisches, malignes Melanom, ©wikiderm.de.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Amelanotisches,_malignes_Melanom,_%C2%A9wikiderm.de.jpg",
+  "autor": "Dr. Thomas Brinkmeier",
+  "licencia": "CC BY 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by/4.0",
+  "descripcion": "Melanoma maligno amelanótico: nódulo rosado y brillante sin pigmento sobre piel clara (el campo quirúrgico azul queda fuera del recorte); la fuente no dice en qué parte del cuerpo está.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "Dr. Thomas Brinkmeier · CC BY 4.0 · Wikimedia Commons"
+ },
+ "NV-wikimedia-1.jpg": {
+  "clase": "NV",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Nevus NCI.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Nevus_NCI.jpg",
+  "autor": "National Cancer Institute",
+  "licencia": "Dominio público",
+  "licencia_url": "",
+  "descripcion": "Lunar común (nevo melanocítico) café, redondo y de bordes regulares; foto clínica del NCI, sin indicar la zona del cuerpo.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   300,
+   300
+  ],
+  "credito": "National Cancer Institute · Dominio público · Wikimedia Commons"
+ },
+ "NV-wikimedia-2.jpg": {
+  "clase": "NV",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Intradermal pigmented naevus, foot.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Intradermal_pigmented_naevus,_foot.jpg",
+  "autor": "Jmarchn",
+  "licencia": "CC BY 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by/4.0",
+  "descripcion": "Nevo melanocítico intradérmico pigmentado, oscuro y elevado, en la planta del pie de una mujer de 83 años.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   440,
+   440
+  ],
+  "credito": "Jmarchn · CC BY 4.0 · Wikimedia Commons"
+ },
+ "NV-wikimedia-3.jpg": {
+  "clase": "NV",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:CompoundNevus1.JPG",
+  "pagina": "https://commons.wikimedia.org/wiki/File:CompoundNevus1.JPG",
+  "autor": "Jmarchn",
+  "licencia": "CC BY-SA 3.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "descripcion": "Nevo compuesto rosado y ligeramente elevado; tiene una regla milimétrica abajo que queda fuera del recorte. No se indica la zona del cuerpo.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   560,
+   560
+  ],
+  "credito": "Jmarchn · CC BY-SA 3.0 · Wikimedia Commons"
+ },
+ "SCC-wikimedia-1.jpg": {
+  "clase": "SCC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Squamous cell carcinoma (3).jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Squamous_cell_carcinoma_(3).jpg",
+  "autor": "National Cancer Institute",
+  "licencia": "Dominio público",
+  "licencia_url": "",
+  "descripcion": "Carcinoma epidermoide ulcerado y con costra sobre un nódulo rojizo en la punta de la nariz.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "National Cancer Institute · Dominio público · Wikimedia Commons"
+ },
+ "SCC-wikimedia-2.jpg": {
+  "clase": "SCC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Squamous Cell Carcinoma well differentiated Left upper paraspinal back with adjacent actinic keratosis.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Squamous_Cell_Carcinoma_well_differentiated_Left_upper_paraspinal_back_with_adjacent_actinic_keratosis.jpg",
+  "autor": "Dermanonymous",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Nódulo costroso de carcinoma epidermoide bien diferenciado en la parte alta de la espalda, junto a la columna.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   180,
+   180
+  ],
+  "credito": "Dermanonymous · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "SCC-wikimedia-3.jpg": {
+  "clase": "SCC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Squamous cell carcinoma (2).jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Squamous_cell_carcinoma_(2).jpg",
+  "autor": "Kelly Nelson, National Cancer Institute",
+  "licencia": "Dominio público",
+  "licencia_url": "",
+  "descripcion": "Placa rosada y elevada de carcinoma epidermoide en la piel de la pierna.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   128,
+   128
+  ],
+  "credito": "Kelly Nelson, National Cancer Institute · Dominio público · Wikimedia Commons"
+ },
+ "VASC-wikimedia-1.jpg": {
+  "clase": "VASC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Pyogenic granuloma on a finger-1.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Pyogenic_granuloma_on_a_finger-1.jpg",
+  "autor": "Kilbad",
+  "licencia": "CC BY 3.0",
+  "licencia_url": "https://creativecommons.org/licenses/by/3.0",
+  "descripcion": "Granuloma piógeno: pápula roja y brillante con collarete de piel, en el dorso del dedo índice.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   646,
+   646
+  ],
+  "credito": "Kilbad · CC BY 3.0 · Wikimedia Commons"
+ },
+ "VASC-wikimedia-2.jpg": {
+  "clase": "VASC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Cherry angioma closeup.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Cherry_angioma_closeup.jpg",
+  "autor": "Assafn",
+  "licencia": "CC BY-SA 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "descripcion": "Angioma rubí (angioma senil): pápula roja intensa, ovalada y algo abombada, en piel clara de un adulto. Commons no dice en qué parte del cuerpo está.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   282,
+   282
+  ],
+  "credito": "Assafn · CC BY-SA 4.0 · Wikimedia Commons"
+ },
+ "VASC-wikimedia-3.jpg": {
+  "clase": "VASC",
+  "fuente": "Wikimedia Commons",
+  "titulo": "File:Capillary haemangioma.jpg",
+  "pagina": "https://commons.wikimedia.org/wiki/File:Capillary_haemangioma.jpg",
+  "autor": "Zeimusu",
+  "licencia": "Dominio público",
+  "licencia_url": "",
+  "descripcion": "Hemangioma capilar (\"mancha en fresa\"): placa roja lobulada y en relieve, en el abdomen de un bebé, junto al ombligo.",
+  "modificacion": "Recortada al cuadro de la lesión y reducida",
+  "tamano": [
+   390,
+   390
+  ],
+  "credito": "Zeimusu · Dominio público · Wikimedia Commons"
+ }
+}
