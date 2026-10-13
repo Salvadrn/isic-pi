@@ -57,6 +57,9 @@ async function leerEstado() {
     $("modelo-clases").textContent = d.modelo.clases.toLocaleString("es-MX");
     $("modelo-entrada").textContent = `${d.modelo.entrada} × ${d.modelo.entrada}`;
     if (d.ms != null) $("inferencia").textContent = `${d.ms.toFixed(1)} ms`;
+    const pie = $("pie-guia");                  // fotos de prueba: su crédito, como piden sus licencias
+    pie.textContent = d.credito ? `Foto: ${d.credito}` : "Lo que ve el modelo";
+    pie.classList.toggle("credito", Boolean(d.credito));
     acomodar();
   } catch {
     $("punto-camara").className = "punto error";
@@ -161,6 +164,8 @@ async function mostrar(d) {
   $("revisar").hidden = !d.revisar;
   $("poco-seguro").hidden = d.seguro;
   $("de-prueba").hidden = d.isic;
+  $("real").hidden = !d.real;
+  if (d.real) $("real").textContent = `Foto de prueba · en realidad es ${d.real.nombre}`;
   $("guardar").classList.remove("guardada");
   $("guardar-texto").textContent = "Guardar";
   $("inferencia").textContent = `${d.ms.toFixed(1)} ms`;
