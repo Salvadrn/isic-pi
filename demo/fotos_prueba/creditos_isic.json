@@ -1,0 +1,562 @@
+{
+ "AK-ISIC_0070737.jpg": {
+  "clase": "AK",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0070737",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0070737/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0070737 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "AK-ISIC_0062738.jpg": {
+  "clase": "AK",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0062738",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0062738/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0062738 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "AK-ISIC_0067204.jpg": {
+  "clase": "AK",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0067204",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0067204/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0067204 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "AK-ISIC_0057072.jpg": {
+  "clase": "AK",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0057072",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0057072/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0057072 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "AK-ISIC_0032206.jpg": {
+  "clase": "AK",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0032206",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0032206/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0032206 · MILK study team · CC BY-NC 4.0"
+ },
+ "BCC-ISIC_0056889.jpg": {
+  "clase": "BCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0056889",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0056889/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0056889 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "BCC-ISIC_0057654.jpg": {
+  "clase": "BCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0057654",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0057654/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0057654 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "BCC-ISIC_0064544.jpg": {
+  "clase": "BCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0064544",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0064544/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0064544 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "BCC-ISIC_0029546.jpg": {
+  "clase": "BCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0029546",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0029546/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0029546 · MILK study team · CC BY-NC 4.0"
+ },
+ "BCC-ISIC_0069474.jpg": {
+  "clase": "BCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0069474",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0069474/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0069474 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "BKL-ISIC_0027463.jpg": {
+  "clase": "BKL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0027463",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0027463/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0027463 · MILK study team · CC BY-NC 4.0"
+ },
+ "BKL-ISIC_0031078.jpg": {
+  "clase": "BKL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0031078",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0031078/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0031078 · MILK study team · CC BY-NC 4.0"
+ },
+ "BKL-ISIC_0064741.jpg": {
+  "clase": "BKL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0064741",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0064741/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0064741 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "BKL-ISIC_0012323.jpg": {
+  "clase": "BKL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0012323",
+  "autor": "Anonymous",
+  "licencia": "CC0 1.0",
+  "licencia_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0012323/",
+  "tamano": [
+   800,
+   531
+  ],
+  "credito": "ISIC_0012323 · Anonymous · CC0 1.0"
+ },
+ "BKL-ISIC_0027969.jpg": {
+  "clase": "BKL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0027969",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0027969/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0027969 · MILK study team · CC BY-NC 4.0"
+ },
+ "DF-ISIC_0025954.jpg": {
+  "clase": "DF",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0025954",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0025954/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0025954 · MILK study team · CC BY-NC 4.0"
+ },
+ "DF-ISIC_0071844.jpg": {
+  "clase": "DF",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0071844",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0071844/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0071844 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "DF-ISIC_0025980.jpg": {
+  "clase": "DF",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0025980",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0025980/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0025980 · MILK study team · CC BY-NC 4.0"
+ },
+ "DF-ISIC_0053697.jpg": {
+  "clase": "DF",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0053697",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0053697/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0053697 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "DF-ISIC_0032941.jpg": {
+  "clase": "DF",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0032941",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0032941/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0032941 · MILK study team · CC BY-NC 4.0"
+ },
+ "MEL-ISIC_0066423.jpg": {
+  "clase": "MEL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0066423",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0066423/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0066423 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "MEL-ISIC_0033820.jpg": {
+  "clase": "MEL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0033820",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0033820/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0033820 · MILK study team · CC BY-NC 4.0"
+ },
+ "MEL-ISIC_0070933.jpg": {
+  "clase": "MEL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0070933",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0070933/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0070933 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "MEL-ISIC_0012425.jpg": {
+  "clase": "MEL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0012425",
+  "autor": "Anonymous",
+  "licencia": "CC0 1.0",
+  "licencia_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0012425/",
+  "tamano": [
+   800,
+   531
+  ],
+  "credito": "ISIC_0012425 · Anonymous · CC0 1.0"
+ },
+ "MEL-ISIC_0034134.jpg": {
+  "clase": "MEL",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0034134",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0034134/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0034134 · MILK study team · CC BY-NC 4.0"
+ },
+ "NV-ISIC_0031708.jpg": {
+  "clase": "NV",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0031708",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0031708/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0031708 · MILK study team · CC BY-NC 4.0"
+ },
+ "NV-ISIC_0030084.jpg": {
+  "clase": "NV",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0030084",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0030084/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0030084 · MILK study team · CC BY-NC 4.0"
+ },
+ "NV-ISIC_0070928.jpg": {
+  "clase": "NV",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0070928",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0070928/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0070928 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "NV-ISIC_0062979.jpg": {
+  "clase": "NV",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0062979",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0062979/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0062979 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "NV-ISIC_0014977.jpg": {
+  "clase": "NV",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0014977",
+  "autor": "Anonymous",
+  "licencia": "CC0 1.0",
+  "licencia_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0014977/",
+  "tamano": [
+   800,
+   533
+  ],
+  "credito": "ISIC_0014977 · Anonymous · CC0 1.0"
+ },
+ "SCC-ISIC_0066625.jpg": {
+  "clase": "SCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0066625",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0066625/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0066625 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "SCC-ISIC_0071727.jpg": {
+  "clase": "SCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0071727",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0071727/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0071727 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "SCC-ISIC_0033550.jpg": {
+  "clase": "SCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0033550",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0033550/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0033550 · MILK study team · CC BY-NC 4.0"
+ },
+ "SCC-ISIC_0058051.jpg": {
+  "clase": "SCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0058051",
+  "autor": "Hospital Clínic de Barcelona",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0058051/",
+  "tamano": [
+   800,
+   800
+  ],
+  "credito": "ISIC_0058051 · Hospital Clínic de Barcelona · CC BY-NC 4.0"
+ },
+ "SCC-ISIC_0028659.jpg": {
+  "clase": "SCC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0028659",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0028659/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0028659 · MILK study team · CC BY-NC 4.0"
+ },
+ "VASC-ISIC_0032270.jpg": {
+  "clase": "VASC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0032270",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0032270/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0032270 · MILK study team · CC BY-NC 4.0"
+ },
+ "VASC-ISIC_0031996.jpg": {
+  "clase": "VASC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0031996",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0031996/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0031996 · MILK study team · CC BY-NC 4.0"
+ },
+ "VASC-ISIC_0029439.jpg": {
+  "clase": "VASC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0029439",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0029439/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0029439 · MILK study team · CC BY-NC 4.0"
+ },
+ "VASC-ISIC_0030882.jpg": {
+  "clase": "VASC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0030882",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0030882/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0030882 · MILK study team · CC BY-NC 4.0"
+ },
+ "VASC-ISIC_0029608.jpg": {
+  "clase": "VASC",
+  "fuente": "ISIC 2019",
+  "id": "ISIC_0029608",
+  "autor": "MILK study team",
+  "licencia": "CC BY-NC 4.0",
+  "licencia_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "pagina": "https://api.isic-archive.com/api/v2/images/ISIC_0029608/",
+  "tamano": [
+   600,
+   450
+  ],
+  "credito": "ISIC_0029608 · MILK study team · CC BY-NC 4.0"
+ }
+}
