@@ -6,7 +6,7 @@ No necesita nada más que lo que ya usa pi/clasificar.py (NumPy, Pillow y el int
 para una webcam USB. Desde la carpeta del repo:
 
   python pi/app.py                      # cámara automática: la de la Pi; si no hay, una USB; si no, fotos de prueba
-  python pi/app.py --camara prueba      # sin cámara: pasa fotos de test de ISIC, para probar la app
+  python pi/app.py --camara prueba      # sin cámara: pasa fotos de ejemplo (demo/fotos_prueba: ISIC y Wikimedia)
   python pi/app.py --camara usb --indice 1
   python pi/app.py --publico            # también se abre desde otra compu de la red (no pide contraseña)
 
@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import random
 import re
 import shutil
 import signal
@@ -43,6 +44,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import clasificar  # noqa: E402  (pi/clasificar.py: el mismo modelo y el mismo preproceso)
 
 WEB = Path(__file__).resolve().parent / "app"
+FOTOS_PRUEBA = Path(__file__).resolve().parent.parent / "demo" / "fotos_prueba"   # ISIC y Wikimedia, con créditos
 GUIA = 0.8                       # lado del cuadro guía / lado corto de la imagen
 FPS = 15
 RIESGO = {"MEL", "BCC", "SCC", "AK"}
@@ -67,10 +69,11 @@ class Fotograma:
         self.n = 0                                   # 0 = todavía no llega ninguna imagen
         self.t = 0.0                                 # time.monotonic() de la última imagen
         self.error = None
+        self.meta = None                             # fotos de prueba: su clase real y su crédito
 
-    def poner(self, jpeg):
+    def poner(self, jpeg, meta=None):
         with self.cond:
-            self.jpeg, self.n, self.t, self.error = jpeg, self.n + 1, time.monotonic(), None
+            self.jpeg, self.n, self.t, self.error, self.meta = jpeg, self.n + 1, time.monotonic(), None, meta
             self.cond.notify_all()
 
     def fallar(self, mensaje):
@@ -85,9 +88,9 @@ class Fotograma:
             return self.n, self.jpeg
 
     def actual(self):
-        """(jpeg, error, segundos desde la última imagen), leídos juntos."""
+        """(jpeg, error, segundos desde la última imagen, meta), leídos juntos."""
         with self.cond:
-            return self.jpeg, self.error, time.monotonic() - self.t
+            return self.jpeg, self.error, time.monotonic() - self.t, self.meta
 
 
 class Camara(threading.Thread):
@@ -227,7 +230,8 @@ class CamaraUSB(Camara):
 
 
 class CamaraPrueba(Camara):
-    """Sin cámara: pasa fotos (las de test que vienen con el modelo, o las de una carpeta), una cada `cada` s."""
+    """Sin cámara: pasa fotos de ejemplo, una cada `cada` s. Cada foto puede ser (imagen, meta), donde meta trae su
+    clase real y su crédito; la pantalla muestra el crédito y, al tomarla, cuál era su diagnóstico."""
     nombre = "Fotos de prueba"
 
     def __init__(self, fotos, cada=4.0, ancho=960, alto=720):
@@ -235,14 +239,20 @@ class CamaraPrueba(Camara):
         if not fotos:
             raise clasificar.ErrorUsuario("No hay fotos de prueba: usa --fotos CARPETA o un modelo con muestras_pi.npz.")
         self.cada = cada
-        self.jpegs = [self.cuadro(f, ancho, alto) for f in fotos]
+        self.cuadros = []
+        for f in fotos:
+            foto, meta = f if isinstance(f, tuple) else (f, None)
+            self.cuadros.append((self.cuadro(foto, ancho, alto), meta))
 
     @staticmethod
     def cuadro(foto, ancho, alto):
-        """La foto, cuadrada y del alto de la imagen, centrada sobre fondo oscuro, como si la viera una cámara."""
+        """La foto como la vería la cámara, a una escala en la que el cuadro guía abarca justo su cuadrado central: el
+        mismo recorte con el que se entrenó el modelo. Lo que la foto no alcanza a cubrir queda oscuro."""
+        foto = foto.convert("RGB")
+        escala = GUIA * min(ancho, alto) / min(foto.size)
+        foto = foto.resize((max(1, round(foto.width * escala)), max(1, round(foto.height * escala))), Image.BILINEAR)
         lienzo = Image.new("RGB", (ancho, alto), (17, 17, 17))
-        lado = min(ancho, alto)
-        lienzo.paste(foto.convert("RGB").resize((lado, lado), Image.BILINEAR), ((ancho - lado) // 2, (alto - lado) // 2))
+        lienzo.paste(foto, ((ancho - foto.width) // 2, (alto - foto.height) // 2))
         out = io.BytesIO()
         lienzo.save(out, "JPEG", quality=92)
         return out.getvalue()
@@ -251,8 +261,9 @@ class CamaraPrueba(Camara):
         k = 0
         while not self.parar.is_set():
             t_cambio = time.time() + self.cada
+            jpeg, meta = self.cuadros[k % len(self.cuadros)]
             while time.time() < t_cambio and not self.parar.is_set():
-                self.salida.poner(self.jpegs[k % len(self.jpegs)])
+                self.salida.poner(jpeg, meta)
                 time.sleep(1 / FPS)
             k += 1
 
@@ -265,13 +276,30 @@ def abrir_foto(ruta):
         raise clasificar.ErrorUsuario(f"No pude leer {ruta}: {e}") from None
 
 
+def meta_de(clase, credito):
+    return {"clase": clase, "nombre": clasificar.NOMBRES.get(clase, clase), "credito": credito}
+
+
 def fotos_de_prueba(carpeta_modelo, carpeta_fotos=None):
+    """Lista de (imagen, meta). De una carpeta: sus fotos, con la clase y el crédito de sus creditos*.json si los
+    trae, en orden revuelto (siempre el mismo) para que se alternen las clases. Si no: las muestras del modelo."""
     if carpeta_fotos:
-        return [abrir_foto(p) for p in clasificar.expandir([carpeta_fotos])[:200]]
+        creditos = {}
+        for p in sorted(Path(carpeta_fotos).glob("creditos*.json")):
+            creditos.update(json.loads(p.read_text(encoding="utf-8")))
+        fotos = []
+        for p in clasificar.expandir([carpeta_fotos])[:200]:
+            c = creditos.get(p.name)
+            fotos.append((abrir_foto(p), meta_de(c["clase"], c["credito"]) if c else None))
+        random.Random(7).shuffle(fotos)
+        return fotos
     ruta = Path(carpeta_modelo) / "muestras_pi.npz"
     if not ruta.exists():
         return []
-    return [Image.fromarray(x) for x in np.load(ruta)["x"]]
+    mu = np.load(ruta)
+    clases = (Path(carpeta_modelo) / "clases.txt").read_text(encoding="utf-8").split()
+    return [(Image.fromarray(x), meta_de(clases[int(y)], "Muestra de test de ISIC 2019"))
+            for x, y in zip(mu["x"], mu["y"])]
 
 
 def hay_camara_pi():
@@ -322,10 +350,11 @@ class App:
                        "archivo": self.c.ruta.name, "interprete": self.c.runtime},
             "guia": GUIA,
             "ms": None if self.ms is None else round(self.ms, 1),
+            "credito": s.meta["credito"] if s.meta else None,
         }
 
     def tomar(self):
-        jpeg, error, edad = self.camara.salida.actual()
+        jpeg, error, edad, meta = self.camara.salida.actual()
         if error or jpeg is None:
             raise clasificar.ErrorUsuario(error or "La cámara todavía no manda imagen.")
         if edad > VIEJA:
@@ -347,7 +376,8 @@ class App:
         r = {"id": ident, "ms": round(ms, 1), "top": top, "isic": self.c.es_isic,
              "revisar": self.c.es_isic and any(t["codigo"] in RIESGO and t["prob"] >= UMBRAL_RIESGO for t in top),
              "seguro": top[0]["prob"] >= clasificar.UMBRAL_CONFIANZA,
-             "todas": {self.c.clases[i]: round(float(prob[i]), 4) for i in orden}}
+             "todas": {self.c.clases[i]: round(float(prob[i]), 4) for i in orden},
+             "real": {"codigo": meta["clase"], "nombre": meta["nombre"], "credito": meta["credito"]} if meta else None}
         out = io.BytesIO()
         recorte.save(out, "JPEG", quality=92)
         self.tomadas[ident] = (out.getvalue(), r)
@@ -472,7 +502,7 @@ def main(argv=None):
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--camara", choices=["auto", "pi", "usb", "prueba"], default="auto")
     p.add_argument("--indice", type=int, default=0, help="número de la webcam USB")
-    p.add_argument("--fotos", help="carpeta de fotos para --camara prueba (si no, las de test del modelo)")
+    p.add_argument("--fotos", help="carpeta de fotos para --camara prueba (si no, demo/fotos_prueba con el modelo de piel)")
     p.add_argument("--modelo", default=str(clasificar.MODELO_DEFECTO), help="carpeta del modelo")
     p.add_argument("--ligero", action="store_true", help="usar modelo_ligero.tflite")
     p.add_argument("--hilos", type=int, default=4)
@@ -481,6 +511,8 @@ def main(argv=None):
     a = p.parse_args(argv)
     try:
         c = clasificar.Clasificador(a.modelo, ligero=a.ligero, hilos=a.hilos)
+        if a.fotos is None and c.es_isic and any(FOTOS_PRUEBA.glob("*.jpg")):
+            a.fotos = str(FOTOS_PRUEBA)
         cam = elegir_camara(a)
     except clasificar.ErrorUsuario as e:
         print(f"Error: {e}", file=sys.stderr)
