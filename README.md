@@ -202,7 +202,8 @@ Sin pantalla completa, en la Pi o en la Mac (luego abre http://127.0.0.1:8000):
 .venv/bin/python pi/app.py --camara prueba
 ```
 
-- **Cámara:** `--camara pi` (Camera Module, con `rpicam-vid`), `usb` (webcam; en la Pi necesita `.venv/bin/pip install opencv-python-headless`) o `prueba` (pasa fotos de test de ISIC, sin cámara). Sin `--camara` la busca en ese orden.
+- **Cámara:** `--camara pi` (Camera Module, con `rpicam-vid`), `usb` (webcam; en la Pi necesita `.venv/bin/pip install opencv-python-headless`) o `prueba` (sin cámara: pasa las 62 fotos de ejemplo de [demo/fotos_prueba](demo/fotos_prueba/CREDITOS.md), una cada 4 s). Sin `--camara` la busca en ese orden.
+- **Fotos de prueba:** 40 de dermatoscopio del test de ISIC 2019 (5 por clase, al azar) y 22 clínicas de Wikimedia Commons con licencia libre (2 o 3 por clase), elegidas y revisadas por agentes por licencia y contenido. Debajo del cuadro sale el crédito de cada foto, y en el resultado su diagnóstico real, para comparar con lo que dijo el modelo. Créditos completos en [CREDITOS.md](demo/fotos_prueba/CREDITOS.md).
 - **Lo que se clasifica es exactamente el cuadro guía:** el cuadrado central que mide el 80 % del lado corto de la imagen. `clasificar.py --camara`, en cambio, usa el cuadrado completo.
 - **Aviso ámbar:** si melanoma, carcinoma basocelular, carcinoma escamoso o queratosis actínica llega a 25 % entre las tres clases más probables, sale «Conviene revisarla con un dermatólogo», aunque no sea la primera.
 - **Si la cámara se desconecta** o deja de mandar imagen, la app lo dice y la vuelve a abrir sola; mientras tanto «Tomar» no clasifica una imagen congelada.
