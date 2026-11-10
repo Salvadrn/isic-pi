@@ -1,0 +1,448 @@
+[
+ {
+  "referencias": [
+   {
+    "clave": "sandler2018",
+    "verificada": true,
+    "bibtex": "@inproceedings{sandler2018,\n  author    = {Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},\n  title     = {{MobileNetV2}: Inverted Residuals and Linear Bottlenecks},\n  booktitle = {2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  address   = {Salt Lake City, UT, USA},\n  publisher = {IEEE},\n  pages     = {4510--4520},\n  year      = {2018},\n  doi       = {10.1109/CVPR.2018.00474}\n}",
+    "fuente": "https://api.crossref.org/works/10.1109/CVPR.2018.00474",
+    "notas": "Crossref confirma título, los 5 autores, páginas 4510-4520 y la sede (Salt Lake City, 18-23 jun 2018). El DOI resuelve a IEEE Xplore 8578572. La journal-ref de arXiv:1801.04381 también dice pp. 4510-4520."
+   },
+   {
+    "clave": "howard2017",
+    "verificada": true,
+    "bibtex": "@misc{howard2017,\n  author       = {Howard, Andrew G. and Zhu, Menglong and Chen, Bo and Kalenichenko, Dmitry and Wang, Weijun and Weyand, Tobias and Andreetto, Marco and Adam, Hartwig},\n  title        = {{MobileNets}: Efficient Convolutional Neural Networks for Mobile Vision Applications},\n  howpublished = {arXiv preprint arXiv:1704.04861},\n  year         = {2017},\n  doi          = {10.48550/arXiv.1704.04861},\n  url          = {https://arxiv.org/abs/1704.04861}\n}",
+    "fuente": "https://export.arxiv.org/api/query?id_list=1704.04861",
+    "notas": "Solo existe como preprint de arXiv (v1, 17 abr 2017). La API de arXiv no registra journal-ref ni versión en congreso. El DOI de arXiv 10.48550/arXiv.1704.04861 resuelve a arxiv.org/abs/1704.04861. Los 8 autores coinciden con el PDF."
+   },
+   {
+    "clave": "deng2009",
+    "verificada": true,
+    "bibtex": "@inproceedings{deng2009,\n  author    = {Deng, Jia and Dong, Wei and Socher, Richard and Li, Li-Jia and Li, Kai and Fei-Fei, Li},\n  title     = {{ImageNet}: A large-scale hierarchical image database},\n  booktitle = {2009 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},\n  address   = {Miami, FL, USA},\n  publisher = {IEEE},\n  pages     = {248--255},\n  year      = {2009},\n  doi       = {10.1109/CVPR.2009.5206848}\n}",
+    "fuente": "https://api.crossref.org/works/10.1109/CVPR.2009.5206848",
+    "notas": "Crossref da container-title '2009 IEEE Conference on Computer Vision and Pattern Recognition', pp. 248-255, junio de 2009, y el DOI resuelve a IEEE Xplore 5206848. Ojo: en Crossref el campo 'event' dice 'CVPR Workshops' (Miami, 20-25 jun 2009), una rareza conocida del registro de IEEE; es el artículo principal de CVPR. 'Kai Li' y 'Li Fei-Fei' vienen sin separar nombre y apellido en Crossref; aquí se pusieron como Li, Kai y Fei-Fei, Li."
+   },
+   {
+    "clave": "yosinski2014",
+    "verificada": true,
+    "bibtex": "@inproceedings{yosinski2014,\n  author    = {Yosinski, Jason and Clune, Jeff and Bengio, Yoshua and Lipson, Hod},\n  title     = {How transferable are features in deep neural networks?},\n  booktitle = {Advances in Neural Information Processing Systems},\n  editor    = {Ghahramani, Z. and Welling, M. and Cortes, C. and Lawrence, N. and Weinberger, K.},\n  publisher = {Curran Associates, Inc.},\n  volume    = {27},\n  pages     = {3320--3328},\n  year      = {2014},\n  url       = {https://proceedings.neurips.cc/paper_files/paper/2014/file/532a2f85b6977104bc93f8580abbb330-Paper.pdf}\n}",
+    "fuente": "https://proceedings.neurips.cc/paper_files/paper/2014/hash/532a2f85b6977104bc93f8580abbb330-Abstract.html",
+    "notas": "Autores, volumen 27, editores y editorial salen de la página y del .bib oficiales de NeurIPS. El .bib oficial deja pages vacío. El rango 3320-3328 viene de la journal-ref de arXiv:1411.1792 que capturaron los autores; no lo pude confirmar en DBLP porque tiene un muro anti-bot. No tiene DOI. Ojo: el hash que traen muchas citas viejas (375c7134...) ya da 404; el vigente es 532a2f85..."
+   },
+   {
+    "clave": "kingma2015",
+    "verificada": true,
+    "bibtex": "@inproceedings{kingma2015,\n  author    = {Kingma, Diederik P. and Ba, Jimmy},\n  title     = {Adam: A Method for Stochastic Optimization},\n  booktitle = {3rd International Conference on Learning Representations (ICLR 2015)},\n  address   = {San Diego, CA, USA},\n  year      = {2015},\n  note      = {arXiv:1412.6980},\n  url       = {https://arxiv.org/abs/1412.6980}\n}",
+    "fuente": "https://export.arxiv.org/api/query?id_list=1412.6980",
+    "notas": "El comentario de arXiv (v9, 30 ene 2017) dice que se publicó en el 3er ICLR, San Diego, 2015. El archivo de iclr.cc lo pone en el conference track como póster (sesión del 9 de mayo; ICLR 2015 fue del 7 al 9 de mayo). ICLR 2015 no tiene actas con DOI ni páginas. Hay DOI de arXiv (10.48550/arXiv.1412.6980) si quieren agregarlo. No pude confirmar los editores (Bengio y LeCun en DBLP) porque DBLP pidió verificación anti-bot, así que no los incluí."
+   },
+   {
+    "clave": "ioffe2015",
+    "verificada": true,
+    "bibtex": "@inproceedings{ioffe2015,\n  author    = {Ioffe, Sergey and Szegedy, Christian},\n  title     = {Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift},\n  booktitle = {Proceedings of the 32nd International Conference on Machine Learning},\n  editor    = {Bach, Francis and Blei, David},\n  series    = {Proceedings of Machine Learning Research},\n  volume    = {37},\n  pages     = {448--456},\n  publisher = {PMLR},\n  address   = {Lille, France},\n  year      = {2015},\n  url       = {https://proceedings.mlr.press/v37/ioffe15.html}\n}",
+    "fuente": "https://proceedings.mlr.press/v37/ioffe15.html",
+    "notas": "La página de PMLR confirma volumen 37, pp. 448-456, editores Bach y Blei, Lille, Francia, 7-9 jul 2015. Las actas de PMLR no tienen DOI. Preprint: arXiv:1502.03167."
+   },
+   {
+    "clave": "jacob2018",
+    "verificada": true,
+    "bibtex": "@inproceedings{jacob2018,\n  author    = {Jacob, Benoit and Kligys, Skirmantas and Chen, Bo and Zhu, Menglong and Tang, Matthew and Howard, Andrew and Adam, Hartwig and Kalenichenko, Dmitry},\n  title     = {Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference},\n  booktitle = {2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  address   = {Salt Lake City, UT, USA},\n  publisher = {IEEE},\n  pages     = {2704--2713},\n  year      = {2018},\n  doi       = {10.1109/CVPR.2018.00286}\n}",
+    "fuente": "https://api.crossref.org/works/10.1109/CVPR.2018.00286",
+    "notas": "Crossref confirma los 8 autores en ese orden, pp. 2704-2713 y CVPR 2018 en Salt Lake City. El DOI resuelve a IEEE Xplore 8578384. Preprint: arXiv:1712.05877."
+   },
+   {
+    "clave": "abadi2016",
+    "verificada": true,
+    "bibtex": "@inproceedings{abadi2016,\n  author    = {Abadi, Mart{\\'\\i}n and Barham, Paul and Chen, Jianmin and Chen, Zhifeng and Davis, Andy and Dean, Jeffrey and Devin, Matthieu and Ghemawat, Sanjay and Irving, Geoffrey and Isard, Michael and Kudlur, Manjunath and Levenberg, Josh and Monga, Rajat and Moore, Sherry and Murray, Derek G. and Steiner, Benoit and Tucker, Paul and Vasudevan, Vijay and Warden, Pete and Wicke, Martin and Yu, Yuan and Zheng, Xiaoqiang},\n  title     = {{TensorFlow}: A System for Large-Scale Machine Learning},\n  booktitle = {12th USENIX Symposium on Operating Systems Design and Implementation (OSDI 16)},\n  address   = {Savannah, GA, USA},\n  publisher = {USENIX Association},\n  pages     = {265--283},\n  year      = {2016},\n  isbn      = {978-1-931971-33-1},\n  url       = {https://www.usenix.org/conference/osdi16/technical-sessions/presentation/abadi}\n}",
+    "fuente": "https://www.usenix.org/conference/osdi16/technical-sessions/presentation/abadi",
+    "notas": "Se tomó del BibTeX oficial de USENIX: 22 autores, pp. 265-283, ISBN 978-1-931971-33-1, noviembre de 2016. La portada del PDF da las fechas, 2-4 nov 2016, en Savannah, GA. No tiene DOI. El paper no menciona TensorFlow Lite ni LiteRT, así que eso necesita una cita aparte a la documentación oficial."
+   },
+   {
+    "clave": "he2009",
+    "verificada": true,
+    "bibtex": "@article{he2009,\n  author  = {He, Haibo and Garcia, Edwardo A.},\n  title   = {Learning from Imbalanced Data},\n  journal = {IEEE Transactions on Knowledge and Data Engineering},\n  volume  = {21},\n  number  = {9},\n  pages   = {1263--1284},\n  year    = {2009},\n  doi     = {10.1109/TKDE.2008.239}\n}",
+    "fuente": "https://api.crossref.org/works/10.1109/TKDE.2008.239",
+    "notas": "Crossref y OpenAlex coinciden en vol. 21, núm. 9, pp. 1263-1284, sep. 2009. El DOI resuelve a IEEE Xplore 5128907. Crossref da el segundo autor como 'E.A. Garcia'. El nombre completo 'Edwardo A. Garcia' viene de índices secundarios encontrados en la búsqueda, no de IEEE (Xplore no cargó). No tuve acceso al texto completo, que es de pago."
+   },
+   {
+    "clave": "keras_apps",
+    "verificada": true,
+    "bibtex": "@misc{keras_apps,\n  author       = {{Keras Team}},\n  title        = {Keras Applications},\n  howpublished = {\\url{https://keras.io/api/applications/}},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://keras.io/api/applications/",
+    "notas": "OPCIONAL, no venía en la lista. Sirve si el artículo da las cifras de MobileNetV2 en Keras (3.5M parámetros, 14 MB) o dice que preprocess_input escala a [-1, 1], según https://keras.io/api/applications/mobilenet/mobilenet_models/."
+   },
+   {
+    "clave": "keras_adam",
+    "verificada": true,
+    "bibtex": "@misc{keras_adam,\n  author       = {{Keras Team}},\n  title        = {Adam},\n  howpublished = {\\url{https://keras.io/api/optimizers/adam/}},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://keras.io/api/optimizers/adam/",
+    "notas": "OPCIONAL, no venía en la lista. Solo hace falta si el artículo menciona los valores por defecto de Adam en Keras, porque su epsilon (1e-7) no es el del paper (10^-8)."
+   }
+  ],
+  "hechos": [
+   {
+    "clave": "sandler2018",
+    "hecho": "Así funciona el bloque residual invertido con cuello de botella lineal. Recibe una representación comprimida, de pocas dimensiones. La expande a muchas dimensiones y la filtra con una convolución depthwise ligera. Al final la proyecta de vuelta a pocas dimensiones con una convolución lineal, sin función de activación. Los atajos (shortcuts) unen las capas delgadas, es decir, los cuellos de botella, y no las anchas. Quitar la no linealidad de las capas estrechas conserva el poder de representación. Ubicación: resumen y Introducción ('Our main contribution...') de arXiv:1801.04381, más la secciones 3.2 y 3.3.",
+    "fuente": "https://arxiv.org/abs/1801.04381"
+   },
+   {
+    "clave": "sandler2018",
+    "hecho": "La red base (multiplicador de ancho 1, entrada de 224×224) cuesta 300 millones de multiplicaciones-sumas y usa 3.4 millones de parámetros. La Tabla 4 la pone en 72.0% de acierto top-1 en ImageNet, con 3.4M parámetros, 300M MAdds y 75 ms en un solo núcleo grande de un Google Pixel 1 con TF-Lite. Variando la resolución (96 a 224) y el multiplicador (0.35 a 1.4), el tamaño va de 1.7M a 6.9M parámetros. Ubicación: sección 4, párrafo 'Trade-off hyper parameters', y Tabla 4.",
+    "fuente": "https://arxiv.org/abs/1801.04381"
+   },
+   {
+    "clave": "sandler2018",
+    "hecho": "La arquitectura arranca con una capa convolucional completa de 32 filtros. Le siguen 19 capas residuales de cuello de botella. Usa ReLU6 porque aguanta bien el cómputo de baja precisión, kernels de 3×3 en todas partes, y dropout con batch normalization al entrenar. En los experimentos principales el factor de expansión es 6; por ejemplo, una entrada de 64 canales se infla a 64·6 = 384 canales. Ubicación: sección 4 y Tabla 2.",
+    "fuente": "https://arxiv.org/abs/1801.04381"
+   },
+   {
+    "clave": "keras_apps",
+    "hecho": "La tabla de Keras Applications le da a MobileNetV2 14 MB, 71.3% top-1, 90.1% top-5, 3.5M parámetros y profundidad 105. No dice cómo cuenta los parámetros. Si el artículo pone 3.4M, debe citar a Sandler; si pone 3.5M, a Keras. La función keras.applications.MobileNetV2 trae por defecto alpha=1.0, include_top=True, weights='imagenet' y classes=1000. Su preprocess_input escala los píxeles al rango de -1 a 1.",
+    "fuente": "https://keras.io/api/applications/ ; https://keras.io/api/applications/mobilenet/mobilenet_models/"
+   },
+   {
+    "clave": "howard2017",
+    "hecho": "MobileNet (v1) se construye con convoluciones separables en profundidad (depthwise separable). Con kernel de 3×3 gastan entre 8 y 9 veces menos cómputo que una convolución estándar, a cambio de perder un poco de exactitud (sección 3.1). Introduce dos hiperparámetros globales: el multiplicador de ancho α y el de resolución ρ. MobileNet 1.0-224 logra 70.6% en ImageNet con 569 millones de Mult-Adds y 4.2 millones de parámetros (Tabla 6).",
+    "fuente": "https://arxiv.org/abs/1704.04861"
+   },
+   {
+    "clave": "deng2009",
+    "hecho": "Cuando se publicó el artículo, ImageNet tenía 12 subárboles (mamíferos, aves, peces, reptiles, anfibios, vehículos, muebles, instrumentos musicales, formaciones geológicas, herramientas, flores, frutas), 5247 synsets y 3.2 millones de imágenes. La meta era cubrir la mayoría de los cerca de 80,000 synsets de sustantivos de WordNet, con 500 a 1000 imágenes por synset en promedio. OJO: el subconjunto de 1000 clases (ILSVRC-2012, unas 1.28 millones de imágenes de entrenamiento) con el que se preentrenan los pesos de Keras no está descrito en Deng 2009. Para eso se suele citar a Russakovsky et al. 2015 (IJCV), referencia que NO verifiqué aquí.",
+    "fuente": "https://papers.baulab.info/papers/also/Deng-2009.pdf (copia del PDF; registro oficial https://doi.org/10.1109/CVPR.2009.5206848)"
+   },
+   {
+    "clave": "yosinski2014",
+    "hecho": "En la primera capa, las redes entrenadas con imágenes naturales aprenden filtros parecidos a los de Gabor y manchas de color. Son rasgos generales, que sirven para muchos datasets y tareas. En la última capa los rasgos ya son específicos de la tarea. Dos cosas estorban la transferencia: que las neuronas de capas altas se especializan en la tarea original, y que partir la red entre neuronas co-adaptadas complica la optimización. La transferibilidad baja cuanto más lejos está la tarea destino de la base, pero aun así transferir supera a empezar con pesos aleatorios. Inicializar con rasgos transferidos da un empujón de generalización que dura incluso después del fine-tuning. Ubicación: resumen.",
+    "fuente": "https://arxiv.org/abs/1411.1792"
+   },
+   {
+    "clave": "kingma2015",
+    "hecho": "Adam optimiza con gradientes de primer orden y estima de forma adaptativa los momentos de orden bajo. El paper propone estos valores por defecto: α = 0.001, β1 = 0.9, β2 = 0.999 y ε = 10^-8 (Algoritmo 1). Keras usa los mismos learning_rate, beta_1 y beta_2, pero epsilon = 1e-7. La documentación de Keras aclara que su epsilon es el 'epsilon hat' de la fórmula previa a la sección 2.1, no el ε del Algoritmo 1.",
+    "fuente": "https://arxiv.org/abs/1412.6980 ; https://keras.io/api/optimizers/adam/"
+   },
+   {
+    "clave": "ioffe2015",
+    "hecho": "Batch Normalization normaliza las entradas de cada capa en cada mini-lote, como parte de la arquitectura. Así ataca el 'internal covariate shift', o sea, que la distribución de entrada de cada capa cambia durante el entrenamiento. Permite tasas de aprendizaje mucho más altas, exige menos cuidado con la inicialización y regulariza; a veces hasta vuelve innecesario el Dropout. En un clasificador de imágenes de punta alcanzó la misma exactitud con 14 veces menos pasos de entrenamiento. Un ensamble llegó a 4.9% de error top-5 en validación de ImageNet (4.8% en prueba). Ubicación: resumen.",
+    "fuente": "https://proceedings.mlr.press/v37/ioffe15.html ; https://arxiv.org/abs/1502.03167"
+   },
+   {
+    "clave": "jacob2018",
+    "hecho": "El esquema de cuantización es un mapeo afín de enteros q a reales r: r = S(q − Z), ecuación (1). S es la escala, un real positivo. Z es el punto cero: del mismo tipo que q, y es el entero que representa exactamente al 0 real. En cuantización de 8 bits, pesos y activaciones son enteros de 8 bits, la convolución acumula en enteros de 32 bits y el sesgo se guarda en 32 bits. Junto con el esquema diseñaron un entrenamiento que conserva la exactitud tras cuantizar. Según los autores, es el esquema que adoptó TensorFlow Lite. Ubicación: resumen, sección 2.1 y Figura 1.1 de arXiv:1712.05877v1. Solo revisé la versión de arXiv, no el PDF de CVPR.",
+    "fuente": "https://arxiv.org/abs/1712.05877"
+   },
+   {
+    "clave": "abadi2016",
+    "hecho": "TensorFlow representa con grafos de flujo de datos el cómputo, el estado compartido y las operaciones que modifican ese estado. Reparte los nodos del grafo entre las máquinas de un clúster y, dentro de cada máquina, entre CPUs multinúcleo, GPUs y TPUs. Sirve para entrenar y para inferencia, sobre todo con redes neuronales profundas. Ubicación: resumen del paper de OSDI '16.",
+    "fuente": "https://www.usenix.org/system/files/conference/osdi16/osdi16-abadi.pdf"
+   },
+   {
+    "clave": "he2009",
+    "hecho": "Según el resumen, el aprendizaje con datos desbalanceados estudia cómo rinden los algoritmos cuando hay clases subrepresentadas y sesgos fuertes en la distribución de clases. El artículo revisa la naturaleza del problema, las técnicas de punta y las métricas con que se evalúa el desempeño en ese escenario. Una afirmación más concreta, como que la exactitud global engaña con clases desbalanceadas o el ejemplo de mamografías, NO la verifiqué en el texto completo porque es de pago. Con el resumen basta para citarlo de forma general.",
+    "fuente": "https://api.openalex.org/works/doi:10.1109/TKDE.2008.239 (abstract); https://doi.org/10.1109/TKDE.2008.239"
+   }
+  ]
+ },
+ {
+  "referencias": [
+   {
+    "clave": "esteva2017",
+    "verificada": true,
+    "bibtex": "@article{esteva2017,\n  author  = {Esteva, Andre and Kuprel, Brett and Novoa, Roberto A. and Ko, Justin and Swetter, Susan M. and Blau, Helen M. and Thrun, Sebastian},\n  title   = {Dermatologist-level classification of skin cancer with deep neural networks},\n  journal = {Nature},\n  year    = {2017},\n  volume  = {542},\n  number  = {7639},\n  pages   = {115--118},\n  doi     = {10.1038/nature21056}\n}",
+    "fuente": "https://api.crossref.org/works/10.1038/nature21056 ; https://pubmed.ncbi.nlm.nih.gov/28117445/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC8382232/",
+    "notas": "Crossref y PubMed coinciden: Nature 542(7639):115-118, impreso el 2 feb 2017 y en línea el 25 ene 2017. Tiene una fe de erratas: Nature 546(7660):686 (2017), doi:10.1038/nature22985, PMID 28658222. Nature bloqueó el acceso, así que no pude ver qué corrige. Los números que no vienen en el resumen salen del manuscrito de autor en PMC."
+   },
+   {
+    "clave": "haenssle2018",
+    "verificada": true,
+    "bibtex": "@article{haenssle2018,\n  author  = {Haenssle, H. A. and Fink, C. and Schneiderbauer, R. and Toberer, F. and Buhl, T. and Blum, A. and Kalloo, A. and Hassen, A. Ben Hadj and Thomas, L. and Enk, A. and Uhlmann, L. and {Reader study level-I and level-II Groups}},\n  title   = {Man against machine: diagnostic performance of a deep learning convolutional neural network for dermoscopic melanoma recognition in comparison to 58 dermatologists},\n  journal = {Annals of Oncology},\n  year    = {2018},\n  volume  = {29},\n  number  = {8},\n  pages   = {1836--1842},\n  doi     = {10.1093/annonc/mdy166}\n}",
+    "fuente": "https://api.crossref.org/works/10.1093/annonc/mdy166 ; https://pubmed.ncbi.nlm.nih.gov/29846502/",
+    "notas": "Ann Oncol 29(8):1836-1842, 1 ago 2018. Hay 11 autores con nombre más el grupo corporativo 'Reader study level-I and level-II Groups'. Crossref y PubMed solo dan iniciales. El autor 'A. Ben Hadj Hassen' aparece indexado con apellido Hassen (PubMed: Hassen ABH); si prefieres el apellido compuesto, usa {Ben Hadj Hassen}, A. Registro de ensayo: DRKS00013570."
+   },
+   {
+    "clave": "kittler2002",
+    "verificada": true,
+    "bibtex": "@article{kittler2002,\n  author  = {Kittler, H. and Pehamberger, H. and Wolff, K. and Binder, M.},\n  title   = {Diagnostic accuracy of dermoscopy},\n  journal = {The Lancet Oncology},\n  year    = {2002},\n  volume  = {3},\n  number  = {3},\n  pages   = {159--165},\n  doi     = {10.1016/S1470-2045(02)00679-4}\n}",
+    "fuente": "https://api.crossref.org/works/10.1016/S1470-2045(02)00679-4 ; https://pubmed.ncbi.nlm.nih.gov/11902502/",
+    "notas": "Lancet Oncol 3(3):159-165, marzo 2002. Crossref y PubMed solo dan iniciales, así que dejé iniciales y no puse nombres completos."
+   },
+   {
+    "clave": "daneshjou2022",
+    "verificada": true,
+    "bibtex": "@article{daneshjou2022,\n  author  = {Daneshjou, Roxana and Vodrahalli, Kailas and Novoa, Roberto A. and Jenkins, Melissa and Liang, Weixin and Rotemberg, Veronica and Ko, Justin and Swetter, Susan M. and Bailey, Elizabeth E. and Gevaert, Olivier and Mukherjee, Pritam and Phung, Michelle and Yekrang, Kiana and Fong, Bradley and Sahasrabudhe, Rachna and Allerup, Johan A. C. and Okata-Karigane, Utako and Zou, James and Chiou, Albert S.},\n  title   = {Disparities in dermatology {AI} performance on a diverse, curated clinical image set},\n  journal = {Science Advances},\n  year    = {2022},\n  volume  = {8},\n  number  = {32},\n  pages   = {eabq6147},\n  doi     = {10.1126/sciadv.abq6147}\n}",
+    "fuente": "https://api.crossref.org/works/10.1126/sciadv.abq6147 ; https://pubmed.ncbi.nlm.nih.gov/35960806/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC9374341/",
+    "notas": "Sci Adv 8(32):eabq6147, 12 ago 2022, acceso abierto (PMC9374341). El artículo usa número de artículo en vez de páginas. Ojo: el conjunto DDI son fotos clínicas, no dermatoscópicas. Esto importa si se compara con DermaCheck, que se entrena con ISIC dermatoscópico."
+   },
+   {
+    "clave": "bray2024",
+    "verificada": true,
+    "bibtex": "@article{bray2024,\n  author  = {Bray, Freddie and Laversanne, Mathieu and Sung, Hyuna and Ferlay, Jacques and Siegel, Rebecca L. and Soerjomataram, Isabelle and Jemal, Ahmedin},\n  title   = {Global cancer statistics 2022: {GLOBOCAN} estimates of incidence and mortality worldwide for 36 cancers in 185 countries},\n  journal = {CA: A Cancer Journal for Clinicians},\n  year    = {2024},\n  volume  = {74},\n  number  = {3},\n  pages   = {229--263},\n  doi     = {10.3322/caac.21834}\n}",
+    "fuente": "https://api.crossref.org/works/10.3322/caac.21834 ; https://pubmed.ncbi.nlm.nih.gov/38572751/ ; http://web.archive.org/web/20250410141216/https://acsjournals.onlinelibrary.wiley.com/doi/full/10.3322/caac.21834",
+    "notas": "CA Cancer J Clin 74(3):229-263, en línea el 4 abr 2024. Wiley devolvió una verificación anti-bots, así que leí la Tabla 1 en la copia de Wayback del texto completo (10 abr 2025). La Tabla 1 no coincide del todo con la hoja de GCO versión 1.1 (ver hechos), así que hay que citar las cifras de la fuente que se use. AVISO: ya salió GLOBOCAN 2024 (Sung et al. 2026, doi:10.3322/caac.70090); va como sung2026 por si se quieren cifras más recientes."
+   },
+   {
+    "clave": "siegel2025",
+    "verificada": true,
+    "bibtex": "@article{siegel2025,\n  author  = {Siegel, Rebecca L. and Kratzer, Tyler B. and Giaquinto, Angela N. and Sung, Hyuna and Jemal, Ahmedin},\n  title   = {Cancer statistics, 2025},\n  journal = {CA: A Cancer Journal for Clinicians},\n  year    = {2025},\n  volume  = {75},\n  number  = {1},\n  pages   = {10--45},\n  doi     = {10.3322/caac.21871}\n}",
+    "fuente": "https://api.crossref.org/works/10.3322/caac.21871 ; https://pubmed.ncbi.nlm.nih.gov/39817679/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC11745215/",
+    "notas": "CA Cancer J Clin 75(1):10-45, en línea el 16 ene 2025. Las cifras de melanoma están en la Tabla 1 del texto completo de PMC, no en el resumen."
+   },
+   {
+    "clave": "mexico_melanoma",
+    "verificada": true,
+    "bibtex": "@misc{mexico_melanoma,\n  author       = {Ervik, M. and Laversanne, M. and Lam, F. and Colombet, M. and Ferlay, J. and Filho, A. M. and Bray, F.},\n  title        = {Global Cancer Observatory: Cancer Today (2024 estimates, version 1.0). {Mexico}: fact sheet},\n  howpublished = {International Agency for Research on Cancer, Lyon, Francia},\n  year         = {2026},\n  url          = {https://gco.iarc.who.int/media/globocan/factsheets/populations/484-mexico-fact-sheet.pdf},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://gco.iarc.who.int/media/globocan/factsheets/populations/484-mexico-fact-sheet.pdf",
+    "notas": "Hoja oficial de IARC/GLOBOCAN para México, con fecha 'GLOBOCAN 2024 - September, 2026'. Autores y año salen de la 'Website citation' que trae la propia hoja. Esa URL ya sirve las estimaciones de 2024, no las de 2022. Si el artículo usa bray2024 (2022) para el mundo, conviene usar mexico_melanoma2022 para no mezclar años. Si usa sung2026, va esta. No busqué un artículo mexicano con arbitraje que dé el número de casos nuevos; para la cifra, GLOBOCAN es la fuente oficial."
+   },
+   {
+    "clave": "mexico_melanoma2022",
+    "verificada": true,
+    "bibtex": "@misc{mexico_melanoma2022,\n  author       = {Ferlay, J. and Ervik, M. and Lam, F. and Laversanne, M. and Colombet, M. and Mery, L. and Pi{\\~n}eros, M. and Znaor, A. and Soerjomataram, I. and Bray, F.},\n  title        = {Global Cancer Observatory: Cancer Today ({GLOBOCAN} 2022, version 1.1). {Mexico}: fact sheet},\n  howpublished = {International Agency for Research on Cancer, Lyon, Francia},\n  year         = {2024},\n  url          = {https://web.archive.org/web/20250211111216/https://gco.iarc.who.int/media/globocan/factsheets/populations/484-mexico-fact-sheet.pdf},\n  note         = {Consultado el 10 de noviembre de 2026 (copia archivada el 11 de febrero de 2025)}\n}",
+    "fuente": "https://web.archive.org/web/20250211111216/https://gco.iarc.who.int/media/globocan/factsheets/populations/484-mexico-fact-sheet.pdf",
+    "notas": "Opcional, para que coincida con bray2024. Es la hoja de México de GLOBOCAN 2022 (versión 1.1, fechada 08.02.2024), recuperada de Wayback porque la URL de IARC ya muestra 2024. Autores y año salen de la 'Website citation' de la hoja."
+   },
+   {
+    "clave": "sung2026",
+    "verificada": true,
+    "bibtex": "@article{sung2026,\n  author  = {Sung, Hyuna and Filho, Adalberto M. and Laversanne, Mathieu and Ferlay, Jacques and Siegel, Rebecca L. and Soerjomataram, Isabelle and Jemal, Ahmedin and Bray, Freddie},\n  title   = {Global cancer statistics 2024: {GLOBOCAN} estimates of incidence and mortality worldwide for 34 cancers in 186 countries},\n  journal = {CA: A Cancer Journal for Clinicians},\n  year    = {2026},\n  volume  = {76},\n  number  = {4},\n  pages   = {e70090},\n  doi     = {10.3322/caac.70090}\n}",
+    "fuente": "https://api.crossref.org/works/10.3322/caac.70090 ; https://pubmed.ncbi.nlm.nih.gov/42417444/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13343830/",
+    "notas": "No se pidió. Lo agrego porque es la actualización de bray2024, publicada en julio de 2026. CA Cancer J Clin 76(4):e70090, PMID 42417444, PMCID PMC13343830. Revisé su Tabla 1 en PMC."
+   }
+  ],
+  "hechos": [
+   {
+    "clave": "esteva2017_datos",
+    "hecho": "La CNN se entrenó con 129,450 imágenes clínicas de 2,032 enfermedades distintas, unas dos órdenes de magnitud más que los conjuntos previos. De esas, 3,374 son dermatoscópicas. Se separaron en 127,463 imágenes de entrenamiento y validación y 1,942 de prueba con biopsia. La red fue Inception v3, preentrenada en ImageNet (unos 1.28 millones de imágenes, 1,000 categorías) y ajustada por transfer learning con 757 clases de entrenamiento.",
+    "fuente": "PubMed 28117445 (resumen) y PMC8382232 (texto principal y Métodos)"
+   },
+   {
+    "clave": "esteva2017_dermatologos",
+    "hecho": "En el resumen se habla de 21 dermatólogos certificados y dos tareas binarias con imágenes confirmadas por biopsia: carcinoma de queratinocitos contra queratosis seborreica benigna, y melanoma maligno contra nevo benigno. La conclusión es que la CNN rinde 'a la par' de todos los expertos en ambas tareas. En el texto dice 'al menos 21': fueron 25, 22 y 21 dermatólogos para carcinoma, melanoma y melanoma con dermatoscopia. El AUC de la CNN pasa del 91% en cada caso, y la mayoría de los dermatólogos queda debajo de su curva. En la validación de tres clases, la CNN tuvo 72.1 ± 0.9% de exactitud frente a 65.56% y 66.0% de dos dermatólogos. En la de nueve clases, 55.4 ± 1.7% frente a 53.3% y 55.0%.",
+    "fuente": "PubMed 28117445 (resumen); PMC8382232 (Fig. 3 y su leyenda, texto de validación, Extended Data Table 2)"
+   },
+   {
+    "clave": "haenssle2018_resultados",
+    "hecho": "Se usó una CNN Inception v4 de Google entrenada con imágenes dermatoscópicas. Se comparó con 58 dermatólogos de varios países (30 de ellos expertos) en 100 imágenes de prueba. En el nivel I (solo dermatoscopia), los dermatólogos tuvieron sensibilidad media de 86.6% (±9.3%) y especificidad de 71.3% (±11.2%). En el nivel II, con información clínica, subieron a 88.9% (±9.6%, P = 0.19) y 75.7% (±11.7%, P < 0.05). A esas mismas sensibilidades, la CNN alcanzó 82.5% de especificidad, más que los dermatólogos en ambos niveles (P < 0.01). Su ROC AUC fue 0.86 contra 0.79 de media de los dermatólogos (P < 0.01). Conclusión: la CNN superó a la mayoría de los dermatólogos.",
+    "fuente": "PubMed 29846502 (resumen estructurado: METHODS, RESULTS, CONCLUSIONS)"
+   },
+   {
+    "clave": "kittler2002_mejora",
+    "hecho": "Es un metaanálisis de 27 estudios publicados entre 1987 y 2000. Con dermatoscopia, la exactitud diagnóstica para melanoma fue significativamente mayor que sin ella: log odds ratio de 4.0 (IC 95% 3.0-5.1) contra 2.7 (1.9-3.4), una mejora del 49% (p = 0.001). Ojo: ese 49% es mejora relativa en el log odds ratio diagnóstico, no 49 puntos porcentuales de exactitud. Como antecedente, el resumen dice que a simple vista la exactitud clínica es de solo un 60%. Además, la mejora solo se da con examinadores con experiencia; en manos sin entrenamiento, la dermatoscopia no supera a la inspección sin dermatoscopio.",
+    "fuente": "PubMed 11902502 (resumen)"
+   },
+   {
+    "clave": "daneshjou2022_tonos",
+    "hecho": "Crearon el conjunto DDI: 656 imágenes clínicas con confirmación histopatológica. Hay 208 de fototipo Fitzpatrick I-II, 241 de III-IV y 207 de V-VI. Tres modelos perdieron mucho desempeño en DDI frente a sus pruebas originales. ModelDerm pasó de ROC-AUC 0.93-0.94 a 0.65, DeepDerm de 0.88 a 0.56 y el modelo HAM10000 de 0.92 a 0.67. Rindieron peor en piel oscura (FST V-VI) que en clara (FST I-II): ModelDerm 0.55 contra 0.64, DeepDerm 0.50 contra 0.61 y HAM10000 0.57 contra 0.72. La sensibilidad para detectar malignidad cayó en piel oscura: ModelDerm 0.12 contra 0.41 (P = 0.0025) y DeepDerm 0.23 contra 0.69 (P = 5.65e-6). Los dermatólogos también fallaron más en piel oscura y en enfermedades poco comunes. El ajuste fino con DDI cerró la brecha: DeepDerm quedó en 0.73 (I-II) y 0.76 (V-VI), y HAM10000 en 0.77 y 0.78. El resumen también calcula que unos 3,000 millones de personas no tienen acceso a atención dermatológica.",
+    "fuente": "PubMed 35960806 (resumen); PMC9374341 (Resultados, Fig. 1-2, Materiales y Métodos)"
+   },
+   {
+    "clave": "bray2024_melanoma_mundial_2022",
+    "hecho": "Según la Tabla 1 de Bray et al. (2024), en 2022 hubo 331,647 casos nuevos de melanoma de piel en el mundo (lugar 17 en incidencia, 1.7% de todos los sitios) y 58,645 muertes (lugar 22, 0.6%). La Tabla 2 los separa por sexo: 179,916 casos en hombres y 151,731 en mujeres; 33,149 muertes en hombres y 24,496 en mujeres. La hoja de GCO 'Melanoma of skin', GLOBOCAN 2022 versión 1.1 (08.02.2024), da cifras un poco distintas: 331,722 casos (ASR 3.2) y 58,667 muertes (ASR 0.53). Hay que usar las cifras de la fuente que se cite: si es bray2024, 331,647 y 58,645.",
+    "fuente": "Tabla 1 y Tabla 2 de doi:10.3322/caac.21834 (copia Wayback: http://web.archive.org/web/20250410141216/https://acsjournals.onlinelibrary.wiley.com/doi/full/10.3322/caac.21834); hoja v1.1: http://web.archive.org/web/20250226101134/https://gco.iarc.who.int/media/globocan/factsheets/cancers/16-melanoma-of-skin-fact-sheet.pdf"
+   },
+   {
+    "clave": "sung2026_melanoma_mundial_2024",
+    "hecho": "Actualización de GLOBOCAN 2024: 337,969 casos nuevos de melanoma de piel en el mundo (lugar 17, 1.6%) y 58,398 muertes (lugar 22, 0.6%). Por sexo: 180,515 casos en hombres y 157,454 en mujeres; 33,634 muertes en hombres y 24,764 en mujeres. La hoja vigente de GCO 'Melanoma of skin' (GLOBOCAN 2024, 08.07.2026) da los mismos totales: 337,969 casos (ASR 3.1) y 58,398 muertes (ASR 0.50).",
+    "fuente": "PMC13343830 (Tablas 1 y 2 de doi:10.3322/caac.70090); https://gco.iarc.who.int/media/globocan/factsheets/cancers/16-melanoma-of-skin-fact-sheet.pdf"
+   },
+   {
+    "clave": "siegel2025_melanoma_eua",
+    "hecho": "Para Estados Unidos en 2025 se estiman 104,960 casos nuevos de melanoma invasivo de piel (60,550 en hombres y 44,410 en mujeres) y 8,430 muertes (5,470 y 2,960). Aparte, se esperan unos 107,240 casos de melanoma in situ. La supervivencia relativa a 5 años del melanoma es de 94% (diagnósticos de 2014-2020). En total se proyectan 2,041,910 casos nuevos de cáncer y 618,120 muertes por cáncer.",
+    "fuente": "PMC11745215: Tabla 1 ('Estimated number of new cancer cases and deaths by sex, United States, 2025') y texto de Selected Findings; los totales también están en el resumen (PubMed 39817679)"
+   },
+   {
+    "clave": "mexico_melanoma_2024",
+    "hecho": "GLOBOCAN 2024 estima para México 2,461 casos nuevos de melanoma (lugar 19, 1.2% de los casos de cáncer, riesgo acumulado 0.17%) y 809 muertes (lugar 19, 0.84%). La prevalencia a 5 años es de 8,357 (6.4 por 100,000). El total de casos nuevos de cáncer en el país fue de 201,137.",
+    "fuente": "https://gco.iarc.who.int/media/globocan/factsheets/populations/484-mexico-fact-sheet.pdf (GLOBOCAN 2024, September 2026)"
+   },
+   {
+    "clave": "mexico_melanoma_2022",
+    "hecho": "GLOBOCAN 2022 (versión 1.1) estimaba para México 2,198 casos nuevos de melanoma (lugar 20, 1.1%) y 833 muertes (lugar 20, 0.87%). La prevalencia a 5 años era de 7,596 (5.8 por 100,000). El total de casos nuevos de cáncer fue de 207,154.",
+    "fuente": "http://web.archive.org/web/20250211111216/https://gco.iarc.who.int/media/globocan/factsheets/populations/484-mexico-fact-sheet.pdf (Globocan 2022 version 1.1, 08.02.2024)"
+   }
+  ]
+ },
+ {
+  "referencias": [
+   {
+    "clave": "tschandl2018",
+    "verificada": true,
+    "bibtex": "@article{tschandl2018,\n  author  = {Tschandl, Philipp and Rosendahl, Cliff and Kittler, Harald},\n  title   = {The {HAM10000} dataset, a large collection of multi-source dermatoscopic images of common pigmented skin lesions},\n  journal = {Scientific Data},\n  volume  = {5},\n  pages   = {180161},\n  year    = {2018},\n  doi     = {10.1038/sdata.2018.161}\n}",
+    "fuente": "https://api.crossref.org/works/10.1038/sdata.2018.161",
+    "notas": "Crossref y PubMed (PMID 30106392, PMCID PMC6091241) coinciden: Sci Data 5:180161, 14-ago-2018. No tiene número de fascículo; 180161 es el número de artículo. El DOI resuelve a nature.com/articles/sdata2018161. El artículo es CC BY 4.0, pero el dataset se distribuye con CC BY-NC 4.0 (Tabla 1 del artículo)."
+   },
+   {
+    "clave": "codella2018",
+    "verificada": true,
+    "bibtex": "@inproceedings{codella2018,\n  author    = {Codella, Noel C. F. and Gutman, David and Celebi, M. Emre and Helba, Brian and Marchetti, Michael A. and Dusza, Stephen W. and Kalloo, Aadi and Liopyris, Konstantinos and Mishra, Nabin and Kittler, Harald and Halpern, Allan},\n  title     = {Skin lesion analysis toward melanoma detection: A challenge at the 2017 {International Symposium on Biomedical Imaging (ISBI)}, hosted by the {International Skin Imaging Collaboration (ISIC)}},\n  booktitle = {2018 IEEE 15th International Symposium on Biomedical Imaging (ISBI 2018)},\n  pages     = {168--172},\n  year      = {2018},\n  address   = {Washington, DC, USA},\n  publisher = {IEEE},\n  doi       = {10.1109/ISBI.2018.8363547}\n}",
+    "fuente": "https://api.crossref.org/works/10.1109/isbi.2018.8363547",
+    "notas": "Crossref: 11 autores (los de arriba, en ese orden), págs. 168-172, abril de 2018; el congreso fue en Washington, DC, del 4 al 7 de abril de 2018. El DOI resuelve a ieeexplore.ieee.org/document/8363547. También existe en arXiv como 1710.05006 (v1 del 13-oct-2017), y esa es la versión que la página de datos del ISIC pide citar para la parte MSK de ISIC 2019. Las mayúsculas del título siguen al arXiv; Crossref las trae en minúsculas."
+   },
+   {
+    "clave": "combalia2019",
+    "verificada": true,
+    "bibtex": "@misc{combalia2019,\n  author        = {Combalia, Marc and Codella, Noel C. F. and Rotemberg, Veronica and Helba, Brian and Vilaplana, Veronica and Reiter, Ofer and Carrera, Cristina and Barreiro, Alicia and Halpern, Allan C. and Puig, Susana and Malvehy, Josep},\n  title         = {{BCN20000}: Dermoscopic Lesions in the Wild},\n  howpublished  = {arXiv:1908.02288},\n  year          = {2019},\n  eprint        = {1908.02288},\n  archivePrefix = {arXiv},\n  primaryClass  = {eess.IV},\n  doi           = {10.48550/arXiv.1908.02288},\n  url           = {https://arxiv.org/abs/1908.02288}\n}",
+    "fuente": "https://export.arxiv.org/api/query?id_list=1908.02288",
+    "notas": "La API de arXiv lo confirma: 11 autores, enviado el 6-ago-2019 y con v2 del 30-ago-2019; categoría principal eess.IV. El DOI de DataCite resuelve a arxiv.org/abs/1908.02288. Ojo: hoy la página de datos del ISIC pide citar BCN20000 con la versión revisada por pares (Hernández-Pérez et al., Sci Data 2024), que va abajo como hernandezperez2024. Ambas versiones reportan cifras distintas de imágenes (ver hechos)."
+   },
+   {
+    "clave": "hernandezperez2024",
+    "verificada": true,
+    "bibtex": "@article{hernandezperez2024,\n  author  = {Hern{\\'a}ndez-P{\\'e}rez, Carlos and Combalia, Marc and Podlipnik, Sebastian and Codella, Noel C. F. and Rotemberg, Veronica and Halpern, Allan C. and Reiter, Ofer and Carrera, Cristina and Barreiro, Alicia and Helba, Brian and Puig, Susana and Vilaplana, Veronica and Malvehy, Josep},\n  title   = {{BCN20000}: Dermoscopic Lesions in the Wild},\n  journal = {Scientific Data},\n  volume  = {11},\n  number  = {1},\n  pages   = {641},\n  year    = {2024},\n  doi     = {10.1038/s41597-024-03387-w}\n}",
+    "fuente": "https://api.crossref.org/works/10.1038/s41597-024-03387-w",
+    "notas": "Entrada EXTRA que no venía en la lista. Crossref y PubMed (PMID 38886204, PMC11183228) coinciden: Sci Data 11(1):641, 17-jun-2024. Hernández-Pérez y Combalia firman como coautores con contribución igual. Es la cita que exige ahora la página oficial de datos del ISIC para BCN20000. Recomiendo usarla en lugar de combalia2019, o junto a ella."
+   },
+   {
+    "clave": "isic2019",
+    "verificada": true,
+    "bibtex": "@misc{isic2019,\n  author = {{International Skin Imaging Collaboration}},\n  title  = {{ISIC} 2019 Challenge},\n  year   = {2019},\n  url    = {https://challenge.isic-archive.com/landing/2019/},\n  note   = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://challenge.isic-archive.com/landing/2019/",
+    "notas": "El encabezado visible de la página dice 'ISIC 2019 Challenge [Closed]'. La página del reto da el número de imágenes y las 9 categorías, pero NO dice la licencia. La licencia (CC BY-NC, enlazada a CC BY-NC 4.0), los conteos de prueba y los requisitos de cita vienen de la página de datos; para eso está isic2019datos abajo. La página no indica autor; puse a la organización (ISIC) como autor corporativo."
+   },
+   {
+    "clave": "isic2019datos",
+    "verificada": true,
+    "bibtex": "@misc{isic2019datos,\n  author = {{International Skin Imaging Collaboration}},\n  title  = {{ISIC} Challenge Datasets: {ISIC} 2019},\n  url    = {https://challenge.isic-archive.com/data/},\n  note   = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://challenge.isic-archive.com/data/",
+    "notas": "Entrada EXTRA para respaldar la licencia y las cifras de entrenamiento y prueba. La página no muestra fecha, así que dejé la entrada sin año; con natbib/sn-mathphys-num eso solo produce un aviso. El título lo armé con el nombre de la sección, porque la página no trae un título formal citable. Esta página pide citar tres trabajos: HAM10000 (tschandl2018), Codella 2017 (arXiv:1710.05006) y BCN20000 (Sci Data 2024). También pide acreditar a BCN_20000 (Hospital Clínic de Barcelona), a HAM10000 (ViDIR Group, Universidad Médica de Viena) y a MSK."
+   },
+   {
+    "clave": "hf_isic2019",
+    "verificada": true,
+    "bibtex": "@misc{hf_isic2019,\n  author       = {{Atoany}},\n  title        = {{ISIC2019}},\n  howpublished = {Conjunto de datos en Hugging Face},\n  year         = {2025},\n  url          = {https://huggingface.co/datasets/Atoany/ISIC2019},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://huggingface.co/api/datasets/Atoany/ISIC2019",
+    "notas": "El repositorio existe y es público, sin acceso restringido (gated=false). Se creó el 2025-09-05 y su último cambio es del mismo día. 'Atoany' es un nombre de usuario de Hugging Face, no el nombre de una persona confirmada. La ficha (README) solo trae metadatos de dataset_info: no tiene descripción, ni licencia, ni cita. Por eso conviene citarlo junto con isic2019 y las fuentes originales, y aclarar que la licencia de origen es CC BY-NC 4.0."
+   },
+   {
+    "clave": "litert",
+    "verificada": true,
+    "bibtex": "@misc{litert,\n  author = {{Google AI Edge}},\n  title  = {{LiteRT}: High-Performance On-Device Machine Learning Framework},\n  year   = {2026},\n  url    = {https://developers.google.com/edge/litert},\n  note   = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://developers.google.com/edge/litert",
+    "notas": "ai.google.dev/edge/litert ahora redirige con un 301 a developers.google.com/edge/litert. El título sale de la etiqueta <title> de la página. El año 2026 corresponde a la última actualización, del 18-oct-2026. La página de documentación NO dice explícitamente que se haya renombrado: solo habla de construir sobre la base de TensorFlow Lite. El cambio de nombre y su fecha quedan respaldados por el blog oficial (litert_rename) y el paquete por PyPI (ai_edge_litert)."
+   },
+   {
+    "clave": "litert_rename",
+    "verificada": true,
+    "bibtex": "@misc{litert_rename,\n  author       = {{Google AI Edge Team}},\n  title        = {{TensorFlow Lite} is now {LiteRT}},\n  howpublished = {Google for Developers Blog},\n  year         = {2024},\n  month        = sep,\n  url          = {https://developers.googleblog.com/en/tensorflow-lite-is-now-litert/},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://developers.googleblog.com/en/tensorflow-lite-is-now-litert/",
+    "notas": "Entrada EXTRA. Lo confirman el titular, la fecha (4 de septiembre de 2024) y la firma (Google AI Edge Team). El post dice que LiteRT, abreviatura de Lite Runtime, es el nuevo nombre de TensorFlow Lite, y que las apps que ya usan TFLite no se ven afectadas. Para PyPI enlaza a ai-edge-litert."
+   },
+   {
+    "clave": "ai_edge_litert",
+    "verificada": true,
+    "bibtex": "@misc{ai_edge_litert,\n  author       = {{Google AI Edge Authors}},\n  title        = {ai-edge-litert},\n  howpublished = {Paquete de Python en PyPI, versi{\\'o}n 2.3.0},\n  year         = {2026},\n  url          = {https://pypi.org/project/ai-edge-litert/},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://pypi.org/pypi/ai-edge-litert/json",
+    "notas": "Entrada EXTRA. En PyPI el autor aparece como 'Google AI Edge Authors' y el resumen es 'LiteRT is for mobile and embedded devices.'. La 2.3.0 es la última versión (6-oct-2026). No pude confirmar qué versión corre en la Pi del proyecto: no encontré fijada ninguna versión en /Users/salvador/Desktop/isic-pi. Hay que cambiar 2.3.0 por la versión instalada (pip show ai-edge-litert en la Pi), y el año por el de esa versión."
+   },
+   {
+    "clave": "rpi5",
+    "verificada": true,
+    "bibtex": "@misc{rpi5,\n  author = {{Raspberry Pi Ltd}},\n  title  = {Raspberry Pi 5 Product Brief},\n  year   = {2026},\n  month  = nov,\n  url    = {https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf},\n  note   = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf",
+    "notas": "Revisé el PDF actual (7 páginas). La portada dice 'Published November 2026', y los metadatos del PDF tienen fecha de creación 22-oct-2026 y de modificación 2-nov-2026. Es una revisión reciente del brief original de 2023; el año y mes de la entrada corresponden a esta versión. El brief solo menciona '5V/5A DC power via USB-C, with Power Delivery support'. Lo del límite de 600 mA viene de la documentación (rpi5_power)."
+   },
+   {
+    "clave": "rpi5_power",
+    "verificada": true,
+    "bibtex": "@misc{rpi5_power,\n  author       = {{Raspberry Pi Ltd}},\n  title        = {Raspberry Pi hardware: Power supply},\n  howpublished = {Raspberry Pi Documentation},\n  url          = {https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#power-supply},\n  note         = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#power-supply",
+    "notas": "Entrada EXTRA. La página no tiene fecha visible, así que va sin año para no inventarlo. Saqué el texto con WebFetch, porque curl choca con un reto de Cloudflare. De aquí salen la tabla de corriente y el comportamiento con fuentes de 3 A."
+   },
+   {
+    "clave": "rpi_27w",
+    "verificada": true,
+    "bibtex": "@misc{rpi_27w,\n  author = {{Raspberry Pi Ltd}},\n  title  = {Raspberry Pi 27W USB-C Power Supply},\n  url    = {https://www.raspberrypi.com/products/27w-power-supply/},\n  note   = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://www.raspberrypi.com/products/27w-power-supply/",
+    "notas": "Entrada EXTRA (opcional) por si se citan los datos eléctricos de la fuente oficial. La página de producto no muestra fecha, así que va sin año. El título sigue el nombre del producto."
+   },
+   {
+    "clave": "keras",
+    "verificada": true,
+    "bibtex": "@misc{keras,\n  author = {Chollet, Fran\\c{c}ois and others},\n  title  = {Keras},\n  year   = {2015},\n  url    = {https://keras.io},\n  note   = {Consultado el 10 de noviembre de 2026}\n}",
+    "fuente": "https://keras.io/getting_started/faq/",
+    "notas": "En la FAQ de Keras ('How should I cite Keras?') el formato recomendado es @misc{chollet2015keras, title={Keras}, author={Chollet, Fran\\c{c}ois and others}, year={2015}, howpublished={\\url{https://keras.io}}}. Aquí cambié howpublished por url y agregué la nota de consulta para seguir la convención de páginas web del artículo; si se quieren los campos exactos de la FAQ, se usa howpublished={\\url{https://keras.io}} y se quita url para que la URL no salga dos veces."
+   }
+  ],
+  "hechos": [
+   {
+    "clave": "tschandl2018",
+    "hecho": "HAM10000 tiene 10015 imágenes dermatoscópicas. Se publicó como conjunto de entrenamiento para aprendizaje automático académico y se distribuye por el archivo del ISIC. Según el resumen, más del 50 % de las lesiones tienen confirmación histopatológica; la Tabla 1 da 53.3 %.",
+    "fuente": "Resumen en PubMed PMID 30106392 (https://pubmed.ncbi.nlm.nih.gov/30106392/) y texto completo en Europe PMC PMC6091241"
+   },
+   {
+    "clave": "tschandl2018",
+    "hecho": "HAM10000 tiene 7 categorías, con estos conteos de la Tabla 1: akiec 327, bcc 514, bkl 1099, df 115, mel 1113, nv 6705 y vasc 142 (total 10015). La licencia es CC BY-NC 4.0. HAM10000 no incluye SCC como clase aparte, porque akiec agrupa queratosis actínica y enfermedad de Bowen.",
+    "fuente": "Tabla 1 del texto completo, https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6091241/fullTextXML"
+   },
+   {
+    "clave": "codella2018",
+    "hecho": "Apareció en las actas del 2018 IEEE 15th International Symposium on Biomedical Imaging (ISBI 2018), págs. 168-172, DOI 10.1109/ISBI.2018.8363547. El congreso fue en Washington, DC, del 4 al 7 de abril de 2018. El reto de 2017 tuvo 3 tareas (segmentación, detección de rasgos y clasificación) y 593 registros, 81 preenvíos y 46 envíos finales.",
+    "fuente": "https://api.crossref.org/works/10.1109/isbi.2018.8363547 ; resumen de arXiv:1710.05006"
+   },
+   {
+    "clave": "combalia2019",
+    "hecho": "Según el resumen de la versión de arXiv (1908.02288v2, 30-ago-2019), BCN20000 tiene 19424 imágenes dermatoscópicas tomadas de 2010 a 2016 en el Hospital Clínic de Barcelona, y se entregó a los participantes del ISIC Challenge 2019.",
+    "fuente": "https://export.arxiv.org/api/query?id_list=1908.02288"
+   },
+   {
+    "clave": "hernandezperez2024",
+    "hecho": "La versión revisada por pares (Sci Data 2024) reporta 18,946 imágenes dermatoscópicas (2010-2016, Hospital Clínic de Barcelona) en 8 categorías diagnósticas, más una novena clase fuera de distribución (OOD) que solo aparece en el conjunto de prueba. NO coincide con las 19424 del arXiv de 2019: hay que aclarar a cuál versión se refiere la cifra que se cite.",
+    "fuente": "Resumen en PubMed PMID 38886204 (https://pubmed.ncbi.nlm.nih.gov/38886204/)"
+   },
+   {
+    "clave": "isic2019",
+    "hecho": "Frase de la página del reto: \"25,331 images are available for training across 8 different categories.\". El objetivo era clasificar entre nueve categorías: melanoma, nevo melanocítico, carcinoma basocelular, queratosis actínica, queratosis benigna (lentigo solar / queratosis seborreica / queratosis liquenoide), dermatofibroma, lesión vascular, carcinoma escamocelular y 'None of the others'. Esta última es la clase atípica (outlier), que solo aparece en prueba. La página no da abreviaturas.",
+    "fuente": "https://challenge.isic-archive.com/landing/2019/"
+   },
+   {
+    "clave": "isic2019datos",
+    "hecho": "Entrenamiento de ISIC 2019: 25,331 imágenes JPEG (descarga de 9.1 GB), con 25,331 diagnósticos de referencia y metadatos de edad, sexo, sitio anatómico y un identificador común de lesión. Prueba: 8,238 imágenes JPEG. Licencia: CC BY-NC, con enlace a Creative Commons Attribution-NonCommercial 4.0.",
+    "fuente": "https://challenge.isic-archive.com/data/"
+   },
+   {
+    "clave": "isic2019datos",
+    "hecho": "Las columnas del CSV oficial ISIC_2019_Training_GroundTruth.csv son image, MEL, NV, BCC, AK, BKL, DF, VASC, SCC, UNK; ahí salen las abreviaturas. Conté las etiquetas de ese CSV yo mismo, porque la página no publica estas cifras: MEL 4522, NV 12875, BCC 3323, AK 867, BKL 2624, DF 239, VASC 253, SCC 628, UNK 0, total 25331. En entrenamiento no hay ninguna imagen UNK.",
+    "fuente": "https://isic-archive.s3.amazonaws.com/challenges/2019/ISIC_2019_Training_GroundTruth.csv (lo leí en memoria con curl, sin guardarlo en disco)"
+   },
+   {
+    "clave": "hf_isic2019",
+    "hecho": "Atoany/ISIC2019 está en formato parquet y tiene dos columnas: image (imagen) y label (texto, con abreviaturas como MEL, NV, BCC, AK, BKL, DF, VASC en las primeras filas). Splits: train con 20,264 filas y test con 5,067, en total 25,331 (unos 9.8 GB). El total coincide exactamente con las 25,331 imágenes de entrenamiento oficiales y la partición es de 80/20 (20264/25331 = 0.8000). De ahí INFIERO, sin que la ficha lo diga, que el 'test' de HF es una separación del entrenamiento oficial y no el conjunto de prueba oficial de 8,238 imágenes. La ficha no declara licencia ni descripción.",
+    "fuente": "https://huggingface.co/api/datasets/Atoany/ISIC2019 ; https://datasets-server.huggingface.co/size?dataset=Atoany/ISIC2019 ; https://datasets-server.huggingface.co/first-rows?dataset=Atoany/ISIC2019&config=default&split=train"
+   },
+   {
+    "clave": "litert",
+    "hecho": "La documentación oficial define a LiteRT como el runtime de inferencia de Google, multiplataforma y de alto rendimiento, para desplegar modelos en dispositivos edge. La página de resumen menciona que la API Interpreter (antes TensorFlow Lite) sigue disponible por compatibilidad. Última actualización de la página principal: 18-oct-2026.",
+    "fuente": "https://developers.google.com/edge/litert ; https://developers.google.com/edge/litert/overview"
+   },
+   {
+    "clave": "litert_rename",
+    "hecho": "El 4 de septiembre de 2024 Google anunció que LiteRT (abreviatura de 'Lite Runtime') es el nuevo nombre de TensorFlow Lite (TFLite), y que la marca TensorFlow y las apps que ya usan TFLite no se ven afectadas.",
+    "fuente": "https://developers.googleblog.com/en/tensorflow-lite-is-now-litert/"
+   },
+   {
+    "clave": "ai_edge_litert",
+    "hecho": "El paquete ai-edge-litert salió en PyPI con la versión 1.0.0 el 28-ago-2024. La última versión es la 2.3.0 (6-oct-2026), con wheels para Linux aarch64 (glibc 2.27+) y CPython 3.10-3.14, lo que corresponde a una Raspberry Pi 5 con Raspberry Pi OS de 64 bits.",
+    "fuente": "https://pypi.org/pypi/ai-edge-litert/json ; https://pypi.org/project/ai-edge-litert/"
+   },
+   {
+    "clave": "rpi5",
+    "hecho": "Procesador: Broadcom BCM2712, CPU Arm Cortex-A76 de 64 bits y cuatro núcleos a 2.4 GHz, con 512 KB de caché L2 por núcleo y 2 MB de L3 compartida. GPU VideoCore VII a 800 MHz. RAM LPDDR4X-4267 de 1, 2, 4, 8 o 16 GB. Alimentación de 5 V / 5 A DC por USB-C con Power Delivery. El brief dice que el CPU rinde de 2 a 3 veces más que la Raspberry Pi 4, que opera de 0 a 70 °C y que se seguirá fabricando al menos hasta enero de 2036.",
+    "fuente": "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf (versión 'Published November 2026')"
+   },
+   {
+    "clave": "rpi5_power",
+    "hecho": "Para la Raspberry Pi 5 se recomienda la fuente 27 W USB-C Power Supply. Fila de la tabla para la Pi 5: fuente de 5.0 A; consumo máximo total de periféricos USB de 1.6 A, o 600 mA con una fuente de 3 A; consumo típico de la placa sola en actividad de 800 mA. Con una fuente capaz de dar 5 A a +5 V (25 W), la Pi 5 entrega 1.6 A a los periféricos USB; con cualquier otra fuente compatible los limita a 600 mA. Con fuente de 3 A el arranque por USB viene desactivado por defecto y se activa con usb_max_current_enable=1 en /boot/firmware/config.txt.",
+    "fuente": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#power-supply (y sección 'Differences on Raspberry Pi 5' del arranque, misma página)"
+   },
+   {
+    "clave": "rpi_27w",
+    "hecho": "La fuente oficial de 27 W entrega 5.1 V y 5.0 A, con perfiles USB PD de 9 V/3 A, 12 V/2.25 A y 15 V/1.8 A, todos con tope de 27 W. Así que la cifra exacta de la fuente es 5.1 V / 5 A, no 5.0 V; la documentación de la placa habla de 5 A a +5 V.",
+    "fuente": "https://www.raspberrypi.com/products/27w-power-supply/"
+   },
+   {
+    "clave": "keras",
+    "hecho": "La FAQ oficial pide citar Keras como @misc con title={Keras}, author={Chollet, François and others}, year={2015} y howpublished={\\url{https://keras.io}}.",
+    "fuente": "https://keras.io/getting_started/faq/"
+   }
+  ]
+ }
+]
