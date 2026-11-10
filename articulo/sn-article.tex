@@ -150,7 +150,7 @@
 %% Sample for unstructured abstract %%
 %%==================================%%
 
-\abstract{Distinguir a simple vista un melanoma de un lunar común es difícil incluso para personal entrenado, y el dermatoscopio que facilita esa tarea no suele estar al alcance fuera de un consultorio. En este trabajo armamos Computer Vision DermaCheck, un prototipo de bajo costo que clasifica fotografías de lesiones cutáneas en las ocho categorías del conjunto ISIC 2019. Partimos de una red MobileNetV2 preentrenada con ImageNet y la ajustamos en dos fases con 18,237 imágenes dermatoscópicas, ponderando la pérdida para compensar el fuerte desbalance entre clases; todo el entrenamiento se hizo en el CPU de una laptop y tomó 44.6 minutos. El modelo, exportado a TensorFlow Lite, corre en una Raspberry Pi 5 dentro de una aplicación táctil que muestra la imagen en vivo, un cuadro guía y las tres clases más probables. Sobre 5,067 imágenes que la red nunca vio, obtuvo una exactitud de 0.725 y un recall promedio por clase de 0.632; reconoce bien los nevos (0.855) y las lesiones vasculares (0.862), pero solo el 47.1\,\% de los melanomas. En la Pi, cada imagen tarda 9.7\,ms con cuatro hilos y, con el modelo completo, las predicciones coinciden con las de la laptop en los 5,067 casos. Las pruebas de carga mostraron que la alimentación y la temperatura condicionan el uso real de la placa tanto como el propio modelo. El sistema tiene fines educativos y no sustituye un diagnóstico médico.}
+\abstract{Un melanoma y un lunar común se parecen lo bastante como para despistar a simple vista incluso a personal entrenado, y el dermatoscopio, que ayuda a separarlos, rara vez sale de un consultorio. Armamos Computer Vision DermaCheck, un prototipo de bajo costo que clasifica fotografías de lesiones cutáneas en las ocho categorías del conjunto ISIC 2019. Partimos de una red MobileNetV2 preentrenada con ImageNet y la ajustamos en dos fases con 18,237 imágenes dermatoscópicas. Como unas clases tienen muchísimas más imágenes que otras, ponderamos la pérdida para compensar ese desbalance. Todo el entrenamiento corrió en el CPU de una laptop y duró 44.6 minutos. Ya exportado a TensorFlow Lite, el modelo trabaja en una Raspberry Pi 5 dentro de una aplicación táctil que enseña la imagen en vivo con un cuadro guía y, tras la captura, las tres clases más probables. Frente a 5,067 imágenes que la red nunca había visto logró una exactitud de 0.725 y un recall promedio por clase de 0.632. Atina con los nevos (0.855) y con las lesiones vasculares (0.862). Pero de los melanomas reconoce solo el 47.1\,\%. En la Pi, cada imagen tarda 9.7\,ms con cuatro hilos, y con el modelo completo sus predicciones coinciden con las de la laptop en los 5,067 casos. Cuando pusimos a la placa a clasificar sin descanso, la fuente de alimentación y el calor limitaron su uso real tanto como el propio modelo. El sistema tiene fines educativos y no sustituye un diagnóstico médico.}
 
 %%================================%%
 %% Sample for structured abstract %%
@@ -174,42 +174,42 @@
 
 \section{Introducción}\label{sec1}
 
-El melanoma ocupa un lugar modesto en las tablas de incidencia, pero pesa mucho en las de mortalidad. Según las estimaciones de GLOBOCAN para 2024, en el mundo se registraron 337,969 casos nuevos de melanoma de piel y 58,398 muertes por esa causa \cite{sung2026}; en México, la misma fuente calcula 2,461 casos nuevos y 809 defunciones en un año \cite{mexico_melanoma}. Reconocerlo a tiempo importa, y ahí aparece el primer obstáculo: a simple vista, la exactitud clínica para reconocer un melanoma ronda el 60\,\% \cite{kittler2002}.
+El melanoma ocupa un lugar discreto en las tablas de incidencia. En las de mortalidad pesa mucho más. GLOBOCAN estimó para 2024 que en el mundo hubo 337,969 casos nuevos de melanoma de piel y 58,398 muertes por esa causa \cite{sung2026}, y para México la misma fuente calcula 2,461 casos nuevos y 809 defunciones en un año \cite{mexico_melanoma}. Importa reconocerlo a tiempo. Sin aparatos, la exactitud clínica para identificar un melanoma ronda el 60\,\% \cite{kittler2002}.
 
-La dermatoscopia, que observa la lesión con aumento y luz polarizada, mejora ese panorama. Un metaanálisis de 27 estudios encontró que, en manos de examinadores con experiencia, eleva significativamente la capacidad diagnóstica frente a la inspección sin aparato (log odds ratio de 4.0 contra 2.7) \cite{kittler2002}. El problema se desplaza entonces hacia el acceso, porque el equipo y el entrenamiento para interpretarlo se concentran en consultorios especializados.
+Un dermatoscopio deja ver la lesión con aumento y bajo luz polarizada. Kittler y sus coautores juntaron 27 estudios en un metaanálisis y encontraron que, en manos de examinadores con experiencia, la dermatoscopia eleva de forma significativa la capacidad diagnóstica respecto a la inspección a ojo desnudo (log odds ratio de 4.0 contra 2.7) \cite{kittler2002}. Pero hay que tener el equipo y saber interpretarlo, y las dos cosas suelen quedarse en los consultorios especializados.
 
-Las redes neuronales convolucionales abrieron otra ruta. Esteva y colaboradores entrenaron una red con 129,450 imágenes clínicas y la compararon con 21 dermatólogos certificados en tareas de clasificación binaria; el desempeño de la red quedó a la par del de los especialistas \cite{esteva2017}. Poco después, Haenssle y su equipo enfrentaron una red entrenada con imágenes dermatoscópicas contra 58 dermatólogos: con la misma sensibilidad, la red alcanzó una especificidad de 82.5\,\%, mayor que la de los médicos \cite{haenssle2018}. Estos sistemas, sin embargo, suelen vivir en servidores con tarjetas gráficas y no siempre se sostienen fuera de sus datos de origen; con fotografías de pieles oscuras, por ejemplo, su rendimiento cae de forma marcada \cite{daneshjou2022}.
+Esteva y colaboradores entrenaron una red neuronal convolucional con 129,450 imágenes clínicas y la compararon con 21 dermatólogos certificados en tareas de clasificación binaria; la red quedó a la par de los especialistas \cite{esteva2017}. Poco después, Haenssle y su equipo enfrentaron una red entrenada con imágenes dermatoscópicas contra 58 dermatólogos. Con la misma sensibilidad, la red alcanzó una especificidad de 82.5\,\%, mayor que la de los médicos \cite{haenssle2018}. Sistemas así suelen correr en servidores con tarjetas gráficas, y fuera de los datos con que se entrenaron no siempre rinden igual. Con fotografías de pieles oscuras, por ejemplo, su desempeño cae de forma marcada \cite{daneshjou2022}.
 
-Nuestro proyecto explora el extremo opuesto: qué tanto se logra con hardware barato y con herramientas abiertas. Construimos un clasificador de ocho tipos de lesión basado en MobileNetV2 \cite{sandler2018}, una arquitectura pensada para dispositivos móviles, lo entrenamos con el conjunto ISIC 2019 \cite{isic2019} en el CPU de una laptop y lo desplegamos en una Raspberry Pi 5 con pantalla táctil. Además del modelo, documentamos dos aspectos prácticos: cuánto cambia el resultado al pasar de una computadora a otra y qué exige la placa en energía y temperatura para funcionar sin interrupciones. El sistema es una herramienta educativa; no está validado clínicamente ni pretende diagnosticar.
+Nosotros quisimos ver hasta dónde llega un sistema hecho con hardware barato y herramientas abiertas, sin servidor ni tarjeta gráfica. Elegimos MobileNetV2 \cite{sandler2018}, una arquitectura pensada para dispositivos móviles, la entrenamos con el conjunto ISIC 2019 \cite{isic2019} en una laptop para que distinguiera ocho tipos de lesión y la instalamos en una Raspberry Pi 5 con pantalla táctil. Aparte del modelo documentamos cuánto cambia el resultado al pasar de una computadora a otra y qué necesita la placa, en energía y en temperatura, para trabajar sin cortes. Pensamos el sistema como herramienta educativa. No está validado clínicamente ni pretende diagnosticar.
 
 \section{Resultados}\label{sec2}
 
-La Fig.~\ref{fig1} resume el recorrido completo. Las imágenes se preparan y la red se entrena en la laptop; el archivo resultante viaja por el repositorio del proyecto hasta la Raspberry Pi, donde una aplicación lo usa para clasificar lo que capta la cámara. Los resultados de esta sección provienen de las bitácoras de entrenamiento, de la evaluación sobre el conjunto de prueba y de mediciones hechas directamente en la placa.
+El sistema completo aparece en la Fig.~\ref{fig1}. En la laptop preparamos las imágenes y entrenamos la red. El archivo final viaja por el repositorio del proyecto hasta la Raspberry Pi, donde una aplicación lo usa para clasificar lo que capta la cámara. Las curvas y las métricas vienen de las bitácoras del entrenamiento y de la evaluación con el conjunto de prueba. Tiempos, voltajes y temperaturas los tomamos en la propia placa.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figuras/fig_sistema.pdf}
-\caption{Arquitectura de Computer Vision DermaCheck. Arriba, las etapas que corren una sola vez en la laptop; abajo, el uso diario en la Raspberry Pi 5. La función de preparación de la imagen es idéntica en ambos lados, de modo que la red recibe en la placa exactamente el mismo tipo de entrada con el que aprendió.}\label{fig1}
+\caption{Arquitectura de Computer Vision DermaCheck. Las etapas de arriba corren una sola vez en la laptop, y las de abajo corresponden al uso diario en la Raspberry Pi 5. Ambos lados preparan la imagen con la misma función, así que en la placa la red recibe exactamente el tipo de entrada con el que aprendió.}\label{fig1}
 \end{figure}
 
 \subsection{Entrenamiento}\label{subsec2}
 
-El entrenamiento completo duró 44.6 minutos en el CPU de una laptop con procesador Apple M4, sin aceleración gráfica. La primera fase, en la que solo aprende la capa final, avanzó despacio: tras seis épocas el recall promedio de validación apenas llegó a 0.441 (Fig.~\ref{fig2}). El salto vino al descongelar las últimas 40 capas de MobileNetV2. Tras un tropiezo en la primera época de esa fase, la curva subió con rapidez, y cuando el paso de aprendizaje se redujo a la mitad, en la época 17, el recall ganó más de nueve centésimas de golpe. El máximo, 0.670, apareció en la época 19, y ese es el modelo que conservamos.
+Entrenar todo tomó 44.6 minutos en el CPU de una laptop con procesador Apple M4, sin aceleración gráfica. Lo corrimos de madrugada, con la computadora conectada al cargador. La primera fase fue lenta. En ella solo aprende la capa final, y tras seis épocas el recall promedio de validación llegaba a duras penas a 0.441 (Fig.~\ref{fig2}). El cambio vino al descongelar las últimas 40 capas de MobileNetV2. En la primera época de esa fase la curva dio un traspié. Luego trepó rápido, y en la época 17, cuando el paso de aprendizaje se redujo a la mitad, el recall ganó más de nueve centésimas de un brinco. El mejor valor, 0.670, llegó en la época 19. Con esos pesos nos quedamos.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figuras/fig_entrenamiento.pdf}
-\caption{Evolución del entrenamiento. Arriba, el recall promedio por clase en el conjunto de validación, que es la métrica que decidió qué pesos conservar; abajo, la pérdida en entrenamiento y en validación. La línea vertical separa la fase en la que solo aprende la capa final de la fase de ajuste fino.}\label{fig2}
+\caption{Evolución del entrenamiento. El panel superior muestra el recall promedio por clase en validación, la métrica con la que escogimos qué pesos conservar. En el inferior está la pérdida, tanto en entrenamiento como en validación. La línea vertical marca dónde termina la fase en que solo aprende la capa final y empieza el ajuste fino.}\label{fig2}
 \end{figure}
 
-La pérdida de validación se estabilizó cerca de 0.71 mientras la de entrenamiento seguía bajando hasta 0.53. Esa brecha creciente indica que la red empezaba a memorizar detalles del conjunto de entrenamiento, y es otra razón para no alargar la segunda fase sin más datos o más aumento de imágenes.
+La pérdida de validación dejó de bajar cerca de 0.71, mientras que la de entrenamiento siguió hasta 0.53. Esa brecha, que se iba abriendo, es señal de que la red empezaba a memorizar detalles propios del conjunto de entrenamiento. Es un motivo más para no estirar la segunda fase mientras no tengamos más datos o más aumento de imágenes.
 
 \subsection{Desempeño en el conjunto de prueba}\label{subsec3}
 
-Evaluamos el modelo una sola vez sobre 5,067 imágenes reservadas desde el inicio, que no intervinieron ni en el ajuste de los pesos ni en la elección de la mejor época. La exactitud global fue de 0.725 (3,672 aciertos) y el recall promedio por clase, de 0.632, algo por debajo del 0.670 de validación. La Tabla~\ref{tab1} desglosa el resultado por categoría.
+Las 5,067 imágenes de prueba quedaron apartadas desde el inicio y no intervinieron ni en el ajuste de los pesos ni en la elección de la mejor época. Las usamos una sola vez. El modelo acertó en 3,672 de ellas, una exactitud global de 0.725, y su recall promedio por clase fue de 0.632, un poco por debajo del 0.670 que había marcado en validación. Clase por clase, el resultado está en la Tabla~\ref{tab1}.
 
 \begin{table}[h]
-\caption{Desempeño por clase en el conjunto de prueba (modelo float32). El recall indica qué fracción de las lesiones de cada clase reconoció el modelo; la precisión, qué fracción de sus predicciones de esa clase fue correcta.}\label{tab1}%
+\caption{Desempeño por clase en el conjunto de prueba, con el modelo float32. El recall es la parte de las lesiones de cada clase que el modelo reconoció. La precisión mide otra cosa, qué fracción de sus predicciones de esa clase fue correcta.}\label{tab1}%
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Clase & Precisión & Recall & F1 & Imágenes\\
@@ -227,25 +227,25 @@ Promedio por clase           & 0.563 & 0.632 & 0.580 & 5,067 \\
 Promedio ponderado           & 0.742 & 0.725 & 0.725 & 5,067 \\
 \botrule
 \end{tabular}
-\footnotetext{La exactitud global es 0.725. Los promedios ponderados usan como peso el número de imágenes de cada clase, por lo que reflejan sobre todo el comportamiento con los nevos, que son la mitad del conjunto.}
+\footnotetext{Exactitud global: 0.725. En los promedios ponderados cada clase cuenta según su número de imágenes, y por eso se inclinan hacia lo que pasa con los nevos, que son la mitad del conjunto.}
 \end{table}
 
-Las cifras más altas corresponden a los nevos (0.855) y a las lesiones vasculares (0.862), cuyo aspecto rojizo y bien delimitado las vuelve fáciles de separar. En el otro extremo quedan el carcinoma escamoso (0.419), la queratosis actínica (0.451) y el melanoma (0.471). La matriz de confusión de la Fig.~\ref{fig3} explica buena parte de esos tropiezos: de los 949 melanomas, 298 (31.4\,\%) fueron tomados por nevos y 111 (11.7\,\%) por queratosis benignas, y un tercio de los carcinomas escamosos se confundió con carcinomas basocelulares. El dermatofibroma muestra la combinación contraria, buen recall con precisión muy baja (0.234): el modelo lo propone con frecuencia para lesiones que no lo son, efecto esperable del peso alto que recibió esa clase tan escasa.
+El mejor recall fue para las lesiones vasculares (0.862) y los nevos (0.855). Las vasculares, rojizas y bien delimitadas, se dejan separar con facilidad. Al fondo, con los recalls más magros, quedaron el carcinoma escamoso (0.419), la queratosis actínica (0.451) y el melanoma (0.471), y la matriz de confusión de la Fig.~\ref{fig3} deja ver hacia dónde se fueron esos errores. De los 949 melanomas, 298 (31.4\,\%) acabaron etiquetados como nevos y otros 111 (11.7\,\%) como queratosis benignas. Y un tercio de los carcinomas escamosos terminó confundido con carcinoma basocelular. Con el dermatofibroma pasa al revés. Su recall es bueno, pero la precisión se hunde a 0.234 porque el modelo lo sugiere a menudo para lesiones que no lo son, algo previsible si se piensa en el peso alto que le dimos a una clase tan escasa.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.78\textwidth]{figuras/fig_confusion.pdf}
-\caption{Matriz de confusión en el conjunto de prueba, normalizada por filas: cada celda indica qué porcentaje de las lesiones de una clase real recibió cada etiqueta. La diagonal corresponde a los aciertos y $n$ es el número de imágenes de cada clase. Se omiten los valores menores a 0.5\,\%.}\label{fig3}
+\caption{Matriz de confusión del conjunto de prueba, normalizada por filas. Cada celda dice qué porcentaje de las lesiones de una clase real recibió cada etiqueta, y los aciertos caen en la diagonal. Con $n$ se indica cuántas imágenes tiene cada clase. No se muestran los valores menores a 0.5\,\%.}\label{fig3}
 \end{figure}
 
-Si agrupamos las tres clases malignas (melanoma, carcinoma basocelular y carcinoma escamoso) contra el resto, el modelo identifica como maligna alguna de esas tres en 1,102 de 1,672 lesiones malignas, una sensibilidad de 0.659, y descarta correctamente 3,072 de 3,395 lesiones no malignas, una especificidad de 0.905.
+También juntamos las tres clases malignas (melanoma, carcinoma basocelular y carcinoma escamoso) frente a todo lo demás. Visto así, el modelo marcó con alguna de esas tres etiquetas 1,102 de las 1,672 lesiones malignas, una sensibilidad de 0.659. De las 3,395 no malignas descartó bien 3,072, lo que da una especificidad de 0.905.
 
 \subsection{Modelo completo y modelo ligero}\label{subsec4}
 
-Exportamos dos versiones del modelo. La primera conserva los pesos en punto flotante de 32 bits; la segunda los cuantiza a enteros de 8 bits, lo que reduce el archivo de 8.9 a 2.5\,MB. La Tabla~\ref{tab2} compara ambas. La versión float32 reprodujo las probabilidades del modelo original con una diferencia máxima de $9.2\times10^{-6}$ en las 5,067 imágenes, así que para fines prácticos es el mismo modelo. La ligera, en cambio, eligió la misma clase que el original en el 94.5\,\% de las imágenes y perdió entre uno y 1.4 puntos de recall promedio.
+Exportamos el modelo en dos versiones. La completa guarda los pesos en punto flotante de 32 bits (float32). La ligera los cuantiza a enteros de 8 bits, con lo que el archivo adelgaza de 8.9 a 2.5\,MB. En la Tabla~\ref{tab2} están lado a lado. Con la float32, la diferencia máxima frente a las probabilidades del modelo original fue de $9.2\times10^{-6}$ a lo largo de las 5,067 imágenes. Para fines prácticos, es el mismo modelo. La ligera fue menos fiel. Eligió la misma clase que el original en el 94.5\,\% de las imágenes y cedió entre uno y 1.4 puntos de recall promedio.
 
 \begin{table}[h]
-\caption{Comparación de las dos versiones exportadas. Las métricas son sobre las 5,067 imágenes de prueba; los tiempos de la Raspberry Pi 5 se midieron clasificando una imagen a la vez.}\label{tab2}%
+\caption{Las dos versiones exportadas, frente a frente. Las métricas se calcularon con las 5,067 imágenes de prueba, y los tiempos en la Raspberry Pi 5 se tomaron clasificando las imágenes de una en una.}\label{tab2}%
 \begin{tabular*}{\textwidth}{@{\extracolsep\fill}lcc}
 \toprule
  & float32 & Ligero (int8) \\
@@ -258,20 +258,20 @@ Tiempo por imagen en la Pi, 1 hilo & 21.7 ms & 19.0 ms \\
 Tiempo por imagen en la Pi, 4 hilos & 9.7 ms & 11.5 ms \\
 \botrule
 \end{tabular*}
-\footnotetext{Con 2 hilos, la versión float32 tardó 12.7\,ms por imagen en la Pi.}
-\footnotetext[1]{El primer valor se obtuvo en la laptop que hizo la exportación y el segundo en la Raspberry Pi; la diferencia se discute en el texto.}
+\footnotetext{En la Pi, con 2 hilos, la versión float32 tardó 12.7\,ms por imagen.}
+\footnotetext[1]{El primer valor es de la laptop que exportó el modelo y el segundo, de la Raspberry Pi. La diferencia se comenta en el texto.}
 \end{table}
 
-Un detalle nos sorprendió. Con la versión float32, las probabilidades de la Pi y las de la laptop difirieron en menos de tres millonésimas. Con la ligera no: la laptop que hizo la exportación obtuvo un recall promedio de 0.619 y la Pi, de 0.623, con diferencias de hasta 0.015 en las probabilidades de las imágenes de muestra. Todo apunta a las rutinas de cálculo entero que el intérprete elige para cada procesador: la misma laptop, con una versión anterior del intérprete, reproduce exactamente los resultados de la Pi. Como la versión ligera además fue más lenta con cuatro hilos, la aplicación usa la float32.
+Aquí nos llevamos una sorpresa. Entre la Pi y la laptop, las probabilidades de la float32 no se separaron ni tres millonésimas. En la ligera sí hubo distancia. La laptop que hizo la exportación dio un recall promedio de 0.619 y la Pi, uno de 0.623. En las imágenes de muestra, las probabilidades llegaron a diferir en 0.015. Sospechamos de las rutinas de cálculo entero que el intérprete elige según el procesador, porque esa misma laptop, con una versión anterior del intérprete, calca los resultados de la Pi. Como encima la ligera fue más lenta con cuatro hilos, la aplicación se quedó con la float32.
 
 \subsection{Funcionamiento en la Raspberry Pi 5}\label{subsec5}
 
-Clasificamos en la propia Pi las 5,067 imágenes de prueba, una por una, como lo hace la aplicación. Con la versión float32, la clase elegida coincidió con la de la laptop en todos los casos. Con los cuatro núcleos, cada imagen tardó 9.7\,ms, lo que daría para clasificar unas cien imágenes por segundo; en la práctica la aplicación solo clasifica cuando el usuario toca el botón, así que el tiempo de respuesta lo domina la interfaz y no la red.
+En la propia Pi clasificamos las 5,067 imágenes de prueba, una por una, igual que lo hace la aplicación. La versión float32 no tuvo una sola discrepancia con la laptop en la clase elegida. Con los cuatro núcleos trabajando, cada imagen tomó 9.7\,ms, así que en teoría cabrían unas cien por segundo. Ese ritmo no hace falta. La aplicación clasifica nada más cuando alguien toca el botón, y lo que tarda en responder depende más de la interfaz que de la red.
 
-La parte complicada resultó ser la energía. Durante las primeras pruebas la placa se apagó dos veces sin aviso, así que repetimos la clasificación completa registrando cada dos segundos la temperatura, el voltaje de la línea de 5\,V y las alertas del firmware. La Tabla~\ref{tab3} resume lo que encontramos.
+El verdadero estorbo fue la alimentación. En los primeros días la placa se nos apagó dos veces sin dar aviso, una de ellas en reposo y por una causa que no llegamos a aclarar. Volvimos a correr la clasificación completa, esta vez con un registro cada dos segundos de la temperatura, del voltaje en la línea de 5\,V y de las alertas del firmware, y lo que encontramos está en la Tabla~\ref{tab3}.
 
 \begin{table}[h]
-\caption{Pruebas de carga en la Raspberry Pi 5 sin ventilador, clasificando continuamente el conjunto de prueba. Ambas fuentes negociaron 3\,A a 5\,V; la fuente oficial de la placa entrega 5\,A.}\label{tab3}%
+\caption{Pruebas de carga en la Raspberry Pi 5, sin ventilador y clasificando sin pausa el conjunto de prueba. Las dos fuentes negociaron 3\,A a 5\,V, cuando la fuente oficial de la placa da 5\,A.}\label{tab3}%
 \begin{tabular*}{\textwidth}{@{\extracolsep\fill}llccl}
 \toprule
 Alimentación & Hilos & Temp. máx. & 5\,V mín. & Resultado \\
@@ -282,31 +282,30 @@ USB-C de laptop & 4 & --\footnotemark[1] & 4.70\,V & Se apagó a los 2\,s \\
 Cargador de 65\,W & 4 & 87.3\,\textdegree C & 4.76\,V & Estable, 7 avisos de voltaje \\
 \botrule
 \end{tabular*}
-\footnotetext[1]{La placa se apagó antes de que la temperatura subiera; la última lectura fue de 75.2\,\textdegree C.}
+\footnotetext[1]{La placa se apagó antes de que la temperatura alcanzara a subir. La última lectura marcó 75.2\,\textdegree C.}
 \end{table}
 
-Conectada al puerto USB-C de una laptop, la Pi soportó uno y dos núcleos, pero al arrancar los cuatro el voltaje cayó a 4.70\,V, el sistema registró una alerta de bajo voltaje y dos segundos después la placa quedó apagada. Con un cargador de pared de 65\,W, que también negocia solo 3\,A a 5\,V, resistió unos cuatro minutos de carga casi continua, aunque con siete alertas breves de bajo voltaje. La temperatura fue el segundo límite: sin disipador, la placa llegó a 87.3\,\textdegree C, redujo su frecuencia hasta 1.5\,GHz durante cerca de 48 segundos y el tiempo por imagen subió de 9.7 a 11.9\,ms. Sumando los rieles internos que reporta el controlador de energía, la placa consumió unos 2\,W en reposo y alrededor de 7\,W con los cuatro núcleos ocupados; la documentación del fabricante recomienda para este modelo una fuente de 5\,A \cite{rpi5_power,rpi_27w}.
+Alimentada desde el puerto USB-C de una laptop, la Pi aguantó con uno y con dos núcleos. Al arrancar los cuatro, el voltaje cayó a 4.70\,V, el sistema anotó una alerta de bajo voltaje y dos segundos después la placa estaba apagada. Probamos entonces con un cargador de pared de 65\,W. También negocia solo 3\,A a 5\,V, y aun así sostuvo unos cuatro minutos de carga casi continua, con muy poco margen, pues hubo siete alertas breves de bajo voltaje. El calor llegó después. Sin disipador, la placa alcanzó los 87.3\,\textdegree C, bajó su frecuencia hasta 1.5\,GHz durante cerca de 48 segundos y el tiempo por imagen subió de 9.7 a 11.9\,ms. Si se suman los rieles internos que reporta el controlador de energía, el consumo rondó los 2\,W en reposo y los 7\,W con los cuatro núcleos ocupados. Para este modelo, el fabricante recomienda una fuente de 5\,A \cite{rpi5_power,rpi_27w}.
 
 \subsection{La aplicación}\label{subsec6}
 
-La Fig.~\ref{fig4} muestra las dos pantallas de la aplicación en el tamaño de la pantalla táctil de siete pulgadas que usaremos (1024\,$\times$\,600 píxeles). En la primera, la imagen en vivo aparece oscurecida salvo un cuadro central con una retícula; ese cuadro es exactamente la región que se clasifica. Al tocar «Tomar», la segunda pantalla presenta la clase más probable con su porcentaje, una escala de 0 a 100 con la posición de las tres primeras clases y un aviso permanente de que el resultado no es un diagnóstico. Si alguna de las clases de riesgo (melanoma, carcinomas o queratosis actínica) alcanza 25\,\% entre las tres primeras, aparece en color ámbar la sugerencia de acudir a un dermatólogo; si la clase principal no llega a 50\,\%, la aplicación advierte que el resultado es poco seguro.
+La aplicación tiene dos pantallas, y la Fig.~\ref{fig4} las muestra al tamaño de la pantalla táctil de siete pulgadas que vamos a usar (1024\,$\times$\,600 píxeles). Las capturas las tomamos en un navegador ajustado a esa resolución. Todavía no hemos probado la aplicación en la pantalla física ni con la cámara. En la primera, la imagen en vivo se ve oscurecida, salvo un cuadro central con retícula, y lo que cae dentro de ese cuadro es justo lo que se clasifica. Al tocar «Tomar» aparece la segunda, con la clase más probable y su porcentaje, una escala de 0 a 100 donde se ubican las tres primeras clases y un aviso permanente de que el resultado no es un diagnóstico. Cuando alguna clase de riesgo (melanoma, carcinomas o queratosis actínica) llega a 25\,\% dentro de las tres primeras, salta en ámbar la sugerencia de ver a un dermatólogo. Si la clase principal se queda por debajo de 50\,\%, la aplicación advierte que el resultado es poco seguro.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figuras/fig_app.png}
-\caption{Capturas de la aplicación con imágenes de prueba de ISIC. (a) Pantalla de cámara con el cuadro guía, que coincide con la región que se clasifica. (b) Nevo reconocido con 98\,\%. (c) Carcinoma basocelular reconocido con 95\,\%; el aviso ámbar sugiere consultar a un dermatólogo. (d) Un melanoma que el modelo confunde con un nevo, con solo 46\,\% y la advertencia de resultado poco seguro.}\label{fig4}
+\caption{Capturas de la aplicación con imágenes de prueba de ISIC. (a) Pantalla de cámara, donde el cuadro guía marca la región que se clasifica. (b) Un nevo, reconocido con 98\,\%. (c) Carcinoma basocelular reconocido con 95\,\%, junto al aviso ámbar que sugiere ir al dermatólogo. (d) Melanoma que el modelo toma por nevo, con apenas 46\,\% y la advertencia de resultado poco seguro.}\label{fig4}
 \end{figure}
 
-Para demostrar el sistema sin cámara, la aplicación incluye un modo de prueba que recorre 62 fotografías con licencia abierta: 40 dermatoscópicas del propio ISIC, cinco por clase y elegidas al azar, y 22 clínicas de Wikimedia Commons, tomadas con cámaras comunes. El modelo acertó la clase de 24 de las 40 imágenes dermatoscópicas y solo de 7 de las 22 clínicas. Son muestras pequeñas, pero la caída coincide con lo que esperábamos de un modelo que aprendió únicamente con imágenes de dermatoscopio.
-
+La demostración puede hacerse incluso sin cámara. Para eso la aplicación trae un modo de prueba con 62 fotografías de licencia abierta. De ellas, 40 son dermatoscópicas del propio ISIC, cinco por clase escogidas al azar, y las otras 22 son fotos clínicas de Wikimedia Commons, tomadas con cámaras comunes. Con las dermatoscópicas, el modelo dio con la clase correcta en 25 de 40. Con las clínicas, solo en 6 de 22. Son muestras pequeñas, pero la caída es la que cabía esperar de un modelo que aprendió únicamente con imágenes de dermatoscopio.
 \section{Métodos}\label{sec11}
 
 \subsection{Conjunto de datos}\label{subsec7}
 
-Usamos el conjunto de entrenamiento del reto ISIC 2019, que reúne 25,331 imágenes dermatoscópicas de ocho categorías diagnósticas \cite{isic2019,isic2019datos}. Las imágenes provienen de tres colecciones: HAM10000, con 10,015 imágenes \cite{tschandl2018}; BCN20000, del Hospital Clínic de Barcelona \cite{hernandezperez2024}; y las del reto ISIC 2017 \cite{codella2018}. Trabajamos con una copia publicada en Hugging Face que ya divide las imágenes en 20,264 para entrenar y 5,067 para probar \cite{hf_isic2019}; ambas partes suman exactamente las 25,331 imágenes del conjunto de entrenamiento oficial, de modo que nuestra prueba es una porción reservada de ese conjunto y no la prueba oficial del reto. De las 20,264 imágenes separamos de forma estratificada el 10\,\% para validación (2,027) y dejamos 18,237 para ajustar los pesos. La Tabla~\ref{tab4} muestra el reparto, y la Fig.~\ref{fig5}, un ejemplo de cada clase.
+La base fue el conjunto de entrenamiento del reto ISIC 2019, con 25,331 imágenes dermatoscópicas de ocho categorías diagnósticas \cite{isic2019,isic2019datos}. En él se juntan tres colecciones. De HAM10000 vienen 10,015 imágenes \cite{tschandl2018}, y el resto se reparte entre BCN20000, del Hospital Clínic de Barcelona \cite{hernandezperez2024}, y el reto ISIC 2017 \cite{codella2018}. La copia con la que trabajamos está publicada en Hugging Face y ya viene partida en 20,264 imágenes para entrenar y 5,067 para probar \cite{hf_isic2019}. Esas dos partes juntas dan las 25,331 del conjunto de entrenamiento oficial. Lo que aquí llamamos prueba, entonces, es una porción apartada de ese mismo conjunto y no la prueba oficial del reto. De las 20,264 reservamos un 10\,\% estratificado para validación (2,027), y los pesos se ajustaron con las 18,237 que quedaron. La Tabla~\ref{tab4} desglosa las particiones por clase y la Fig.~\ref{fig5} enseña una imagen de cada una.
 
 \begin{table}[h]
-\caption{Número de imágenes por clase en cada partición.}\label{tab4}%
+\caption{Imágenes de cada clase en las tres particiones.}\label{tab4}%
 \begin{tabular*}{\textwidth}{@{\extracolsep\fill}lrrrr}
 \toprule
 Clase & Entrenamiento & Validación & Prueba & Total \\
@@ -323,41 +322,41 @@ VASC, lesión vascular      & 176   & 19    & 58    & 253 \\
 Total                      & 18,237 & 2,027 & 5,067 & 25,331 \\
 \botrule
 \end{tabular*}
-\footnotetext{La categoría BKL agrupa lentigo solar, queratosis seborreica y queratosis liquenoide. El desbalance es extremo: en la partición de entrenamiento hay 52 nevos por cada dermatofibroma.}
+\footnotetext{Bajo BKL caen el lentigo solar, la queratosis seborreica y la queratosis liquenoide. El reparto es disparejo en extremo, con 52 nevos por cada dermatofibroma en la partición de entrenamiento.}
 \end{table}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figuras/fig_clases.pdf}
-\caption{Una imagen de prueba de cada clase, con el mismo recorte cuadrado que recibe la red. Los créditos y licencias de cada imagen están en el Apéndice~\ref{secA1}.}\label{fig5}
+\caption{Una imagen de prueba por clase, con el mismo recorte cuadrado que le llega a la red. El crédito y la licencia de cada una están en el Apéndice~\ref{secA1}.}\label{fig5}
 \end{figure}
 
 \subsection{Preparación de las imágenes}\label{subsec8}
 
-Cada imagen pasa por la misma función antes de entrar a la red: se corrige su orientación según los metadatos EXIF, se convierte a RGB, se recorta el cuadrado central más grande posible y se reduce a 224\,$\times$\,224 píxeles con interpolación bilineal. La Raspberry Pi usa una copia de esa función, y una prueba automática verifica que ambas producen exactamente los mismos píxeles. La red recibe valores entre 0 y 255; la conversión al intervalo que espera MobileNetV2 ocurre dentro del propio modelo,
+Antes de llegar a la red, toda imagen pasa por una misma función. Esta la endereza según la orientación anotada en sus metadatos EXIF, la convierte a RGB, le corta el cuadrado central más grande que quepa y lo reduce a 224\,$\times$\,224 píxeles con interpolación bilineal. En la Raspberry Pi vive una copia de esa función, y una prueba automática revisa que las dos entreguen exactamente los mismos píxeles. A la red le entran valores de 0 a 255, sin normalizar. El cambio al intervalo que espera MobileNetV2 lo hace el propio modelo,
 \begin{equation}
 \tilde{x} = \frac{x}{127.5} - 1,\label{eq1}
 \end{equation}
-de modo que el programa de la placa no tiene que repetir ese paso. Durante el entrenamiento añadimos variaciones aleatorias a cada imagen: giros horizontales y verticales, rotaciones de hasta media vuelta en cualquier sentido, cambios de escala de hasta 15\,\% y variaciones de brillo y contraste de la misma magnitud. Estas transformaciones solo existen al entrenar y no forman parte del modelo exportado.
+y así el programa de la placa se ahorra ese paso. Durante el entrenamiento cada imagen recibía alteraciones al azar: volteos horizontales y verticales, rotaciones de hasta media vuelta hacia cualquier lado, cambios de escala de hasta 15\,\% y variaciones de brillo y contraste de esa misma magnitud. Esas alteraciones solo existen mientras se entrena. El modelo exportado no carga con ellas.
 
 \subsection{Arquitectura y entrenamiento}\label{subsec9}
 
-MobileNetV2 se construye con bloques residuales invertidos: cada bloque expande una representación compacta, la filtra con convoluciones separables en profundidad y la vuelve a comprimir con una proyección lineal \cite{sandler2018,howard2017}. Cargamos la red sin su clasificador original, con los pesos aprendidos en ImageNet \cite{deng2009}, y le añadimos un promedio global, una capa de \textit{dropout} con tasa 0.3 y una capa densa de ocho salidas con activación softmax. El modelo completo tiene 2,268,232 parámetros. Reutilizar los pesos de ImageNet aprovecha que las primeras capas de una red entrenada con imágenes naturales aprenden rasgos generales, como bordes y manchas de color, que sirven para otras tareas \cite{yosinski2014}.
+La pieza con que se arma MobileNetV2 es el bloque residual invertido. Cada uno toma una representación compacta, la ensancha, la filtra con convoluciones separables en profundidad y la vuelve a estrechar con una proyección lineal \cite{sandler2018,howard2017}. Cargamos la red con los pesos que aprendió en ImageNet \cite{deng2009}, le quitamos su clasificador original y en su lugar montamos un promedio global, una capa de \textit{dropout} con tasa 0.3 y una capa densa de ocho salidas con activación softmax. En total, 2,268,232 parámetros. ¿De qué sirven unos pesos aprendidos con fotos de perros, coches y otros objetos ajenos a la piel? Las primeras capas de una red entrenada con imágenes naturales captan rasgos generales, como bordes y manchas de color, que valen también para otras tareas \cite{yosinski2014}.
 
-El entrenamiento siguió dos fases con el optimizador Adam \cite{kingma2015} y lotes de 64 imágenes. En la primera, la red base quedó congelada y solo aprendieron los 10,248 parámetros de la capa final, con un paso de aprendizaje de $10^{-3}$ durante seis épocas. En la segunda descongelamos las últimas 40 capas de MobileNetV2, salvo las de normalización por lotes \cite{ioffe2015}, que se mantuvieron fijas para conservar las estadísticas aprendidas en ImageNet; así quedaron 1,673,608 parámetros entrenables, ajustados con un paso de $10^{-4}$ durante un máximo de 14 épocas. Usamos TensorFlow 2.21 y Keras 3.15 \cite{abadi2016,keras}.
+Entrenamos en dos fases, las dos con el optimizador Adam \cite{kingma2015} y lotes de 64 imágenes. Durante las primeras seis épocas la base estuvo congelada y solo se actualizaban los 10,248 parámetros de la capa final, con un paso de aprendizaje de $10^{-3}$. Después descongelamos las últimas 40 capas de MobileNetV2, aunque dejamos fijas las de normalización por lotes \cite{ioffe2015} para no perder las estadísticas que traían de ImageNet. Así subieron a 1,673,608 los parámetros entrenables, ajustados con un paso de $10^{-4}$ durante 14 épocas como máximo. Trabajamos con TensorFlow 2.21 y Keras 3.15 \cite{abadi2016,keras}.
 
-Para compensar el desbalance \cite{he2009}, cada imagen de la clase $c$ contribuye a la pérdida con un peso
+Contra el desbalance \cite{he2009} ponderamos la pérdida por clase. Cada imagen de la clase $c$ entra con un peso
 \begin{equation}
 w_c = \left(\frac{N}{K\,n_c}\right)^{1/2},\label{eq2}
 \end{equation}
-donde $N$ es el número de imágenes de entrenamiento, $K=8$ el número de clases y $n_c$ las imágenes de la clase $c$. La raíz cuadrada suaviza el efecto: el peso va de 0.50 para los nevos a 3.60 para las lesiones vasculares, en lugar del intervalo de 0.25 a 12.95 que daría la proporción inversa directa. La función que se minimiza es la entropía cruzada ponderada sobre cada lote de $B$ imágenes,
+donde $N$ es el número de imágenes de entrenamiento, $K=8$ el número de clases y $n_c$ las imágenes de la clase $c$. La raíz cuadrada amortigua el efecto, y con ella los pesos van de 0.50 en los nevos a 3.60 en las lesiones vasculares. La proporción inversa a secas los habría estirado de 0.25 a 12.95. Lo que se minimiza es la entropía cruzada ponderada, promediada sobre cada lote de $B$ imágenes,
 \begin{equation}
 \mathcal{L} = -\frac{1}{B}\sum_{i=1}^{B} w_{y_i}\,\log p_{i,y_i},\label{eq3}
 \end{equation}
-con $y_i$ la clase verdadera de la imagen $i$ y $p_{i,y_i}$ la probabilidad que el modelo le asigna. La Tabla~\ref{tab5} reúne los hiperparámetros.
+con $y_i$ la clase verdadera de la imagen $i$ y $p_{i,y_i}$ la probabilidad que el modelo le asigna a esa clase. Los hiperparámetros están reunidos en la Tabla~\ref{tab5}.
 
 \begin{table}[h]
-\caption{Hiperparámetros del entrenamiento.}\label{tab5}%
+\caption{Hiperparámetros de las dos fases del entrenamiento.}\label{tab5}%
 \begin{tabular}{@{}lll@{}}
 \toprule
 Parámetro & Fase 1 & Fase 2 \\
@@ -377,26 +376,26 @@ Reducción del paso & \multicolumn{2}{l}{a la mitad tras 2 épocas sin mejora} \
 
 \subsection{Selección del modelo y métricas}\label{subsec10}
 
-La exactitud global engaña cuando la mitad de las imágenes son nevos, porque un modelo que dijera «nevo» siempre ya acertaría la mitad de las veces. Por eso elegimos los pesos con el recall promedio por clase en validación,
+Con la exactitud global es fácil engañarse. La mitad de las imágenes son nevos, y un modelo que respondiera «nevo» a todo ya acertaría la mitad de las veces sin distinguir nada. Por eso escogimos los pesos con el recall promedio por clase en validación,
 \begin{equation}
 \bar{R} = \frac{1}{K}\sum_{c=1}^{K}\frac{\mathrm{VP}_c}{\mathrm{VP}_c+\mathrm{FN}_c},\label{eq4}
 \end{equation}
-donde $\mathrm{VP}_c$ son las imágenes de la clase $c$ clasificadas correctamente y $\mathrm{FN}_c$ las que recibieron otra etiqueta. Al terminar cada época calculamos $\bar{R}$; si mejoraba, guardábamos los pesos. Esa misma métrica controló la parada temprana y la reducción del paso de aprendizaje. En la prueba reportamos además la precisión, $\mathrm{VP}_c/(\mathrm{VP}_c+\mathrm{FP}_c)$, y la puntuación F1, que es la media armónica de precisión y recall.
+donde $\mathrm{VP}_c$ son las imágenes de la clase $c$ bien clasificadas y $\mathrm{FN}_c$ las que acabaron con otra etiqueta. Calculábamos $\bar{R}$ al cerrar cada época y solo guardábamos los pesos cuando subía. Y esa misma cifra gobernaba la parada temprana y la reducción del paso de aprendizaje. En la prueba reportamos además la precisión, $\mathrm{VP}_c/(\mathrm{VP}_c+\mathrm{FP}_c)$, y la puntuación F1, media armónica entre precisión y recall.
 
 \subsection{Exportación a TensorFlow Lite}\label{subsec11}
 
-El modelo se convirtió al formato de TensorFlow Lite, que Google renombró LiteRT en 2024 \cite{litert,litert_rename}. La versión ligera usa cuantización de rango dinámico: los pesos se guardan como enteros de 8 bits y se traducen a reales mediante la relación afín
+Convertimos el modelo a TensorFlow Lite, el formato que Google rebautizó como LiteRT en 2024 \cite{litert,litert_rename}, y sacamos dos versiones, una en float32 y otra ligera. La ligera usa cuantización de rango dinámico. Guarda los pesos como enteros de 8 bits, que se vuelven reales con la relación afín
 \begin{equation}
 r = S\,(q - Z),\label{eq5}
 \end{equation}
-en la que $q$ es el entero almacenado, $S$ una escala y $Z$ el entero que representa al cero \cite{jacob2018}. Durante la inferencia, el intérprete también cuantiza al vuelo las activaciones, y ese paso explica que el resultado varíe ligeramente entre procesadores. Junto con cada modelo exportamos 16 imágenes de prueba con las probabilidades esperadas; al instalar el modelo, la Pi las clasifica y compara sus resultados con los de la laptop, con una tolerancia de $10^{-3}$ para la versión float32 y de 0.05 para la ligera.
+en la que $q$ es el entero almacenado, $S$ una escala y $Z$ el entero que corresponde al cero \cite{jacob2018}. Las activaciones, en cambio, las cuantiza el intérprete al vuelo durante la inferencia, y de ahí viene que el resultado cambie un poco de un procesador a otro. Con cada modelo van 16 imágenes de prueba y las probabilidades que la laptop les asignó. Al instalarse el modelo, la Pi clasifica esas imágenes y coteja sus números con los de la laptop. Por aquella variación, a la versión ligera le damos más holgura, con una tolerancia de 0.05 contra $10^{-3}$ para la float32.
 
 \subsection{Hardware y aplicación}\label{subsec12}
 
-El dispositivo es una Raspberry Pi 5 con 8\,GB de memoria, cuyo procesador Broadcom BCM2712 tiene cuatro núcleos Arm Cortex-A76 a 2.4\,GHz \cite{rpi5}, con Raspberry Pi OS de 64 bits, Python 3.13 y el intérprete \texttt{ai-edge-litert} \cite{ai_edge_litert}. La pantalla es táctil, de siete pulgadas y 1024\,$\times$\,600 píxeles, conectada por HDMI. La aplicación consta de un pequeño servidor en Python que lee la cámara y ejecuta el modelo, y de una página que Chromium muestra a pantalla completa; acepta el módulo de cámara de la Raspberry Pi, una cámara web USB o, sin cámara, las fotografías del modo de prueba. Las imágenes solo se guardan si el usuario lo pide. El Algoritmo~\ref{algo1} describe lo que ocurre al tocar «Tomar».
+La placa es una Raspberry Pi 5 de 8\,GB de memoria, con un procesador Broadcom BCM2712 de cuatro núcleos Arm Cortex-A76 a 2.4\,GHz \cite{rpi5}. Corre Raspberry Pi OS de 64 bits, Python 3.13 y el intérprete \texttt{ai-edge-litert} \cite{ai_edge_litert}. La pantalla táctil es un modelo genérico de siete pulgadas y 1024\,$\times$\,600 píxeles, conectado por HDMI. Por dentro, la aplicación es un servidor pequeño en Python, que lee la cámara y ejecuta el modelo, más una página que Chromium muestra a pantalla completa. La imagen puede venir del módulo de cámara de la Raspberry Pi o de una cámara web USB, y si no hay ninguna conectada, la aplicación usa las fotografías del modo de prueba. Una foto solo se guarda si el usuario lo pide. El Algoritmo~\ref{algo1} detalla lo que pasa al tocar «Tomar».
 
 \begin{algorithm}
-\caption{Clasificación al tocar «Tomar»}\label{algo1}
+\caption{Qué hace la aplicación al tocar «Tomar»}\label{algo1}
 \begin{algorithmic}[1]
 \Require cuadro más reciente de la cámara $I$ de $w\times h$ píxeles; modelo $M$; fracción del cuadro guía $g=0.8$
 \Ensure las tres clases más probables y los avisos que se muestran
@@ -415,55 +414,54 @@ El dispositivo es una Raspberry Pi 5 con 8\,GB de memoria, cuyo procesador Broad
 \end{algorithmic}
 \end{algorithm}
 
-Para medir el rendimiento en la placa clasificamos las 5,067 imágenes de prueba con uno, dos y cuatro hilos, igual que en la aplicación. Durante esas corridas, un proceso aparte registró cada dos segundos la temperatura del procesador, las alertas de reducción de frecuencia y de bajo voltaje del firmware y el voltaje de la línea de 5\,V que mide el controlador de energía, y guardó los mensajes del sistema en la tarjeta de memoria para conservarlos aunque la placa se apagara.
+Para medir el rendimiento pasamos por la placa las 5,067 imágenes de prueba, cada una por separado como en la aplicación, con uno, dos y cuatro hilos. Mientras tanto, un proceso aparte anotaba cada dos segundos la temperatura del procesador, el voltaje de la línea de 5\,V que reporta el controlador de energía y las alertas del firmware por bajo voltaje o por frecuencia reducida. Ese mismo proceso copiaba los mensajes del sistema a la tarjeta de memoria, para no perderlos si la placa volvía a apagarse.
 
-\textbf{Declaración ética.} El estudio no involucró personas ni muestras humanas. Todas las imágenes provienen de colecciones públicas y anonimizadas, con licencias que permiten su uso académico, y se citan con su crédito correspondiente.
-
+\textbf{Declaración ética.} En el estudio no participaron personas ni se usaron muestras humanas. Todas las imágenes vienen de colecciones públicas y anonimizadas, cuyas licencias autorizan el uso académico, y se citan con su crédito.
 \section{Discusión}\label{sec12}
 
-El resultado más incómodo es también el más importante: el modelo reconoce menos de la mitad de los melanomas. La mayoría de sus errores con esa clase van hacia los nevos, el desliz con peores consecuencias posibles, porque tranquiliza a quien debería consultar. La precisión del melanoma es razonable (0.761), es decir, cuando el modelo dice «melanoma» suele acertar; lo que flaquea es su disposición a decirlo. Parte de la explicación está en los pesos de la Ecuación~\eqref{eq2}: con la raíz cuadrada, el melanoma recibió un peso de 0.84, menor que el de clases mucho más raras, y el modelo terminó inclinado a no proponerlo. Un ajuste del umbral de decisión, o un peso específico para el melanoma, podría intercambiar parte de la precisión por sensibilidad, que en este contexto vale más.
+El modelo reconoce menos de la mitad de los melanomas. Ningún otro resultado nos incomoda tanto, ni importa tanto. Cuando falla con esa clase, la mayoría de las veces toma la lesión por un nevo, el desliz más dañino de todos, porque deja tranquila a una persona que tendría que ir a consulta. La precisión para el melanoma no está mal (0.761). Si la red dice «melanoma», suele tener razón, pero lo dice demasiado poco. Una parte de la culpa la tienen los pesos de la Ecuación~\eqref{eq2}. Con la raíz cuadrada, al melanoma le tocó un peso de 0.84, menor que el de clases mucho más raras, y la red acabó inclinada a no proponerlo. Mover el umbral de decisión, o darle al melanoma un peso propio, podría cambiar algo de precisión por sensibilidad. En una herramienta como esta, ese trueque conviene.
 
-Comparar nuestras cifras con las de la literatura exige cautela. Los trabajos de Esteva y de Haenssle evaluaron tareas binarias, con otros conjuntos y redes más grandes \cite{esteva2017,haenssle2018}, mientras que aquí la red elige entre ocho clases muy desbalanceadas y cabe en un archivo de 9\,MB. Además, la partición entre entrenamiento y prueba no separa por lesión: HAM10000 incluye varias imágenes de una misma lesión, y si algunas quedaron de ambos lados, las cifras resultan algo optimistas. Aun con esas reservas, que una red de 2.3 millones de parámetros entrenada en 45 minutos sin tarjeta gráfica distinga nevos, carcinomas basocelulares y lesiones vasculares con recall superior a 0.79 dice bastante de lo accesible que se ha vuelto esta tecnología.
+Poner nuestras cifras al lado de las de la literatura pide varias salvedades. Los grupos de Esteva y de Haenssle evaluaron tareas binarias, con otros conjuntos de imágenes y con redes más grandes \cite{esteva2017,haenssle2018}. La nuestra decide entre ocho clases muy desbalanceadas y cabe en un archivo de 9\,MB. Otra reserva pesa en contra nuestra. La partición entre entrenamiento y prueba no separa por lesión, y HAM10000 trae varias fotos de una misma lesión. Si algunas cayeron a los dos lados, nuestras cifras pecan un poco de optimistas. Aun así, que una red de 2.3 millones de parámetros, entrenada en 45 minutos y sin tarjeta gráfica, separe nevos, carcinomas basocelulares y lesiones vasculares con un recall superior a 0.79 dice mucho de lo accesible que se volvió esta tecnología.
 
-La experiencia con la Raspberry Pi dejó una lección práctica. La inferencia fue lo más sencillo, pues cada imagen tarda menos de 10\,ms; lo que puso en riesgo el funcionamiento fueron la fuente y el calor. Una placa alimentada desde una laptop se apaga en cuanto se le exige todo el procesador, y una sin disipador se frena por temperatura en uno o dos minutos. Para una demostración confiable bastan la fuente oficial de 27\,W y un disipador activo, o bien limitar el modelo a dos hilos, que con 12.7\,ms por imagen sigue siendo de sobra rápido.
+En la Raspberry Pi, la red fue lo más llevadero, con menos de 10\,ms por imagen. Los problemas vinieron de la alimentación y del calor. Conectada al USB-C de una laptop, la placa se apagó en cuanto le pedimos los cuatro núcleos, y sin disipador la temperatura la frena en uno o dos minutos. Para una demostración sin sobresaltos alcanza con la fuente oficial de 27\,W y un disipador activo. Si no están a mano, queda limitar el modelo a dos hilos, que a 12.7\,ms por imagen sigue sobrado de velocidad.
 
-La limitación de fondo es el tipo de imagen. El modelo aprendió con fotografías de dermatoscopio, tomadas pegadas a la piel y con luz controlada, y su acierto bajó de 24 de 40 imágenes dermatoscópicas a 7 de 22 fotos clínicas. Con una cámara común sucederá algo parecido, y lo mismo con tonos de piel poco representados en ISIC, una carencia ya documentada en otros sistemas \cite{daneshjou2022}. El paso natural sería acoplar a la cámara un lente dermatoscópico económico y reentrenar con imágenes más diversas. También conviene añadir una forma de reconocer cuando la imagen no muestra una lesión, porque hoy el modelo siempre elige una de las ocho clases, incluso frente a una foto de una mano o de una taza.
+La limitación más seria está en las imágenes con las que aprendió. Todas venían de dermatoscopio, tomadas pegadas a la piel y con luz controlada, y en el modo de prueba el modelo acertó 25 de 40 imágenes dermatoscópicas pero no pasó de 6 aciertos en 22 fotos clínicas. Con una cámara conectada a la Pi todavía no lo probamos, aunque lo más probable es que ocurra algo parecido. Y lo mismo debería pasar con tonos de piel poco representados en ISIC, una carencia que ya se documentó en otros sistemas \cite{daneshjou2022}. Acoplar a la cámara un lente dermatoscópico económico y reentrenar con imágenes más diversas serían los siguientes pasos. Hay un pendiente aún más elemental. Hoy el modelo siempre escoge una de las ocho clases, aunque le pongan enfrente la foto de una mano o de una taza, así que necesita alguna forma de reconocer cuando la imagen no muestra ninguna lesión.
 
 \section{Conclusión}\label{sec13}
 
-Computer Vision DermaCheck demuestra que un clasificador de lesiones cutáneas puede entrenarse en una laptop y funcionar en una placa de bajo costo sin perder exactitud en el traslado: la Raspberry Pi reprodujo, imagen por imagen, las predicciones de la computadora donde se entrenó. Su desempeño, en cambio, todavía no alcanza para confiar en él frente a un melanoma, y por eso la aplicación insiste en que no diagnostica. El valor del prototipo está en otra parte, en volver tangible para un salón de clases cómo aprende una red neuronal, dónde se equivoca y por qué, y en dejar medido qué hace falta para llevarla de una computadora a un dispositivo que cabe en la mano.
+Nuestro clasificador de lesiones cutáneas pasó de la laptop donde lo entrenamos a una placa de bajo costo sin perder exactitud en el traslado. La Raspberry Pi repitió, imagen por imagen, las predicciones originales. Frente a un melanoma, sin embargo, Computer Vision DermaCheck todavía no es de fiar, y por eso la aplicación insiste en que no diagnostica. Lo que vale del prototipo es otra cosa. En un salón de clases vuelve tangible cómo aprende una red neuronal y por qué se equivoca donde se equivoca, y deja medido qué hace falta para sacarla de una computadora y meterla en un aparato que cabe en la mano.
 
 \backmatter
 
 \bmhead{Información suplementaria}
 
-El código del proyecto, los cuadernos de entrenamiento y evaluación, el modelo exportado, los registros de las pruebas en la Raspberry Pi y los créditos de las 62 imágenes del modo de prueba están en el repositorio del proyecto, disponible a solicitud de los autores.
+En el repositorio del proyecto, disponible a solicitud de los autores, guardamos el código, los cuadernos de entrenamiento y de evaluación, el modelo exportado, los registros de las pruebas en la Raspberry Pi y los créditos de las 62 imágenes del modo de prueba.
 
 \bmhead{Agradecimientos}
 
-Agradecemos a la International Skin Imaging Collaboration y a las instituciones que donaron las imágenes de ISIC 2019, a quien publicó en Hugging Face la copia del conjunto con la que trabajamos y a los fotógrafos de Wikimedia Commons que compartieron sus imágenes con licencia abierta.
+Agradecemos a la International Skin Imaging Collaboration y a las instituciones que donaron las imágenes de ISIC 2019. La copia del conjunto con la que trabajamos se la debemos a quien la publicó en Hugging Face, y las fotos clínicas del modo de prueba, a los fotógrafos de Wikimedia Commons que las compartieron con licencia abierta.
 
 \section*{Declaraciones}
 
 \begin{itemize}
-\item \textbf{Financiamiento:} el proyecto no recibió financiamiento; el equipo cubrió el costo del hardware.
-\item \textbf{Conflicto de intereses:} los autores declaran no tener conflictos de intereses.
-\item \textbf{Aprobación ética y consentimiento para participar:} no aplica; el estudio usó solo imágenes públicas y anonimizadas.
+\item \textbf{Financiamiento:} el proyecto no recibió financiamiento. El hardware corrió por cuenta del equipo.
+\item \textbf{Conflicto de intereses:} los autores no tienen conflictos de intereses que declarar.
+\item \textbf{Aprobación ética y consentimiento para participar:} no aplica, porque solo se usaron imágenes públicas y anonimizadas.
 \item \textbf{Consentimiento para publicación:} no aplica.
-\item \textbf{Disponibilidad de datos:} el conjunto ISIC 2019 está disponible en el sitio del reto \cite{isic2019datos} y la copia utilizada, en Hugging Face \cite{hf_isic2019}. Las métricas y registros de este trabajo están en el repositorio del proyecto.
+\item \textbf{Disponibilidad de datos:} el conjunto ISIC 2019 se obtiene en el sitio del reto \cite{isic2019datos}, y la copia que usamos está en Hugging Face \cite{hf_isic2019}. Las métricas y los registros de este trabajo se guardan en el repositorio del proyecto.
 \item \textbf{Disponibilidad de materiales:} no aplica.
 \item \textbf{Disponibilidad del código:} disponible a solicitud de los autores.
-\item \textbf{Contribución de los autores:} todos los autores participaron en la concepción del proyecto, la preparación de los datos, el entrenamiento y la evaluación del modelo, el montaje del prototipo y la redacción del manuscrito, y aprobaron la versión final.
+\item \textbf{Contribución de los autores:} los cuatro autores participaron en todas las etapas, desde la concepción del proyecto y la preparación de los datos hasta el entrenamiento y la evaluación del modelo, el armado del prototipo y la redacción del manuscrito. Todos aprobaron la versión final.
 \end{itemize}
 
 \begin{appendices}
 
 \section{Créditos de las imágenes}\label{secA1}
 
-Las imágenes de la Fig.~\ref{fig5} y de la Fig.~\ref{fig4} pertenecen al archivo de ISIC. La Tabla~\ref{tabA1} indica el identificador, el autor y la licencia de cada una, según el propio archivo.
+Las imágenes de la Fig.~\ref{fig5} y de la Fig.~\ref{fig4} provienen del archivo de ISIC. En la Tabla~\ref{tabA1} va el identificador de cada una, con el autor y la licencia tal como los registra el propio archivo.
 
 \begin{table}[h]
-\caption{Créditos de las imágenes de ISIC usadas en las figuras.}\label{tabA1}%
+\caption{Autoría y licencia de las imágenes de ISIC que aparecen en las figuras.}\label{tabA1}%
 \begin{tabular}{@{}llll@{}}
 \toprule
 Identificador & Clase & Autor & Licencia \\
@@ -478,7 +476,7 @@ ISIC\_0071727 & SCC  & Hospital Clínic de Barcelona & CC BY-NC 4.0 \\
 ISIC\_0029439 & VASC & MILK study team              & CC BY-NC 4.0 \\
 \botrule
 \end{tabular}
-\footnotetext{La Fig.~\ref{fig4} usa ISIC\_0014977, ISIC\_0029546 e ISIC\_0012425.}
+\footnotetext{En la Fig.~\ref{fig4} aparecen ISIC\_0014977, ISIC\_0029546 e ISIC\_0012425.}
 \end{table}
 
 \end{appendices}
